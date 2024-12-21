@@ -1,6 +1,6 @@
 import { useSelector } from 'react-redux';
-import DefaultLayout from '../../layout/DefaultLayout';
-import { shortenWalletAddress } from '../../utils';
+import DefaultLayout from '../../../layout/DefaultLayout';
+import { shortenWalletAddress } from '../../../utils';
 import { useTranslation } from 'react-i18next';
 
 const Profile = () => {
@@ -31,6 +31,10 @@ const Profile = () => {
     tier4Time,
     tier5Time,
     isSerepayWallet,
+    totalHewe,
+    hewePerDay,
+    avalableHewe,
+    claimedHewe,
   } = userInfo;
 
   return (
@@ -53,6 +57,17 @@ const Profile = () => {
             <span className="block sm:inline">{t('infoAccountAlert')}</span>
           </div>
         )}
+        <div className='bg-[#FAFBFC] p-4 rounded-2xl flex items-center gap-8'>
+          <div className='flex gap-2 items-center'>
+            <p className='font-medium'>Available HEWE</p>
+            <input className='bg-black rounded-xl text-dreamchain p-2' readOnly value={avalableHewe} />
+          </div>
+          <div className='flex gap-2 items-center'>
+            <p className='font-medium'>Reward HEWE</p>
+            <input className='bg-black rounded-xl text-dreamchain p-2' readOnly value={totalHewe} />
+          </div>
+          <button className='border border-black rounded-2xl px-12 py-2'>Claim</button>
+        </div>
         <div className="grid lg:grid-cols-2 gap-10 font-semibold">
           <div className="bg-[#FAFBFC] p-4 rounded-2xl ">
             <div className="flex justify-between items-center py-2 px-4">

@@ -18,7 +18,6 @@ import { getPriceHewe } from "../utils/getPriceHewe.js";
 
 const getPaymentInfo = asyncHandler(async (req, res) => {
   const { user } = req;
-  const { continueWithBuyPackageB } = req.query;
 
   if (user) {
     let walletUser = user[`walletAddress${user.tier}`];
@@ -230,11 +229,9 @@ const getPaymentInfo = asyncHandler(async (req, res) => {
         }
         return data;
       });
-
       let countPayUser = user.countPay;
       let indexFor = 1;
       for (let p of ancestors) {
-        // console.log({ name: p.userName, isFirst: p.isFirst });
         let referralCommissionWallet, haveParentNotPayEnough;
         const receiveUser = await User.findById(p.userId);
         if (p.isFirst) {
@@ -372,6 +369,7 @@ const findAncestors = async (userId, limit, tier) => {
 
     if (!parentId) {
       ancestors.push(currentParent);
+      // ancestors.push(refTree);
       continue;
     }
 

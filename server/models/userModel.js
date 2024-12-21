@@ -192,12 +192,19 @@ const userSchema = mongoose.Schema(
     },
     totalHewe: {
       type: Number,
+      default: 0
     },
     hewePerDay: {
       type: Number,
+      default: 0
     },
     avalableHewe: {
       type: Number,
+      default: 0
+    },
+    claimedHewe: {
+      type: Number,
+      default: 0
     },
     role: {
       type: String,

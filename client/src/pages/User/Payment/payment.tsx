@@ -72,10 +72,6 @@ const PaymentPage = () => {
     }
   }, [continueWithBuyPackageB]);
 
-  const handleChangeContinueWithB = async () => {
-    setContinueWithBuyPackageB(!continueWithBuyPackageB);
-  };
-
   const handleCheckCanIncreaseTier = async () => {
     setLoadingCheckIncrease(true);
     await User.checkIncreaseTier()
@@ -206,7 +202,7 @@ const PaymentPage = () => {
   return (
     <DefaultLayout>
       <ToastContainer />
-      <div className="py-24">
+      <div className="py-12">
         {userInfo.countPay === 13 ? (
           !loadingCheckIncrease && showCanIncrease ? (
             <div>
@@ -334,34 +330,34 @@ const PaymentPage = () => {
               </div>
             </Modal>
             <div
-              className="w-full mx-auto rounded-lg bg-white shadow-xl p-5 text-gray-700 mt-4"
-              style={{ maxWidth: '600px' }}
+              className="w-full max-w-203 mx-auto rounded-lg bg-white p-10 text-gray-700 mt-4"
             >
               <div className="mb-10">
-                <h1 className="text-center font-bold text-xl uppercase">
+                <h1 className="text-center font-bold text-4xl">
                   {t('paymentTitle')}
                 </h1>
               </div>
               {showPaymentList && (
                 <>
-                  <hr className="mb-3"></hr>
-                  {(userInfo.buyPackage === 'A' ||
-                    (userInfo.buyPackage === 'B' &&
-                      continueWithBuyPackageB)) && (
+                <div className='flex justify-between'>
+                    {(userInfo.buyPackage === 'A' ||
+                      (userInfo.buyPackage === 'B' &&
+                        continueWithBuyPackageB)) && (
+                      <div className="mb-3">
+                        <p className="text-lg mb-2 ml-1">
+                          <span className="font-bold">{t('buyPackage')}</span> :{' '}
+                          {userInfo.buyPackage}{' '}
+                          {userInfo.buyPackage === 'A'
+                            ? t('buyPackageA')
+                            : t('buyPackageB')}
+                        </p>
+                      </div>
+                    )}
                     <div className="mb-3">
                       <p className="text-lg mb-2 ml-1">
-                        <span className="font-bold">{t('buyPackage')}</span> :{' '}
-                        {userInfo.buyPackage}{' '}
-                        {userInfo.buyPackage === 'A'
-                          ? t('buyPackageA')
-                          : t('buyPackageB')}
+                        <span className="font-bold">Total</span> : {total} USDT
                       </p>
                     </div>
-                  )}
-                  <div className="mb-3">
-                    <p className="text-lg mb-2 ml-1">
-                      <span className="font-bold">Total</span> : {total} USDT
-                    </p>
                   </div>
                   {!loadingPaymentInfo &&
                     paymentIdsList.map((payment) => (
@@ -393,10 +389,11 @@ const PaymentPage = () => {
                             fill="currentColor"
                           />
                         </svg>
-                        <div className="flex flex-col sm:flex-row gap-2">
-                          <div className="font-medium">
+                        <div className="w-full flex flex-col sm:flex-row justify-between gap-2">
+                          <div className="">
+                            <span className='font-medium'>
                             {payment.type === 'REGISTER'
-                              ? t('1-	Membership')
+                              ? t('Membership')
                               : payment.type === 'DIRECT'
                               ? t('commissionFee')
                               : payment.type === 'FINE'
@@ -407,12 +404,13 @@ const PaymentPage = () => {
                               ? 'HEWE'
                               : t('Foundation Contribution')}
                             <span> : </span>
+                            </span>
                             <span>{payment.amount} USDT</span>
                           </div>
                           <div className="">
                             <span className="mr-2 text-black">
-                              From :{' '}
-                              <span className="border rounded-md border-dashed border-gray-300 p-1">
+                              <span className='font-medium mr-2'>From</span>
+                              <span className="">
                                 {shortenWalletAddress(
                                   userInfo[`walletAddress${userInfo.tier}`]
                                     ? userInfo[`walletAddress${userInfo.tier}`]
@@ -422,8 +420,8 @@ const PaymentPage = () => {
                               </span>
                             </span>
                             <span className="mx-2 text-black">
-                              To :{' '}
-                              <span className="border rounded-md border-dashed border-gray-300 p-1">
+                            <span className='font-medium mr-2'>To</span>
+                              <span className="">
                                 {shortenWalletAddress(payment.to, 10)}
                               </span>
                             </span>
@@ -435,7 +433,7 @@ const PaymentPage = () => {
                     type="submit"
                     onClick={handleSubmitOTPSerepay}
                     disabled={loadingGetOtp}
-                    className="w-xl flex justify-center items-center hover:underline bg-black text-white font-bold rounded-full my-6 py-4 px-8 shadow-lg focus:outline-none focus:shadow-outline transform transition hover:scale-105 duration-300 ease-in-out"
+                    className="w-2xl mx-auto flex justify-center border border-black items-center hover:underline  font-medium rounded-full my-6 py-4 px-8 shadow-lg focus:outline-none focus:shadow-outline transform transition hover:scale-105 duration-300 ease-in-out"
                   >
                     {loadingGetOtp && <Loading />}
                     {t('payment')}
