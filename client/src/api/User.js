@@ -1,5 +1,5 @@
 import API from './API';
-import { URL_API_USER, URL_API_DREAMPOOL } from './URL';
+import { URL_API_USER, URL_API_DREAMPOOL, URL_API_WITHDRAW } from './URL';
 
 const User = {
   update: (userId, body) => {
@@ -35,6 +35,9 @@ const User = {
   },
   getListChild: () => {
     return API.get(`${URL_API_USER}/listChild`);
+  },
+  getListChildLteBranch: () => {
+    return API.get(`${URL_API_USER}/listChildLteBranch`);
   },
   getTreeOfUser: (id) => {
     return API.get(`${URL_API_USER}/tree/${id}`);
@@ -73,13 +76,14 @@ const User = {
   },
 
   createUser: (body) => {
-    return API.post(`${URL_API_USER}/create`, body);
+    return API.post(`${URL_API_USER}/create`, body, {
+      customContentType: 'multipart/form-data',
+    });
   },
 
   getListNextUserTier: (body) => {
     return API.post(`${URL_API_USER}/listNextUserTier`, body);
   },
-
   getUsersWithTier: (body) => {
     return API.post(`${URL_API_USER}/getUsersWithTier`, body);
   },
@@ -89,11 +93,29 @@ const User = {
   getLastUserInTier: (body) => {
     return API.post(`${URL_API_USER}/getLastUserInTier`, body);
   },
+  getListChildForCreateAdmin: () => {
+    return API.get(`${URL_API_USER}/listChildForCreateAdmin`);
+  },
   removeLastUserInTier: (body) => {
     return API.post(`${URL_API_USER}/removeLastUserInTier`, body);
   },
-  getDreamPool: () => {
-    return API.get(`${URL_API_DREAMPOOL}`);
+  getDreamPool: ({ tier }) => {
+    return API.get(`${URL_API_DREAMPOOL}?tier=${tier}`);
+  },
+  getNotHonorUsers: () => {
+    return API.get(`${URL_API_DREAMPOOL}/notHonors`);
+  },
+  updateDreamPool: (body) => {
+    return API.post(`${URL_API_DREAMPOOL}`, body);
+  },
+  exportDreamPool: (body) => {
+    return API.post(`${URL_API_DREAMPOOL}/export`, body);
+  },
+  adminChangeWalletUser: (body) => {
+    return API.put(`${URL_API_USER}/change-wallet`, body);
+  },
+  withdraws: () => {
+    return API.get(`${URL_API_WITHDRAW}/user`);
   },
 };
 

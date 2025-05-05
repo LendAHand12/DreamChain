@@ -9,7 +9,6 @@ const userSchema = mongoose.Schema(
     },
     walletAddress: {
       type: String,
-      required: true,
     },
     email: {
       type: String,
@@ -54,10 +53,6 @@ const userSchema = mongoose.Schema(
       type: Number,
       default: 0,
     },
-    countChild: {
-      type: Array,
-      default: [0],
-    },
     phone: {
       type: String,
       default: "",
@@ -75,10 +70,6 @@ const userSchema = mongoose.Schema(
       },
     ],
     idCode: {
-      type: String,
-      default: "",
-    },
-    buyPackage: {
       type: String,
       default: "",
     },
@@ -106,9 +97,6 @@ const userSchema = mongoose.Schema(
       type: String,
       enum: ["ADMIN", "USER"],
       default: "USER",
-    },
-    havePaid: {
-      type: Boolean,
     },
     note: {
       type: String,
@@ -179,17 +167,26 @@ const userSchema = mongoose.Schema(
       type: Number,
       default: 0,
     },
-    heweWallet: {
-      type: String,
-    },
     ranking: {
       type: Number,
       default: 0,
+    },
+    bonusRef: {
+      type: Boolean,
+      default: false
+    },
+    walletAddressChange: {
+      type: String,
+      default: ""
     },
     role: {
       type: String,
       // enum: ["USER", "ADMIN", "ADMIN1", "ADMIN2"],
     },
+    paymentStep: {
+      type: Number,
+      default: 0
+    }
   },
   {
     timestamps: true,

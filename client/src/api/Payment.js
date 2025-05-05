@@ -1,10 +1,15 @@
 import API from "./API";
-import { URL_API_PAYMENT } from "./URL";
+import { URL_API_PAYMENT, URL_API_INCOME } from "./URL";
 
 const Payment = {
-  getPaymentInfo: (continueWithBuyPackageB) => {
+  getPaymentInfo: () => {
     return API.get(
-      `${URL_API_PAYMENT}/info?continueWithBuyPackageB=${continueWithBuyPackageB}`
+      `${URL_API_PAYMENT}/info`
+    );
+  },
+  getPaymentNextTierInfo: (childId) => {
+    return API.get(
+      `${URL_API_PAYMENT}/infoNextTier?childId=${childId}`
     );
   },
   addPayment: (body) => {
@@ -12,6 +17,9 @@ const Payment = {
   },
   onDonePayment: (body) => {
     return API.post(`${URL_API_PAYMENT}/done`, body);
+  },
+  onDoneNextTierPayment: (body) => {
+    return API.post(`${URL_API_PAYMENT}/doneNextTier`, body);
   },
   getAllPayments: (pageNumber, keyword, statusSearch, tier) => {
     return API.get(
@@ -36,6 +44,9 @@ const Payment = {
   getAllTransForExport: (body) => {
     return API.post(`${URL_API_PAYMENT}/getAllTransForExport`, body);
   },
+  getIncomeOfUser: (pageNumber) => {
+    return API.get(`${URL_API_INCOME}/?pageNumber=${pageNumber}`);
+  }
 };
 
 export default Payment;

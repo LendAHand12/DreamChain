@@ -8,30 +8,27 @@ import bcrypt from "bcryptjs";
 import Tree from "../models/treeModel.js";
 import { getActivePackages } from "./packageControllers.js";
 import Permission from "../models/permissionModel.js";
-import { checkSerepayWallet, mergeIntoThreeGroups } from "../utils/methods.js";
+import { checkSerepayWallet, findNextReferrer, mergeIntoThreeGroups } from "../utils/methods.js";
 import axios from "axios";
+import Honor from "../models/honorModel.js";
+import mongoose from "mongoose";
 
 const checkLinkRef = asyncHandler(async (req, res) => {
   const { ref, receiveId } = req.body;
   let message = "invalidUrl";
 
   try {
-    const userReceive = await User.findOne({
-      _id: receiveId,
-      // status: { $in: ["APPROVED", "LOCKED"] },
-    });
+    const treeUserReceive = await Tree.findById(receiveId);
 
-    const userRef = await User.findOne({
-      _id: ref,
-      // status: { $in: ["APPROVED", "LOCKED"] },
-    });
+    const treeUserRef = await Tree.findById(ref);
 
-    if (userReceive && userRef) {
-      const treeUserReceive = await Tree.findOne({
-        userId: userReceive._id,
-        tier: 1,
-      });
-      if (treeUserReceive && treeUserReceive.children.length < 5) {
+    if (treeUserReceive && treeUserRef) {
+      if (!treeUserReceive.parentId || treeUserReceive.userName === "NoExcuse 9") {
+        message = "validUrl";
+        res.status(200).json({
+          message,
+        });
+      } else if (treeUserReceive.children.length < 2) {
         message = "validUrl";
         res.status(200).json({
           message,
@@ -98,14 +95,9 @@ const registerUser = asyncHandler(async (req, res) => {
     res.status(400);
     throw new Error(message);
   } else {
-    const treeReceiveUser = await Tree.findOne({ userId: receiveId, tier: 1 });
+    const treeReceiveUser = await Tree.findById(receiveId);
 
-    if (treeReceiveUser.children.length < 5) {
-      // const token = await registerSerepayFnc(userId, email.toLowerCase(), password);
-      // const heweWallet = await createSerepayHeweWallet(token); // hewe wallet
-
-      // const wallet = await createSerepayUsdtWallet(token); // usdt wallet
-
+    if (treeReceiveUser.userName === "NoExcuse 9" || treeReceiveUser.children.length < 2) {
       const user = await User.create({
         userId,
         email: email.toLowerCase(),
@@ -127,7 +119,7 @@ const registerUser = asyncHandler(async (req, res) => {
 
       await sendMail(user._id, email, "email verification");
 
-      treeReceiveUser.children.push(user._id);
+      treeReceiveUser.children.push(tree._id);
       await treeReceiveUser.save();
 
       let message = "registerSuccessful";
@@ -217,14 +209,20 @@ const authUser = asyncHandler(async (req, res) => {
       existingToken.save();
     }
 
+    const tree = await Tree.findOne({ userId: user._id, tier: 1 });
     const listDirectUser = [];
-    const listRefIdOfUser = await Tree.find({ refId: user._id, tier: 1 });
-    if (listRefIdOfUser && listRefIdOfUser.length > 0) {
-      for (let refId of listRefIdOfUser) {
-        const refedUser = await User.findById(refId.userId).select("userId email countChild");
-        listDirectUser.push({ ...refedUser, countChild: refedUser.countChild[0] + 1 });
+    if(tree) {
+      const listRefIdOfUser = await Tree.find({ refId: tree._id, tier: 1 });
+      if (listRefIdOfUser && listRefIdOfUser.length > 0) {
+        for (let refId of listRefIdOfUser) {
+          const refedUser = await User.findById(refId.userId).select("userId email countChild");
+          listDirectUser.push({
+            ...refedUser,
+          });
+        }
       }
     }
+    
 
     const packages = await getActivePackages();
 
@@ -242,11 +240,6 @@ const authUser = asyncHandler(async (req, res) => {
         isConfirmed: user.isConfirmed,
         avatar: user.avatar,
         walletAddress: user.walletAddress,
-        walletAddress1: user.walletAddress1,
-        walletAddress2: user.walletAddress2,
-        walletAddress3: user.walletAddress3,
-        walletAddress4: user.walletAddress4,
-        walletAddress5: user.walletAddress5,
         tier: user.tier,
         createdAt: user.createdAt,
         fine: user.fine,
@@ -277,9 +270,12 @@ const authUser = asyncHandler(async (req, res) => {
         claimedUsdt: user.claimedUsdt,
         heweWallet: user.heweWallet,
         ranking: user.ranking,
-        totalEarning: user.availableUsdt + user.claimedUsdt,
         chartData: mergeIntoThreeGroups(listDirectUser),
         targetSales: process.env[`LEVEL_${user.ranking + 1}`],
+        bonusRef: user.bonusRef,
+        walletAddressChange: user.walletAddressChange,
+        totalChild: tree ? tree.countChild : 0,
+        income: tree ? tree.income : 0,
       },
       accessToken,
       refreshToken,
@@ -365,11 +361,11 @@ const checkSendMail = asyncHandler(async (req, res) => {
 
 const getLinkVerify = asyncHandler(async (req, res) => {
   const { email } = req.body;
-  const user = await User.findOne({ email });
-  if (user.isConfirmed) {
-    throw new Error("User confirmed");
-  }
+  const user = await User.findOne({ $and: [{ email }, { status: { $ne: "DELETED" } }] });
   if (user) {
+    if (user.isConfirmed) {
+      throw new Error("User confirmed");
+    }
     const emailToken = generateToken(user._id, "email");
     const url = `${process.env.FRONTEND_BASE_URL}/confirm?token=${emailToken}`;
     res.json({

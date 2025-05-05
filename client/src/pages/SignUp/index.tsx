@@ -22,7 +22,6 @@ const SignUpPage = () => {
   if (!receiveId) {
     receiveId = ref;
   }
-  const navigate = useNavigate();
   const {
     register,
     handleSubmit,

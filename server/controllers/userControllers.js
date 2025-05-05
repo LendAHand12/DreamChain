@@ -23,9 +23,16 @@ import {
 } from "../utils/methods.js";
 import generateGravatar from "../utils/generateGravatar.js";
 import { areArraysEqual } from "../cronJob/index.js";
-import { sendMailReject, sendMailUserCanInceaseTierToAdmin } from "../utils/sendMailCustom.js";
+import {
+  sendMailChangeWalletToAdmin,
+  sendMailReject,
+  sendMailUserCanInceaseTierToAdmin,
+} from "../utils/sendMailCustom.js";
 import Permission from "../models/permissionModel.js";
 import Withdraw from "../models/withdrawModel.js";
+import Honor from "../models/honorModel.js";
+import mongoose, { Types } from "mongoose";
+import { isAdmin } from "../middleware/authMiddleware.js";
 
 dotenv.config();
 
@@ -110,8 +117,10 @@ const getUserById = asyncHandler(async (req, res) => {
   const user = await User.findById(req.params.id).select("-password");
 
   if (user) {
+    const tree = await Tree.findOne({ userId: user._id, tier: 1 });
+
     const listDirectUser = [];
-    const listRefIdOfUser = await Tree.find({ refId: user._id, tier: 1 });
+    const listRefIdOfUser = await Tree.find({ refId: tree._id, tier: 1 });
     if (listRefIdOfUser && listRefIdOfUser.length > 0) {
       for (let refId of listRefIdOfUser) {
         const refedUser = await User.findById(refId.userId).select(
@@ -129,7 +138,6 @@ const getUserById = asyncHandler(async (req, res) => {
               ? true
               : false,
           isYellow: refedUser.errLahCode === "OVER30",
-          countChild: refedUser.countChild[0] + 1,
         });
       }
     }
@@ -145,18 +153,28 @@ const getUserById = asyncHandler(async (req, res) => {
       status: "APPROVED",
     }).select("oldUserName oldEmail updatedAt");
 
-    const tree = await Tree.findOne({ userId: user._id, tier: 1 });
-
     let refUser;
     if (tree && tree.refId) {
-      refUser = await User.findById(tree.refId);
+      const refTree = await Tree.findById(tree.refId);
+      refUser = await User.findById(refTree.userId);
     }
 
     const withdraws = await Withdraw.find({
       userId: user._id,
-      status: "PENDING",
     });
     const totalWithdraws = withdraws.reduce((sum, withdraw) => sum + withdraw.amount, 0);
+    const withdrawPending = withdraws
+      .filter((ele) => ele.status === "PENDING")
+      .reduce((sum, withdraw) => sum + withdraw.amount, 0);
+
+    const listTransHold = await Transaction.find({
+      userId_to: user.id,
+      type: { $regex: "HOLD", $options: "i" },
+      status: "SUCCESS",
+      isHoldRefund: false,
+    });
+
+    const totalHold = listTransHold.reduce((sum, ele) => sum + ele.amount, 0);
 
     res.json({
       id: user._id,
@@ -209,10 +227,15 @@ const getUserById = asyncHandler(async (req, res) => {
       claimedUsdt: user.claimedUsdt,
       heweWallet: user.heweWallet,
       ranking: user.ranking,
-      totalEarning: user.availableUsdt + user.claimedUsdt,
-      withdrawPending: totalWithdraws,
+      totalEarning: user.availableUsdt + user.claimedUsdt + totalWithdraws,
+      withdrawPending: withdrawPending,
       chartData: mergeIntoThreeGroups(listDirectUser),
       targetSales: process.env[`LEVEL_${user.ranking + 1}`],
+      bonusRef: user.bonusRef,
+      walletAddressChange: user.walletAddressChange,
+      totalHold,
+      totalChild: tree.countChild,
+      income: tree.income,
     });
   } else {
     res.status(404);
@@ -224,8 +247,9 @@ const getUserInfo = asyncHandler(async (req, res) => {
   const user = req.user;
 
   if (user) {
+    const tree = await Tree.findOne({ userId: user._id, tier: 1 });
     const listDirectUser = [];
-    const listRefIdOfUser = await Tree.find({ refId: user._id, tier: 1 });
+    const listRefIdOfUser = await Tree.find({ refId: tree._id, tier: 1 });
     if (listRefIdOfUser && listRefIdOfUser.length > 0) {
       for (let refId of listRefIdOfUser) {
         const refedUser = await User.findById(refId.userId).select(
@@ -243,7 +267,6 @@ const getUserInfo = asyncHandler(async (req, res) => {
               ? true
               : false,
           isYellow: refedUser.errLahCode === "OVER30",
-          countChild: refedUser.countChild[0] + 1,
         });
       }
     }
@@ -261,16 +284,26 @@ const getUserInfo = asyncHandler(async (req, res) => {
 
     const withdraws = await Withdraw.find({
       userId: user._id,
-      status: "PENDING",
     });
     const totalWithdraws = withdraws.reduce((sum, withdraw) => sum + withdraw.amount, 0);
-
-    const tree = await Tree.findOne({ userId: user._id, tier: 1 });
+    const withdrawPending = withdraws
+      .filter((ele) => ele.status === "PENDING")
+      .reduce((sum, withdraw) => sum + withdraw.amount, 0);
 
     let refUser;
     if (tree && tree.refId) {
-      refUser = await User.findById(tree.refId);
+      const refTree = await Tree.findById(tree.refId);
+      refUser = await User.findById(refTree.userId);
     }
+
+    const listTransHold = await Transaction.find({
+      userId_to: user.id,
+      type: { $regex: "HOLD", $options: "i" },
+      status: "SUCCESS",
+      isHoldRefund: false,
+    });
+
+    const totalHold = listTransHold.reduce((sum, ele) => sum + ele.amount, 0);
 
     res.json({
       id: user._id,
@@ -323,10 +356,15 @@ const getUserInfo = asyncHandler(async (req, res) => {
       claimedUsdt: user.claimedUsdt,
       heweWallet: user.heweWallet,
       ranking: user.ranking,
-      totalEarning: user.availableUsdt + user.claimedUsdt,
-      withdrawPending: totalWithdraws,
+      totalEarning: user.availableUsdt + user.claimedUsdt + totalWithdraws,
+      withdrawPending: withdrawPending,
       chartData: mergeIntoThreeGroups(listDirectUser),
       targetSales: process.env[`LEVEL_${user.ranking + 1}`],
+      bonusRef: user.bonusRef,
+      walletAddressChange: user.walletAddressChange,
+      totalHold,
+      totalChild: tree.countChild,
+      income: tree.income,
     });
   } else {
     res.status(404);
@@ -358,7 +396,16 @@ const updateUser = asyncHandler(async (req, res) => {
   if (user) {
     user.phone = phone || user.phone;
     user.idCode = idCode || user.idCode;
-    user.walletAddress = walletAddress || user.walletAddress;
+    if (walletAddress && walletAddress !== user.walletAddress) {
+      await sendMailChangeWalletToAdmin({
+        userId: user._id,
+        userName: user.userId,
+        phone: user.phone,
+        email: user.email,
+      });
+      user.walletAddressChange = walletAddress;
+    }
+
     if (buyPackage) {
       const newBuyPackage = await Package.findOne({ name: buyPackage });
       if (newBuyPackage.status === "active") {
@@ -407,9 +454,20 @@ const updateUser = asyncHandler(async (req, res) => {
 
       const withdraws = await Withdraw.find({
         userId: user._id,
-        status: "PENDING",
       });
       const totalWithdraws = withdraws.reduce((sum, withdraw) => sum + withdraw.amount, 0);
+      const withdrawPending = withdraws
+        .filter((ele) => ele.status === "PENDING")
+        .reduce((sum, withdraw) => sum + withdraw.amount, 0);
+
+      const listTransHold = await Transaction.find({
+        userId_to: user.id,
+        type: { $regex: "HOLD", $options: "i" },
+        status: "SUCCESS",
+        isHoldRefund: false,
+      });
+
+      const totalHold = listTransHold.reduce((sum, ele) => sum + ele.amount, 0);
 
       const packages = await getActivePackages();
       const permissions = await Permission.findOne({
@@ -456,10 +514,13 @@ const updateUser = asyncHandler(async (req, res) => {
           claimedUsdt: updatedUser.claimedUsdt,
           heweWallet: updatedUser.heweWallet,
           ranking: updatedUser.ranking,
-          totalEarning: updatedUser.availableUsdt + updatedUser.claimedUsdt,
-          withdrawPending: totalWithdraws,
+          totalEarning: user.availableUsdt + user.claimedUsdt + totalWithdraws,
+          withdrawPending: withdrawPending,
           chartData: mergeIntoThreeGroups(listDirectUser),
           targetSales: process.env[`LEVEL_${updatedUser.ranking + 1}`],
+          bonusRef: updatedUser.bonusRef,
+          walletAddressChange: updatedUser.walletAddressChange,
+          totalHold,
         },
       });
     }
@@ -481,16 +542,14 @@ const adminUpdateUser = asyncHandler(async (req, res) => {
     phone,
     email,
     tier,
-    walletAddress1,
-    walletAddress2,
-    walletAddress3,
-    walletAddress4,
-    walletAddress5,
+    walletAddress,
     note,
     hold,
     holdLevel,
     availableHewe,
     availableUsdt,
+    rewardHewe,
+    hewePerDay,
   } = req.body;
 
   if (userId) {
@@ -526,11 +585,17 @@ const adminUpdateUser = asyncHandler(async (req, res) => {
     }
   }
 
-  if (walletAddress1) {
-    const userExistsWalletAddress1 = await User.findOne({
-      walletAddress1,
+  if (walletAddress) {
+    const userExistsWalletAddress = await User.findOne({
+      $and: [
+        {
+          walletAddress,
+        },
+        { status: { $ne: "DELETED" } },
+      ],
     });
-    if (userExistsWalletAddress1) {
+
+    if (userExistsWalletAddress) {
       let message = "Dupplicate wallet address";
       res.status(400);
       throw new Error(message);
@@ -562,6 +627,9 @@ const adminUpdateUser = asyncHandler(async (req, res) => {
     user.holdLevel = holdLevel || user.holdLevel;
     user.availableHewe = availableHewe || user.availableHewe;
     user.availableUsdt = availableUsdt || user.availableUsdt;
+    user.walletAddress = walletAddress || user.walletAddress;
+    user.hewePerDay = hewePerDay || user.hewePerDay;
+    user.totalHewe = rewardHewe || user.totalHewe;
     if (user.status === "LOCKED" && newStatus !== "LOCKED") {
       user.lockedTime = null;
     }
@@ -571,18 +639,8 @@ const adminUpdateUser = asyncHandler(async (req, res) => {
     }
     user.fine = newFine || user.fine;
     user.note = note || user.note;
-    if (!openLah && openLah !== undefined) {
-      user.openLah = false;
-    }
-    if (openLah) {
-      user.openLah = true;
-    }
-    if (!closeLah && closeLah !== undefined) {
-      user.closeLah = false;
-    }
-    if (closeLah) {
-      user.closeLah = true;
-    }
+    user.openLah = openLah;
+    user.closeLah = closeLah;
 
     if (req.files && req.files.imgFront && req.files.imgFront[0]) {
       user.imgFront = req.files.imgFront[0].filename || user.imgFront;
@@ -604,14 +662,8 @@ const adminUpdateUser = asyncHandler(async (req, res) => {
       }
     }
     if (isRegistered && isRegistered === "on" && user.countPay === 0) {
-      user.countPay = 1;
+      user.countPay = 13;
     }
-
-    user.walletAddress1 = walletAddress1 || user.walletAddress1;
-    user.walletAddress2 = walletAddress2 || user.walletAddress2;
-    user.walletAddress3 = walletAddress3 || user.walletAddress3;
-    user.walletAddress4 = walletAddress4 || user.walletAddress4;
-    user.walletAddress5 = walletAddress5 || user.walletAddress5;
     if (tier && user.tier !== tier && tier >= 2) {
       user.countPay = 0;
       user.tier = tier;
@@ -657,7 +709,11 @@ const changeStatusUser = asyncHandler(async (req, res) => {
   if (user) {
     user.status = status || user.status;
     if (status === "REJECTED") {
-      await sendMailReject({ senderName: user.userId, email: user.email, reason });
+      await sendMailReject({
+        senderName: user.userId,
+        email: user.email,
+        reason,
+      });
     }
     const updatedUser = await user.save();
     if (updatedUser) {
@@ -713,78 +769,60 @@ const getTreeOfUser = asyncHandler(async (req, res) => {
 const getChildsOfUserForTree = asyncHandler(async (req, res) => {
   const { id, currentTier } = req.body;
   const userRequest = req.user;
-  const user = await User.findOne({ _id: id }).select("userId countChild");
-  const treeOfUser = await Tree.findOne({
-    userId: id,
-    tier: currentTier,
-  }).select("userId children");
-
-  if (user) {
-    if (treeOfUser.children.length === 0) {
-      res.status(404);
-      throw new Error("User not have child");
-    } else {
-      const tree = { key: user._id, label: user.userId, nodes: [] };
-      // let level, listUserOfLevel;
-      // if (userRequest.isAdmin && currentTier >= 2) {
-      //   level = await findLevelById(user._id, currentTier);
-      //   listUserOfLevel = await findUsersAtLevel(
-      //     "6494e9101e2f152a593b66f2",
-      //     level + 1,
-      //     currentTier
-      //   );
-      //   listUserOfLevel.sort((a, b) => {
-      //     return new Date(a.createdAt) - new Date(b.createdAt);
-      //   });
-      // }
-      for (const childId of treeOfUser.children) {
-        const child = await User.findById(childId).select(
-          "tier userId buyPackage countChild countPay fine status errLahCode"
-        );
-        const childTree = await Tree.findOne({
-          userId: childId,
-          tier: currentTier,
-        });
-        // const childTree = await Tree.findOneAndUpdate(
-        //   { userId: childId, tier: currentTier },
-        //   {
-        //     $set: {
-        //       indexOnLevel:
-        //         userRequest.isAdmin && currentTier >= 2
-        //           ? listUserOfLevel.findIndex((ele) => ele.userId === childId) +
-        //             1
-        //           : 0,
-        //     },
-        //   }
-        // );
-
-        tree.nodes.push({
-          key: child._id,
-          label: `${child.userId}`,
-          totalChild: child.countChild,
-          isGray:
-            child.status === "LOCKED"
-              ? currentTier === 1 || userRequest.isAdmin
-                ? true
-                : false
-              : false,
-          isRed:
-            child.tier === 1 && child.countPay === 0
-              ? true
-              : child.tier === 1 && child.buyPackage === "B" && child.countPay < 7
-              ? true
-              : child.tier === 1 && child.buyPackage === "A" && child.countPay < 13
-              ? true
-              : false,
-          isYellow: child.errLahCode === "OVER30",
-          indexOnLevel: childTree.indexOnLevel,
-        });
-      }
-      res.status(200).json(tree);
-    }
+  let treeOfUser;
+  let user;
+  treeOfUser = await Tree.findById(id).select(
+    "userId tier userName children countChild createdAt countChild income"
+  );
+  if (!treeOfUser) {
+    user = await User.findOne({ _id: id }).select("userId createdAt");
+    treeOfUser = await Tree.findOne({
+      userId: user._id,
+      tier: currentTier,
+    }).select("userId tier userName children countChild createdAt income");
   } else {
+    user = await User.findOne({ _id: treeOfUser.userId }).select("userId createdAt");
+  }
+
+  if (treeOfUser.children.length === 0) {
     res.status(404);
-    throw new Error("User not found");
+    throw new Error("User not have child");
+  } else {
+    const tree = {
+      key: treeOfUser._id,
+      label: treeOfUser.userName,
+      income: treeOfUser.income,
+      totalChild: treeOfUser.countChild,
+      nodes: [],
+    };
+    for (const childId of treeOfUser.children) {
+      const childTree = await Tree.findOne({
+        _id: childId,
+        tier: currentTier,
+      });
+
+      const child = await User.findById(childTree.userId).select(
+        "tier userId buyPackage countPay fine status errLahCode"
+      );
+
+      tree.nodes.push({
+        key: childTree._id,
+        label: `${childTree.userName}`,
+        totalChild: childTree.countChild,
+        income: childTree.income,
+        isGray:
+          child.status === "LOCKED"
+            ? currentTier === 1 || userRequest.isAdmin
+              ? true
+              : false
+            : false,
+        isRed: child.tier === 1 && child.countPay === 0 ? true : false,
+        isYellow: child.errLahCode === "OVER30",
+        indexOnLevel: childTree.indexOnLevel,
+        isSubId: childTree.isSubId,
+      });
+    }
+    res.status(200).json(tree);
   }
 });
 
@@ -817,8 +855,8 @@ const getAllChildren = async (userId) => {
   return [user.userId, ...children];
 };
 
-const getCountAllChildren = async (userId, tier) => {
-  const tree = await Tree.findOne({ userId, tier }).select("userId children");
+const getCountAllChildren = async (treeId, tier) => {
+  const tree = await Tree.findById(treeId).select("userId children createdAt");
 
   if (!tree) {
     return 0;
@@ -826,7 +864,29 @@ const getCountAllChildren = async (userId, tier) => {
 
   let result = tree.children.length;
   for (const childId of tree.children) {
-    const count = await getCountAllChildren(childId, tier);
+    const treeOfChild = await Tree.findById(childId);
+    const count = await getCountAllChildren(treeOfChild._id, tier);
+    result += count;
+  }
+
+  return result;
+};
+
+const getCountIncome = async (treeId, tier) => {
+  const tree = await Tree.findById(treeId).select("userId children createdAt");
+
+  if (!tree) {
+    return 0;
+  }
+
+  let result = tree.children.length;
+  for (const childId of tree.children) {
+    const treeOfChild = await Tree.findById(childId);
+    const child = await User.findById(treeOfChild.userId);
+    if (child.countPay === 0) {
+      result = result - 1;
+    }
+    const count = await getCountIncome(treeOfChild._id, tier);
     result += count;
   }
 
@@ -911,6 +971,7 @@ const getUserProfile = asyncHandler(async (req, res) => {
       isSerepayWallet: await checkSerepayWallet(user.walletAddress1),
       role: user.role,
       permissions: permissions ? permissions.pagePermissions : [],
+      bonusRef: user.bonusRef,
     });
   } else {
     res.status(400);
@@ -921,40 +982,104 @@ const getUserProfile = asyncHandler(async (req, res) => {
 const getListChildOfUser = asyncHandler(async (req, res) => {
   let result = [];
 
-  const parent = await Tree.findOne({ userId: req.user.id }).lean();
-  if (!parent || parent.children.length < 5) {
+  const parent = await Tree.findOne({ userId: req.user.id, tier: 1, isSubId: false }).lean();
+  const listRef = await Tree.find({ refId: parent._id });
+  if (parent.children.length === 2 && listRef.length === 1) {
+    const branchFirstChildId = await findParentTreePath(listRef[0]._id, parent._id);
+    const firstChildId =
+      parent.children[0] === branchFirstChildId.toString()
+        ? parent.children[1]
+        : parent.children[0];
+    result = await getAllDescendants(firstChildId, 1);
+    const firstChild = await Tree.findById(firstChildId);
+    if (firstChild.children.length < 2) {
+      result.unshift({
+        id: firstChild._id,
+        userId: firstChild.userId,
+        userName: firstChild.userName,
+      });
+    }
+  } else {
+    result = await getAllDescendants(parent._id, 1);
+  }
+
+  res.json({ userTreeId: parent._id, result });
+});
+
+async function findParentTreePath(treeId, targetTreeId) {
+  const startTree = await Tree.findById(treeId);
+
+  if (!startTree) return undefined;
+
+  let previousTree = null;
+  let currentTree = startTree;
+
+  while (currentTree) {
+    if (currentTree._id.equals(targetTreeId)) {
+      return previousTree?._id;
+    }
+
+    previousTree = currentTree;
+
+    const parent = await Tree.findById(currentTree.parentId);
+    if (!parent) break;
+
+    currentTree = parent;
+  }
+
+  return undefined;
+}
+
+const getListChildNotEnoughBranchOfUser = asyncHandler(async (req, res) => {
+  let result = [];
+
+  const parent = await Tree.findOne({
+    userId: req.user.id,
+    tier: 1,
+  }).lean();
+  if (!parent) {
     result = [];
   } else {
-    result = await getAllDescendants(req.user.id);
+    result = await getAllDescendants(parent._id, 1);
   }
 
   res.json(result);
 });
 
-async function getAllDescendants(targetUserId) {
+async function getAllDescendants(targetUserTreeId, currentTier) {
   try {
-    const descendants = await Tree.aggregate([
-      {
-        $match: { userId: targetUserId, tier: 1 },
-      },
-      {
-        $graphLookup: {
-          from: "trees",
-          startWith: "$children",
-          connectFromField: "children",
-          connectToField: "userId",
-          as: "descendants",
-          maxDepth: 100,
-        },
-      },
-    ]);
+    const visited = new Set();
+    const results = [];
 
-    const descendantsList = descendants[0].descendants.map((descendant) => ({
-      id: descendant.userId,
-      userId: descendant.userName,
-    }));
+    async function recurse(nodeId) {
+      if (visited.has(nodeId.toString())) return;
+      visited.add(nodeId.toString());
 
-    return descendantsList;
+      const node = await Tree.findById(nodeId).lean();
+      if (!node || !Array.isArray(node.children)) return;
+
+      for (const childId of node.children) {
+        const child = await Tree.findById(childId).lean();
+        if (child) {
+          const childCount = Array.isArray(child.children) ? child.children.length : 0;
+
+          // ✅ Chỉ push nếu số lượng con < 2 và tier === currentTier
+          if (childCount < 2 && child.tier === currentTier) {
+            results.push({
+              id: child._id,
+              userId: child.userId,
+              userName: child.userName,
+            });
+          }
+
+          await recurse(child._id); // vẫn tiếp tục tìm sâu xuống
+        }
+      }
+    }
+
+    await recurse(new Types.ObjectId(targetUserTreeId));
+
+    return results;
   } catch (error) {
     console.error("Lỗi khi lấy cấp dưới của người dùng:", error);
     return [];
@@ -962,7 +1087,6 @@ async function getAllDescendants(targetUserId) {
 }
 
 const changeSystem = asyncHandler(async (req, res) => {
-  console.log({ req: req.body });
   const { moveId, receiveId, withChild } = req.body;
 
   const movePerson = await User.findById(moveId);
@@ -1173,13 +1297,12 @@ const getAllUsersForExport = asyncHandler(async (req, res) => {
       name: u.userId,
       email: u.email,
       phone: u.phone,
-      walletAddress: u.walletAddress[0],
+      walletAddress: u.walletAddress,
       memberSince: u.createdAt,
       tier: u.tier,
       "count pay": u.countPay,
       fine: u.fine,
       status: u.status,
-      countChild: u.countChild[u.tier - 1],
       refUserName: u.parent ? u.parent.userName : "",
       refUserEmail: u.parentUser ? u.parentUser.email : "",
       note: u.note ? u.note : "",
@@ -1320,18 +1443,19 @@ const adminDeleteUser = asyncHandler(async (req, res) => {
         userId: user._id,
         tier: tierIndex,
       });
-      const parentTree = await Tree.findOne({ userId: treeUser.parentId });
+      const parentTree = await Tree.findById(treeUser.parentId);
       oldParents.push(treeUser.parentId);
       if (treeUser.children.length === 0) {
-        await removeIdFromChildrenOfParent(user, parentTree);
+        await removeIdFromChildrenOfParent(treeUser, parentTree);
         await deleteTreeOfUserWithTier(user, tierIndex);
       } else if (treeUser.children.length === 1) {
-        await removeIdFromChildrenOfParent(user, parentTree);
+        await removeIdFromChildrenOfParent(treeUser, parentTree);
         await deleteTreeOfUserWithTier(user, tierIndex);
         await pushChildrent1ToUp(treeUser, parentTree, tierIndex);
       }
+      await replaceRefId(treeUser._id);
     }
-    await replaceRefId(user._id);
+
     await addDeleteUserToData(user, oldParents);
     res.json({
       message: "Delete user successfull",
@@ -1351,32 +1475,29 @@ const deleteTreeOfUserWithTier = async (user, tier) => {
   await Tree.deleteOne({ userId: user._id, tier });
 };
 
-const removeIdFromChildrenOfParent = async (user, parentTree) => {
+const removeIdFromChildrenOfParent = async (treeUser, parentTree) => {
   let childs = parentTree.children;
   let newChilds = childs.filter((item) => {
-    if (item.toString() !== user._id.toString()) return item;
+    if (item.toString() !== treeUser._id.toString()) return item;
   });
   parentTree.children = [...newChilds];
   await parentTree.save();
 };
 
-const pushChildrent1ToUp = async (userTree, parentTree, tierIndex) => {
-  const childTree = await Tree.findOne({
-    userId: userTree.children[0],
-    tier: tierIndex,
-  });
+const pushChildrent1ToUp = async (userTree, parentTree) => {
+  const childTree = await Tree.findById(userTree.children[0]);
   const userUp = await User.findById(childTree.userId);
   userUp.oldParents = [childTree.parentId, ...userUp.oldParents];
   await userUp.save();
-  childTree.parentId = parentTree.userId;
-  childTree.refId = childTree.refId === userTree.userId ? parentTree.userId : childTree.refId;
+  childTree.parentId = parentTree._id;
+  childTree.refId = childTree.refId === userTree._id ? parentTree._id : childTree.refId;
   await childTree.save();
-  parentTree.children.push(childTree.userId);
+  parentTree.children.push(childTree._id);
   await parentTree.save();
 };
 
-const replaceRefId = async (deleteUserId) => {
-  const listTreeHaveRefId = await Tree.find({ refId: deleteUserId });
+const replaceRefId = async (deleteUserTreeId) => {
+  const listTreeHaveRefId = await Tree.find({ refId: deleteUserTreeId });
 
   for (let treeUser of listTreeHaveRefId) {
     treeUser.refId = treeUser.parentId;
@@ -1533,23 +1654,28 @@ const doesAnyUserInHierarchyHaveBuyPackageC = async (userId) => {
 };
 
 const adminCreateUser = asyncHandler(async (req, res) => {
-  const { userId, walletAddress, email, password, phone, idCode, imgFront, imgBack, tier } =
+  const { userId, walletAddress, email, password, phone, idCode, tier, parentTier1, parentTier2 } =
     req.body;
 
   const userExistsUserId = await User.findOne({
-    userId: { $regex: userId, $options: "i" },
+    userId,
+    status: { $ne: "DELETED" },
   });
   const userExistsEmail = await User.findOne({
-    email: { $regex: email, $options: "i" },
+    email,
+    status: { $ne: "DELETED" },
   });
   const userExistsPhone = await User.findOne({
     $and: [{ phone: { $ne: "" } }, { phone }],
+    status: { $ne: "DELETED" },
   });
   const userExistsWalletAddress = await User.findOne({
-    walletAddress1: walletAddress,
+    walletAddress: walletAddress,
+    status: { $ne: "DELETED" },
   });
   const userExistsIdCode = await User.findOne({
     $and: [{ idCode: { $ne: "" } }, { idCode }],
+    status: { $ne: "DELETED" },
   });
 
   if (userExistsUserId) {
@@ -1573,58 +1699,62 @@ const adminCreateUser = asyncHandler(async (req, res) => {
     res.status(400);
     throw new Error(message);
   } else {
-    const avatar = generateGravatar(email);
-
-    const user = await User.create({
+    const newUser = new User({
       userId,
       email,
       phone,
       password,
-      avatar,
-      walletAddress: [walletAddress],
-      walletAddress1: walletAddress,
+      walletAddress,
       idCode,
-      imgBack,
-      imgFront,
-      tier,
-      tierDate: new Date(),
+      tier: 2,
       createBy: "ADMIN",
-      countChild: Array.from({ length: tier }, () => 0),
       currentLayer: Array.from({ length: tier }, () => 0),
       status: "APPROVED",
       isConfirmed: true,
-      buyPackage: "A",
-      tier2Time: tier === 2 ? new Date() : null,
-      tier3Time: tier === 3 ? new Date() : null,
-      tier4Time: tier === 4 ? new Date() : null,
-      tier5Time: tier === 5 ? new Date() : null,
       role: "user",
+      countPay: 13,
     });
 
-    await checkUnPayUserOnTierUser(tier);
-    const newParentId = await findNextUser(tier);
-    const newParent = await Tree.findOne({
-      userId: newParentId,
-      tier,
-    });
-    let childs = [...newParent.children];
-    newParent.children = [...childs, user._id];
-    await newParent.save();
+    if (req.files && req.files.imgFront && req.files.imgFront[0]) {
+      newUser.imgFront = req.files.imgFront[0].filename;
+    }
 
-    await NextUserTier.deleteMany({ tier });
+    if (req.files && req.files.imgBack && req.files?.imgBack[0]) {
+      newUser.imgBack = req.files.imgBack[0].filename;
+    }
 
-    const highestIndexOfLevel = await findHighestIndexOfLevel(tier);
-    await Tree.create({
-      userName: user.userId,
-      userId: user._id,
-      parentId: newParentId,
-      refId: newParentId,
-      tier,
+    await newUser.save();
+
+    const parentTreeTier1 = await Tree.findById(parentTier1);
+    const parentTreeTier2 = await Tree.findById(parentTier2);
+
+    const treeOfUserTier1 = await Tree.create({
+      userName: newUser.userId,
+      userId: newUser._id,
+      parentId: parentTier1,
+      refId: "64cd449ec75ae7bc7ebbab03",
+      tier: 1,
       children: [],
-      indexOnLevel: highestIndexOfLevel,
+      indexOnLevel: 0,
     });
 
-    // await sendMail(user._id, email, "email verification");
+    const treeOfUserTier2 = await Tree.create({
+      userName: newUser.userId,
+      userId: newUser._id,
+      parentId: parentTier2,
+      refId: parentTier2,
+      tier: 2,
+      children: [],
+      indexOnLevel: 0,
+    });
+
+    let childs1 = [...parentTreeTier1.children];
+    parentTreeTier1.children = [...childs1, treeOfUserTier1._id];
+    await parentTreeTier1.save();
+
+    let childs2 = [...parentTreeTier2.children];
+    parentTreeTier2.children = [...childs2, treeOfUserTier2._id];
+    await parentTreeTier2.save();
 
     let message = "createUserSuccessful";
 
@@ -1866,19 +1996,13 @@ const removeLastUserInTier = asyncHandler(async (req, res) => {
 });
 
 const createAdmin = asyncHandler(async (req, res) => {
-  const { userId, walletAddress, email, password, phone, role } = req.body;
+  const { userId, email, password, role } = req.body;
 
   const userExistsUserId = await User.findOne({
     userId: { $regex: userId, $options: "i" },
   });
   const userExistsEmail = await User.findOne({
     email: { $regex: email, $options: "i" },
-  });
-  const userExistsPhone = await User.findOne({
-    $and: [{ phone: { $ne: "" } }, { phone }],
-  });
-  const userExistsWalletAddress = await User.findOne({
-    walletAddress1: walletAddress,
   });
 
   if (userExistsUserId) {
@@ -1889,33 +2013,20 @@ const createAdmin = asyncHandler(async (req, res) => {
     let message = "duplicateInfoEmail";
     res.status(400);
     throw new Error(message);
-  } else if (userExistsPhone) {
-    let message = "Dupplicate phone";
-    res.status(400);
-    throw new Error(message);
-  } else if (userExistsWalletAddress) {
-    let message = "Dupplicate wallet address";
-    res.status(400);
-    throw new Error(message);
   } else {
-    const avatar = generateGravatar(email);
-
     await User.create({
       userId,
       email,
-      phone,
       password,
-      avatar,
-      walletAddress: [walletAddress],
-      walletAddress1: walletAddress,
       imgBack: "",
       imgFront: "",
       tier: 5,
-      countPay: 100,
+      countPay: 13,
       createBy: "ADMIN",
       status: "APPROVED",
       isConfirmed: true,
       role,
+      isAdmin: true,
     });
 
     let message = "createUserSuccessful";
@@ -1927,70 +2038,19 @@ const createAdmin = asyncHandler(async (req, res) => {
 });
 
 const getListAdmin = asyncHandler(async (req, res) => {
-  const { pageNumber, keyword } = req.query;
-  const page = Number(pageNumber) || 1;
-
-  const pageSize = 20;
-
-  const count = await User.countDocuments({
-    $and: [
-      {
-        $or: [
-          { userId: { $regex: keyword, $options: "i" } }, // Tìm theo userId
-          { email: { $regex: keyword, $options: "i" } }, // Tìm theo email
-        ],
-      },
-      {
-        role: { $ne: "user" },
-      },
-    ],
-  });
-  const allUsers = await User.find({
-    $and: [
-      {
-        $or: [
-          { userId: { $regex: keyword, $options: "i" } }, // Tìm theo userId
-          { email: { $regex: keyword, $options: "i" } }, // Tìm theo email
-        ],
-      },
-      {
-        role: { $ne: "user" },
-      },
-    ],
-  })
-    .limit(pageSize)
-    .skip(pageSize * (page - 1))
+  const allUsers = await User.find({ role: { $ne: "user" } })
     .sort("-createdAt")
     .select("-password");
 
   res.json({
     admins: allUsers,
-    pages: Math.ceil(count / pageSize),
   });
 });
 
 const updateAdmin = asyncHandler(async (req, res) => {
   console.log({ data: req.body });
-  const { walletAddress, email, phone, role, password } = req.body;
+  const { email, role, password } = req.body;
   const user = await User.findOne({ _id: req.params.id }).select("-password");
-
-  if (phone) {
-    const userHavePhone = await User.find({
-      $and: [{ phone }],
-    });
-    if (userHavePhone.length >= 1) {
-      res.status(400).json({ error: "duplicateInfo" });
-    }
-  }
-
-  if (walletAddress) {
-    const userHaveWalletAddress = await User.find({
-      $and: [{ walletAddress: { $in: [walletAddress] } }],
-    });
-    if (userHaveWalletAddress.length > 1) {
-      res.status(400).json({ error: "duplicateInfo" });
-    }
-  }
 
   if (email) {
     const userHaveEmail = await User.find({
@@ -2002,10 +2062,8 @@ const updateAdmin = asyncHandler(async (req, res) => {
   }
 
   if (user) {
-    if (phone) user.phone = phone;
     if (email) user.email = email;
     if (role) user.role = role;
-    if (walletAddress) user.walletAddress = [walletAddress, ...user.walletAddress];
     if (password) user.password = password;
     await user.save();
 
@@ -2033,14 +2091,12 @@ const getAdminById = asyncHandler(async (req, res) => {
   const admin = await User.findById(id);
 
   if (admin) {
-    const { userId, phone, email, _id, walletAddress, role } = admin;
+    const { userId, email, _id, role } = admin;
     res.json({
       admin: {
         userId,
-        phone,
         email,
         _id,
-        walletAddress: walletAddress[0],
         role,
       },
     });
@@ -2049,15 +2105,34 @@ const getAdminById = asyncHandler(async (req, res) => {
   }
 });
 
-const getDreamPool = asyncHandler(async (req, res) => {
-  const count = await Transaction.countDocuments({
-    type: "PIG",
-    status: "SUCCESS",
-  });
+const adminChangeWalletUser = asyncHandler(async (req, res) => {
+  const { userId } = req.body;
+  const user = await User.findOne({ _id: userId }).select("walletAddress walletAddressChange");
+  if (user) {
+    user.walletAddress = user.walletAddressChange;
+    user.walletAddressChange = "";
+    const updatedUser = await user.save();
+    if (updatedUser) {
+      res.status(200).json({
+        message: `Update successful`,
+      });
+    }
+  } else {
+    res.status(400).json({ error: "User not found" });
+  }
+});
 
-  res.json({
-    dreampool: count * 5 - process.env.PIG,
-  });
+const getListUserForCreateAdmin = asyncHandler(async (req, res) => {
+  let resultTier1 = [];
+  let resultTier2 = [];
+
+  const treeOfUser1 = await Tree.findOne({ userId: "6494e9101e2f152a593b66f2", tier: 1 });
+  const treeOfUser2 = await Tree.findOne({ userId: "6494e9101e2f152a593b66f2", tier: 2 });
+
+  resultTier1 = await getAllDescendants(treeOfUser1._id, 1);
+  resultTier2 = await getAllDescendants(treeOfUser2._id, 2);
+
+  res.json({ resultTier1, resultTier2 });
 });
 
 export {
@@ -2095,5 +2170,8 @@ export {
   deleteAdmin,
   getAdminById,
   getUserInfo,
-  getDreamPool,
+  adminChangeWalletUser,
+  getListChildNotEnoughBranchOfUser,
+  getListUserForCreateAdmin,
+  getCountIncome,
 };

@@ -1,21 +1,14 @@
 import asyncHandler from "express-async-handler";
 import User from "../models/userModel.js";
 import Transaction from "../models/transactionModel.js";
-import { getParentWithCountPay, getLevelOfRefUser } from "../utils/getParentWithCountPay.js";
+import { getParentWithCountPay } from "../utils/getParentWithCountPay.js";
 import Refund from "../models/refundModel.js";
-import { getActiveLink } from "../utils/getLinksActive.js";
 import {
   sendActiveLink,
   sendMailReceiveCommission,
   sendMailRefDc,
 } from "../utils/sendMailCustom.js";
-import {
-  checkRatioCountChildOfUser,
-  getParentUser,
-  getRefParentUser,
-  checkSerepayWallet,
-} from "../utils/methods.js";
-import { checkCanIncreaseNextTier } from "./userControllers.js";
+import { getRefParentUser, findNextUser, findHighestIndexOfLevel } from "../utils/methods.js";
 import Wallet from "../models/walletModel.js";
 import Tree from "../models/treeModel.js";
 import { getPriceHewe } from "../utils/getPriceHewe.js";
@@ -24,18 +17,14 @@ const getPaymentInfo = asyncHandler(async (req, res) => {
   const { user } = req;
 
   if (user) {
-    let walletUser = user.walletAddress;
     if (user.countPay === 13) {
-      // const canIncreaseTier = await checkCanIncreaseNextTier(user);
-      // if (!canIncreaseTier) {
-      //   res.status(404);
-      //   throw new Error("You are not eligible for next step payment");
-      // }
-      res.status(200).json({
-        message: "Payment completed!",
-      });
+      if (user.currentLayer.slice(-1) < 6) {
+        res.status(200).json({
+          status: "PENDING",
+          message: "Your current level is insufficient to upgrade to the next tier",
+        });
+      }
     } else {
-      // delete pending trans
       await Transaction.deleteMany({
         $and: [
           {
@@ -45,12 +34,7 @@ const getPaymentInfo = asyncHandler(async (req, res) => {
         ],
       });
 
-      const wallets = await Wallet.find();
       const admin = await User.findOne({ email: "admin2@gmail.com" });
-      const adminWallet = wallets.find((ele) => ele.type === "ADMIN");
-      // const pigWallet = wallets.find((ele) => ele.type === "PIG");
-      // const companyWallet = wallets.find((ele) => ele.type === "COMPANY");
-      // const holdWallet = await getAdminWallets();
       const payments = [];
       const paymentIds = [];
       if (user.fine > 0) {
@@ -79,11 +63,11 @@ const getPaymentInfo = asyncHandler(async (req, res) => {
       } else {
         const refUser = await getRefParentUser(user.id, user.tier);
         let haveRefNotPayEnough = false;
-        let registerFee = 5 * user.tier;
-        let pigFee = 5 * user.tier;
-        let companyFee = 25 * user.tier;
-        let directCommissionFee = 15 * user.tier;
-        let referralCommissionFee = 5 * user.tier;
+        let registerFee = 5;
+        let pigFee = 5;
+        let companyFee = 25;
+        let directCommissionFee = 15;
+        let referralCommissionFee = 5;
         // giao dich dang ky
         payments.push({
           userName: "Registration Fee",
@@ -173,8 +157,8 @@ const getPaymentInfo = asyncHandler(async (req, res) => {
           userId: user.id,
           amount: directCommissionFee,
           userCountPay: user.countPay,
-          userId_to: refUser._id,
-          username_to: refUser.userId,
+          userId_to: refUser.userId,
+          username_to: refUser.userName,
           tier: user.tier,
           buyPackage: user.buyPackage,
           hash: "",
@@ -186,7 +170,7 @@ const getPaymentInfo = asyncHandler(async (req, res) => {
           type: "DIRECT",
           id: transactionDirect._id,
           amount: directCommissionFee,
-          to: refUser.userId,
+          to: refUser.userName,
         });
         payments.push({
           userName: refUser.userId,
@@ -198,7 +182,9 @@ const getPaymentInfo = asyncHandler(async (req, res) => {
         //   directCommissionWallet,
         //   user.continueWithBuyPackageB
         // );
-        const ancestorsData = await findAncestors(user.id, 10, user.tier);
+
+        const treeOfUser = await Tree.findOne({ userId: user.id, tier: 1 });
+        const ancestorsData = await findAncestors(treeOfUser._id, 10, user.tier);
         let ancestors = ancestorsData.map((data, index) => {
           if (index === 0) {
             data.isFirst = true;
@@ -237,10 +223,18 @@ const getPaymentInfo = asyncHandler(async (req, res) => {
             ) {
               haveParentNotPayEnough = true;
             }
-          } else if (user.tier >= 2 && user.countPay >= 3 && receiveUser.countChild[0] >= 300) {
-            const checkRatioCountChild = await checkRatioCountChildOfUser(receiveUser._id);
-            if (!checkRatioCountChild) haveParentNotPayEnough = true;
+          } else {
+            const listRefOfReceiver = await Tree.find({
+              refId: p._id,
+            });
+            if (p.children.length === 2 && listRefOfReceiver.length < 2) {
+              haveParentNotPayEnough = true;
+            }
           }
+          //  else if (user.tier >= 2 && user.countPay >= 3 && receiveUser.countChild[0] >= 300) {
+          //   const checkRatioCountChild = await checkRatioCountChildOfUser(receiveUser._id);
+          //   if (!checkRatioCountChild) haveParentNotPayEnough = true;
+          // }
           payments.push({
             userName: receiveUser.userId,
             amount: referralCommissionFee,
@@ -268,6 +262,7 @@ const getPaymentInfo = asyncHandler(async (req, res) => {
         }
       }
       res.json({
+        status: "PAY",
         payments,
         paymentIds,
       });
@@ -275,6 +270,305 @@ const getPaymentInfo = asyncHandler(async (req, res) => {
   } else {
     res.status(404);
     throw new Error("User does not exist");
+  }
+});
+
+const getPaymentNextTierInfo = asyncHandler(async (req, res) => {
+  const { user } = req;
+  const { childId } = req.query;
+
+  if (user.paymentStep > 0 && childId === "") {
+    res.json({
+      status: "OK",
+      message: `You're all set for the Tier ${user.tier + 1}. Let's move up!`,
+      payments: [],
+      paymentIds: [],
+      userStepPayment: user.paymentStep,
+    });
+  } else if (user.currentLayer.slice(-1) < 6) {
+    res.status(200).json({
+      status: "PENDING",
+      message: `Your current level is insufficient to upgrade to the tier ${user.tier + 1}`,
+    });
+  } else {
+    await Transaction.deleteMany({
+      $and: [
+        {
+          status: "PENDING",
+        },
+        { userId: user.id },
+      ],
+    });
+
+    const admin = await User.findOne({ email: "admin2@gmail.com" });
+    const payments = [];
+    const paymentIds = [];
+    if (user.fine > 0) {
+      const transactionFine = await Transaction.create({
+        userId: user.id,
+        amount: user.fine,
+        userCountPay: user.countPay,
+        userId_to: admin._id,
+        username_to: "Fine Fee",
+        tier: user.tier + 1,
+        buyPackage: user.buyPackage,
+        hash: "",
+        type: "FINE",
+        status: "PENDING",
+      });
+      payments.push({
+        userName: "Fine Fee",
+        amount: user.fine,
+      });
+      paymentIds.push({
+        type: "FINE",
+        id: transactionFine._id,
+        amount: user.fine,
+        to: "Admin",
+      });
+    } else {
+      let haveRefNotPayEnough = false;
+      let registerFee = parseInt(
+        process.env[`REGISTER_AMOUNT_TIER${user.tier + 1 - user.paymentStep}`]
+      );
+      let pigFee = parseInt(
+        process.env[`DREAMPOOL_AMOUNT_TIER${user.tier + 1 - user.paymentStep}`]
+      );
+      let companyFee = parseInt(process.env[`HEWE_AMOUNT_TIER${user.tier + 1 - user.paymentStep}`]);
+      let directCommissionFee = parseInt(
+        process.env[`DIRECT_AMOUNT_TIER${user.tier + 1 - user.paymentStep}`]
+      );
+      let referralCommissionFee = parseInt(
+        process.env[`CONTRIBUTE_AMOUNT_TIER${user.tier + 1 - user.paymentStep}`]
+      );
+      // giao dich dang ky
+      payments.push({
+        userName: "Registration Fee",
+        amount: registerFee,
+      });
+      const transactionRegister = await Transaction.create({
+        userId: user.id,
+        amount: registerFee,
+        userCountPay: user.countPay,
+        userId_to: admin._id,
+        username_to: "Registration Fee",
+        tier: user.tier + 1 - user.paymentStep,
+        buyPackage: user.buyPackage,
+        hash: "",
+        type: "REGISTER",
+        status: "PENDING",
+      });
+      paymentIds.push({
+        type: "REGISTER",
+        id: transactionRegister._id,
+        amount: registerFee,
+        to: "Registration Fee",
+      });
+      // giao dich con heo
+      payments.push({
+        userName: "DreamPool",
+        amount: pigFee,
+      });
+      const transactionPig = await Transaction.create({
+        userId: user.id,
+        amount: pigFee,
+        userCountPay: user.countPay,
+        userId_to: admin._id,
+        username_to: "DreamPool",
+        tier: user.tier + 1 - user.paymentStep,
+        buyPackage: user.buyPackage,
+        hash: "",
+        type: "PIG",
+        status: "PENDING",
+      });
+      paymentIds.push({
+        type: "PIG",
+        id: transactionPig._id,
+        amount: pigFee,
+        to: "DreamPool",
+      });
+      // giao dich hewe cho cong ty
+      if (companyFee > 0) {
+        payments.push({
+          userName: "Purchased HEWE",
+          amount: companyFee,
+        });
+        const transactionCompany = await Transaction.create({
+          userId: user.id,
+          amount: companyFee,
+          userCountPay: user.countPay,
+          userId_to: admin._id,
+          username_to: "Purchased HEWE",
+          tier: user.tier + 1 - user.paymentStep,
+          buyPackage: user.buyPackage,
+          hash: "",
+          type: "COMPANY",
+          status: "PENDING",
+        });
+        paymentIds.push({
+          type: "COMPANY",
+          id: transactionCompany._id,
+          amount: companyFee,
+          to: "Purchased HEWE",
+        });
+      }
+
+      let refUser;
+      let directCommissionUser;
+      let treeOfRefUser;
+      const nextTierUserId = await findNextUser(user.tier + 1);
+      if (user.paymentStep === 0) {
+        refUser = await User.findById(nextTierUserId);
+        treeOfRefUser = await Tree.findOne({ userId: nextTierUserId, tier: user.tier + 1 });
+        directCommissionUser = refUser;
+      } else if (user.paymentStep === 1 && user.tier === 1) {
+        const treeUserTier1 = await Tree.findOne({ userId: user._id, tier: 1 });
+        console.log({ treeUserTier1 });
+        const treeOfUserRefTier1 = await Tree.findById(treeUserTier1.refId);
+        directCommissionUser = await User.findById(treeOfUserRefTier1.userId);
+
+        treeOfRefUser = await Tree.findById(childId);
+        refUser = await User.findById(treeOfRefUser.userId);
+      } else {
+        treeOfRefUser = await Tree.findById(childId);
+        refUser = await User.findById(treeOfRefUser.userId);
+        directCommissionUser = refUser;
+      }
+
+      // console.log({
+      //   refUser: treeOfRefUser.userName,
+      //   directCommissionUser: directCommissionUser.userId,
+      // });
+
+      // giao dich hoa hong truc tiep
+      if (refUser.closeLah) {
+        haveRefNotPayEnough = true;
+      } else if (refUser.openLah || refUser.adminChangeTier || refUser.createBy === "ADMIN") {
+        haveRefNotPayEnough = false;
+      } else {
+        if (
+          refUser.status === "LOCKED" ||
+          refUser.tier < user.tier ||
+          (refUser.tier === user.tier && refUser.countPay < 13)
+        ) {
+          haveRefNotPayEnough = true;
+        } else {
+          haveRefNotPayEnough = false;
+        }
+      }
+      const transactionDirect = await Transaction.create({
+        userId: user.id,
+        amount: directCommissionFee,
+        userCountPay: user.countPay,
+        userId_to: directCommissionUser._id,
+        username_to: directCommissionUser.userId,
+        tier: user.tier + 1 - user.paymentStep,
+        buyPackage: user.buyPackage,
+        hash: "",
+        type: haveRefNotPayEnough ? "DIRECTHOLD" : "DIRECT",
+        status: "PENDING",
+        refBuyPackage: refUser.buyPackage,
+      });
+      paymentIds.push({
+        type: "DIRECT",
+        id: transactionDirect._id,
+        amount: directCommissionFee,
+        to: directCommissionUser.userId,
+      });
+      payments.push({
+        userName: directCommissionUser.userId,
+        amount: directCommissionFee,
+      });
+      // await generatePackageTrans(
+      //   user,
+      //   refUser,
+      //   directCommissionWallet,
+      //   user.continueWithBuyPackageB
+      // );
+
+      const ancestorsData = await findAncestors(
+        treeOfRefUser._id,
+        // user.paymentStep === 1 && user.tier === 1 ? 9 : 10,
+        9,
+        user.tier + 1 - user.paymentStep
+      );
+
+      // if (user.paymentStep === 1 && user.tier === 1) {
+      ancestorsData.unshift(treeOfRefUser);
+      // }
+      let ancestors = ancestorsData.map((data, index) => {
+        if (index === 0) {
+          data.isFirst = true;
+        }
+        return data;
+      });
+
+      let countPayUser = 0;
+      let indexFor = 1;
+      for (let p of ancestors) {
+        let haveParentNotPayEnough;
+        const receiveUser = await User.findById(p ? p.userId : admin._id);
+        if (receiveUser.closeLah) {
+          haveParentNotPayEnough = true;
+        } else if (
+          receiveUser.openLah ||
+          receiveUser.adminChangeTier ||
+          receiveUser.createBy === "ADMIN"
+        ) {
+          haveParentNotPayEnough = false;
+        } else {
+          if (
+            receiveUser.status === "LOCKED" ||
+            (receiveUser.errLahCode !== "" && indexFor > 6) ||
+            receiveUser.tier < user.tier ||
+            (receiveUser.tier === user.tier && receiveUser.countPay < user.countPay + 1)
+          ) {
+            haveParentNotPayEnough = true;
+          } else {
+            haveParentNotPayEnough = false;
+          }
+        }
+        if (receiveUser.hold !== "no" && receiveUser.holdLevel !== "no") {
+          if (
+            receiveUser.hold.toString() === user.tier.toString() &&
+            parseInt(receiveUser.holdLevel) <= parseInt(user.countPay)
+          ) {
+            haveParentNotPayEnough = true;
+          }
+        }
+        payments.push({
+          userName: p.userName,
+          amount: referralCommissionFee,
+        });
+        const transactionReferral = await Transaction.create({
+          userId: user.id,
+          amount: referralCommissionFee,
+          userCountPay: countPayUser,
+          userId_to: receiveUser._id,
+          username_to: p.userName,
+          tier: user.tier + 1 - user.paymentStep,
+          buyPackage: user.buyPackage,
+          hash: "",
+          type: haveParentNotPayEnough ? "REFERRALHOLD" : "REFERRAL",
+          status: "PENDING",
+        });
+        paymentIds.push({
+          type: "REFERRAL",
+          id: transactionReferral._id,
+          amount: referralCommissionFee,
+          to: p.userName,
+        });
+        countPayUser = countPayUser + 1;
+        indexFor++;
+      }
+    }
+    res.json({
+      status: "OK",
+      message: `You're all set for the Tier ${user.tier + 1}. Let's move up!`,
+      payments,
+      paymentIds,
+      userStepPayment: user.paymentStep,
+    });
   }
 });
 
@@ -296,43 +590,30 @@ const getAdminWallets = async () => {
   };
 };
 
-const findAncestors = async (userId, limit, tier) => {
-  let ancestors = [];
-  let currentUserId = userId;
-  let currentParent;
-
-  const tree = await Tree.findOne({ userId, tier });
-  const refTree = await Tree.findOne({ userId: tree.refId, tier });
-  if (!refTree) {
-    throw new Error("Ref user does not exist");
-  }
-  ancestors.push(refTree);
+const findAncestors = async (treeId, limit) => {
+  const ancestors = [];
+  let currentTreeId = treeId;
 
   while (ancestors.length < limit) {
-    const treeOfUser = await Tree.findOne({ userId: currentUserId, tier });
-    if (!treeOfUser) throw new Error("User does not exist");
+    const treeOfUser = await Tree.findById(currentTreeId);
 
-    const parentId = treeOfUser.parentId;
+    if (!treeOfUser) break;
 
-    if (!parentId) {
-      ancestors.push(currentParent);
-      continue;
+    let parentTree = null;
+
+    if (treeOfUser.parentId) {
+      parentTree = await Tree.findById(treeOfUser.parentId);
     }
 
-    if (parentId && parentId === tree.refId) {
-      currentUserId = parentId;
-      continue;
+    if (parentTree) {
+      ancestors.push(parentTree);
+      currentTreeId = parentTree._id;
+    } else {
+      while (ancestors.length < limit) {
+        ancestors.push(treeOfUser);
+      }
+      break;
     }
-
-    const parent = await Tree.findOne({ userId: parentId, tier });
-    if (!parent) {
-      ancestors.push(currentParent);
-      continue;
-    }
-
-    currentParent = parent;
-    ancestors.push(currentParent);
-    currentUserId = parentId;
   }
 
   return ancestors;
@@ -377,19 +658,25 @@ const onDonePayment = asyncHandler(async (req, res) => {
         );
 
         if (!trans.type.includes("HOLD")) {
-          let userReceive = await User.findOne({ _id: trans.userId_to });
+          let userReceive = await User.findById(trans.userId_to);
           userReceive.availableUsdt = userReceive.availableUsdt + trans.amount;
           await userReceive.save();
         }
 
-        if (trans.type === "DIRECT" || trans.type === "REFERRAL") {
-          let userReceive = await User.findOne({ _id: trans.userId_to });
-          if (trans.type === "REFERRAL") {
-            await sendMailRefDc({ senderName: user.userId, email: userReceive.email });
-          } else {
-            await sendMailReceiveCommission({ senderName: user.userId, email: userReceive.email });
-          }
-        }
+        // if (trans.type === "DIRECT" || trans.type === "REFERRAL") {
+        //   let userReceive = await User.findById(trans.userId_to);
+        //   if (trans.type === "REFERRAL") {
+        //     await sendMailRefDc({
+        //       senderName: user.userId,
+        //       email: userReceive.email,
+        //     });
+        //   } else {
+        //     await sendMailReceiveCommission({
+        //       senderName: user.userId,
+        //       email: userReceive.email,
+        //     });
+        //   }
+        // }
       }
 
       if (user.countPay === 0 && user.tier === 1) {
@@ -420,6 +707,100 @@ const onDonePayment = asyncHandler(async (req, res) => {
   }
 });
 
+const onDoneNextTierPayment = asyncHandler(async (req, res) => {
+  const { user } = req;
+  const { transIds, transactionHash, childId } = req.body;
+  const transIdsList = Object.values(transIds);
+
+  if (transIdsList.length > 0) {
+    if (transIdsList.length === 1 && transIdsList[0].type === "FINE") {
+      user.fine = 0;
+    } else {
+      for (let transId of transIdsList) {
+        const trans = await Transaction.findOneAndUpdate(
+          { _id: transId.id, userId: user.id },
+          { status: "SUCCESS", hash: transactionHash }
+        );
+
+        if (!trans.type.includes("HOLD")) {
+          let userReceive = await User.findOne({ _id: trans.userId_to });
+          userReceive.availableUsdt = userReceive.availableUsdt + trans.amount;
+          await userReceive.save();
+        }
+      }
+
+      let message = "";
+      if (user.paymentStep < user.tier) {
+        user.paymentStep = user.paymentStep + 1;
+        message = "Please pay next step";
+      } else {
+        let responseHewe = await getPriceHewe();
+        const hewePrice = responseHewe.data.ticker.latest;
+        const totalHewe = Math.round(
+          (parseInt(process.env[`HEWE_AMOUNT_TIER${user.tier + 1}`]) + 25) / hewePrice
+        );
+
+        user.availableHewe = user.totalHewe + user.availableHewe + totalHewe;
+        user.totalHewe = 0;
+        user.countPay = 13;
+        user.currentLayer = [...user.currentLayer, 0];
+        user[`tier${user.tier + 1}Time`] = new Date();
+        user.adminChangeTier = true;
+
+        const newChildParent = await Tree.findById(childId);
+        let childsOfChild = [...newChildParent.children];
+
+        const newTreeTier1 = await Tree.create({
+          userName: user.userId + "1-1",
+          userId: user._id,
+          parentId: childId,
+          refId: childId,
+          tier: user.tier,
+          buyPackage: "A",
+          children: [],
+          isSubId: true,
+        });
+
+        newChildParent.children = [...childsOfChild, newTreeTier1._id];
+        await newChildParent.save();
+
+        const newParentId = await findNextUser(user.tier + 1);
+        const newParent = await Tree.findOne({
+          userId: newParentId,
+          tier: user.tier + 1,
+        });
+
+        const highestIndexOfLevel = await findHighestIndexOfLevel(user.tier + 1);
+        const treeOfUserTier2 = await Tree.create({
+          userName: user.userId,
+          userId: user._id,
+          parentId: newParent._id,
+          refId: newParent._id,
+          tier: user.tier + 1,
+          children: [],
+          indexOnLevel: highestIndexOfLevel + 1,
+        });
+
+        let childs = [...newParent.children];
+        newParent.children = [...childs, treeOfUserTier2._id];
+        await newParent.save();
+
+        user.tier = user.tier + 1;
+        user.paymentStep = 0;
+        message = "Payment successful";
+      }
+
+      const updatedUser = await user.save();
+
+      if (updatedUser) {
+        res.json({ message });
+      }
+    }
+  } else {
+    throw new Error("No transaction found");
+  }
+});
+
 const getAllPayments = asyncHandler(async (req, res) => {
   let { pageNumber, keyword, status, tier } = req.query;
   const page = Number(pageNumber) || 1;
@@ -437,8 +818,6 @@ const getAllPayments = asyncHandler(async (req, res) => {
   if (status === "HOLD") {
     searchType = { type: { $regex: status, $options: "i" } };
   }
-
-  console.log({ searchType });
 
   const pageSize = 10;
 
@@ -605,6 +984,7 @@ const getPaymentDetail = asyncHandler(async (req, res) => {
       });
     } else if (trans.type === "DIRECTHOLD" || trans.type === "REFERRALHOLD") {
       const userRef = await User.findById(trans.userId_to);
+      const refundTrans = await Refund.findOne({ transId: trans._id });
       res.json({
         _id: trans._id,
         address_from: user.walletAddress,
@@ -620,6 +1000,7 @@ const getPaymentDetail = asyncHandler(async (req, res) => {
         userCountPay: trans.userCountPay,
         createdAt: trans.createdAt,
         isHoldRefund: trans.isHoldRefund,
+        isPaid: refundTrans ? true : false,
       });
     }
   } else {
@@ -636,17 +1017,17 @@ const checkCanRefundPayment = asyncHandler(async (req, res) => {
     const userReceive = await User.findById(userId_to);
     // const isSerepayWallet = await checkSerepayWallet(userReceive.walletAddress);
     if (userReceive) {
+      const treeOfReceiveUser = await Tree.findOne({ userId: userId_to, tier: 1 });
+      const listRefOfReceiver = await Tree.find({
+        refId: treeOfReceiveUser._id,
+      });
       if (userReceive.status === "LOCKED") {
         res.status(404);
         throw new Error(`User parent locked`);
       } else if (userReceive.closeLah) {
         res.status(404);
         throw new Error(`User is being blocked from trading`);
-      }
-      //  else if (!isSerepayWallet) {
-      //   throw new Error(`The wallet received is not a Serepay wallet`);
-      // }
-      else if (userReceive.countPay - 1 < userCountPay) {
+      } else if (userReceive.countPay - 1 < userCountPay) {
         res.status(404);
         throw new Error(
           userReceive.countPay === 0
@@ -656,71 +1037,9 @@ const checkCanRefundPayment = asyncHandler(async (req, res) => {
               } time but user pay = ${userCountPay} time`
         );
       } else if (trans.type === "REFERRALHOLD" && userReceive.errLahCode === "OVER30") {
-        throw new Error(`User has not had 3 child within 30 days`);
-      } else if (trans.type === "REFERRALHOLD" && userReceive.errLahCode === "OVER60") {
-        throw new Error(`User has not had 3 child within 60 days`);
-      } else if (
-        userReceive.buyPackage === "A" &&
-        userReceive.tier === 1 &&
-        userReceive.countPay < 13
-      ) {
-        throw new Error(
-          `User is ${trans.buyPackage} package but pay ${
-            userReceive.countPay === 0 ? 0 : userReceive.countPay - 1
-          } times`
-        );
-      } else if (
-        userReceive.buyPackage === "B" &&
-        userReceive.tier === 1 &&
-        userReceive.countPay < 7
-      ) {
-        throw new Error(
-          `User is ${trans.buyPackage} package but pay ${
-            userReceive.countPay === 0 ? 0 : userReceive.countPay - 1
-          } times`
-        );
-      } else if (
-        trans.type === "DIRECTHOLD" &&
-        trans.buyPackage === "B" &&
-        trans.amount === 35 &&
-        trans.refBuyPackage === "C"
-      ) {
-        res.json({
-          amount: 5,
-          message: `User is ${trans.buyPackage} package Parent is ${trans.refBuyPackage} package (refund 5 USDT)`,
-        });
-      } else if (
-        trans.type === "DIRECTHOLD" &&
-        trans.buyPackage === "A" &&
-        trans.refBuyPackage === "C"
-      ) {
-        res.json({
-          amount: 5,
-          message: `User is ${trans.buyPackage} package Parent is ${trans.refBuyPackage} package (refund 5 USDT)`,
-        });
-      } else if (
-        trans.type === "DIRECTHOLD" &&
-        trans.buyPackage === "A" &&
-        trans.refBuyPackage === "B"
-      ) {
-        res.json({
-          amount: 35,
-          message: `User is ${trans.buyPackage} package Parent is ${trans.refBuyPackage} package (refund 35 USDT)`,
-        });
-      } else if (trans.type === "DIRECTHOLD" && trans.amount === 30) {
-        const receiveParent = await User.findOne({
-          walletAddress: { $in: [trans.address_ref] },
-        });
-
-        if (receiveParent.buyPackage !== "A") {
-          res.json({
-            message: `parent has not paid enough to upgrade to package A`,
-          });
-        } else {
-          res.json({
-            message: "User is OK for a refund",
-          });
-        }
+        throw new Error(`User has not had 2 child within 45 days`);
+      } else if (treeOfReceiveUser.children.length === 2 && listRefOfReceiver.length < 2) {
+        throw new Error(`Payment blocked because there are not enough 2 redirect user`);
       } else {
         res.json({
           message: "User is OK for a refund",
@@ -770,11 +1089,17 @@ const onAdminDoneRefund = asyncHandler(async (req, res) => {
     receiveUser.availableUsdt = receiveUser.availableUsdt + trans.amount;
     await receiveUser.save();
 
-    if (trans.type === "REFERRAL") {
-      await sendMailRefDc({ senderName: user.userId, email: receiveUser.email });
-    } else {
-      await sendMailReceiveCommission({ senderName: user.userId, email: receiveUser.email });
-    }
+    // if (trans.type === "REFERRAL") {
+    //   await sendMailRefDc({
+    //     senderName: user.userId,
+    //     email: receiveUser.email,
+    //   });
+    // } else {
+    //   await sendMailReceiveCommission({
+    //     senderName: user.userId,
+    //     email: receiveUser.email,
+    //   });
+    // }
 
     res.json({
       message: "Refund successful",
@@ -814,10 +1139,8 @@ const getParentWithCount = asyncHandler(async (req, res) => {
 
 const getAllTransForExport = asyncHandler(async (req, res) => {
   let fromDate, toDate;
-  const { limit, page } = req.body;
   let match = {
     status: "SUCCESS",
-    type: { $ne: "PACKAGE" },
   };
 
   if (req.body.fromDate) {
@@ -834,50 +1157,35 @@ const getAllTransForExport = asyncHandler(async (req, res) => {
     };
   }
 
-  const offset = (page - 1) * limit;
-
   const transactions = await Transaction.aggregate([
     { $match: match },
-    {
-      $lookup: {
-        from: "users",
-        localField: "address_from",
-        foreignField: "walletAddress",
-        as: "sender",
-      },
-    },
-    {
-      $lookup: {
-        from: "users",
-        localField: "address_ref",
-        foreignField: "walletAddress",
-        as: "receiver",
-      },
-    },
-    { $skip: offset },
-    { $limit: limit },
     { $sort: { createdAt: -1 } },
   ]);
 
   const totalCount = await Transaction.countDocuments(match);
 
-  const result = transactions.map((tran) => ({
-    _id: tran._id,
-    type: tran.type,
-    amount: tran.amount,
-    isHoldRefund: tran.isHoldRefund,
-    status: tran.status,
-    createdAt: tran.createdAt,
-    address_from: tran.address_from,
-    tier: tran.tier,
-    address_ref: tran.address_ref,
-    senderName: tran.sender.length > 0 ? tran.sender[0].userId : "unknown",
-    senderEmail: tran.sender.length > 0 ? tran.sender[0].email : "unknown",
-    senderStatus:
-      tran.sender.length > 0 ? (tran.sender[0].status === "DELETED" ? "TK đã xoá" : "") : "unknow",
-    receiverName: tran.receiver.length > 0 ? tran.receiver[0].userId : "unknown",
-    receiverEmail: tran.receiver.length > 0 ? tran.receiver[0].email : "unknown",
-  }));
+  const result = [];
+
+  for (let tran of transactions) {
+    const sender = await User.findById(tran.userId);
+    const receiver = await User.findById(tran.userId_to);
+
+    result.push({
+      _id: tran._id,
+      type: tran.type,
+      amount: tran.amount,
+      isHoldRefund: tran.isHoldRefund,
+      status: tran.status,
+      createdAt: tran.createdAt,
+      tier: tran.tier,
+      address_ref: tran.address_ref,
+      senderName: sender ? sender.userId : "unknown",
+      senderEmail: sender ? sender.email : "unknown",
+      senderStatus: sender ? (sender.status === "DELETED" ? "TK đã xoá" : "") : "unknow",
+      receiverName: receiver ? receiver.userId : "unknown",
+      receiverEmail: receiver ? receiver.email : "unknown",
+    });
+  }
 
   res.json({ totalCount, result });
 });
@@ -895,4 +1203,6 @@ export {
   getParentWithCount,
   getAllTransForExport,
   onDonePayment,
+  getPaymentNextTierInfo,
+  onDoneNextTierPayment,
 };

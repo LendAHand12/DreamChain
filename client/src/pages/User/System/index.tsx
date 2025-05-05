@@ -39,7 +39,16 @@ const SystemPage = () => {
   const [currentTier, setCurrentTier] = useState(1);
 
   const StyledNode = useCallback(
-    ({ children, onClick, layer, isRed, isYellow, isGray, totalChild }) => {
+    ({
+      children,
+      onClick,
+      layer,
+      isRed,
+      isYellow,
+      isGray,
+      totalChild,
+      income,
+    }) => {
       return (
         <div
           onClick={onClick}
@@ -58,7 +67,9 @@ const SystemPage = () => {
         >
           <div className="flex flex-col items-center">
             <span>{children}</span>
-            <span>{totalChild}</span>
+            <span>
+              ({totalChild} - {income})
+            </span>
             {/* <svg
               className="w-10 h-auto text-red-500"
               viewBox="0 0 24 24"
@@ -105,6 +116,7 @@ const SystemPage = () => {
             isGray={node.isGray}
             isYellow={node.isYellow}
             totalChild={node.totalChild}
+            income={node.income}
           >
             {node.label}
           </StyledNode>
@@ -197,23 +209,25 @@ const SystemPage = () => {
       <div className="py-24 px-10">
         {userInfo && (
           <div className="flex justify-between items-center mb-10">
-            {/* <div className="flex items-center gap-4">
+            <div className="flex items-center gap-4">
               {[...Array(userInfo.tier)].map((item, i) => (
                 <button
                   key={i}
                   onClick={() => setCurrentTier(i + 1)}
-                  className={`flex justify-center items-center hover:underline text-black font-medium ${
-                    currentTier === i + 1 ? 'bg-black text-dreamchain' : ''
+                  className={`flex justify-center items-center hover:underline font-medium ${
+                    currentTier === i + 1
+                      ? 'bg-black text-NoExcuseChallenge'
+                      : ''
                   } rounded-full my-6 py-4 px-8 border focus:outline-none focus:shadow-outline transform transition hover:scale-105 duration-300 ease-in-out`}
                 >
                   {t('tier')} {i + 1}
                 </button>
               ))}
-            </div> */}
+            </div>
             {!loading && (
               <button
                 onClick={() => setShowType(!showType)}
-                className="flex justify-center items-center gap-2 hover:underline bg-black text-dreamchain font-bold rounded-full mt-2 mb-6 py-2 px-6 focus:outline-none focus:shadow-outline transform transition hover:scale-105 duration-300 ease-in-out"
+                className="flex justify-center items-center gap-2 hover:underline bg-black text-NoExcuseChallenge font-bold rounded-full mt-2 mb-6 py-2 px-6 focus:outline-none focus:shadow-outline transform transition hover:scale-105 duration-300 ease-in-out"
               >
                 <svg
                   fill="currentColor"
@@ -221,7 +235,7 @@ const SystemPage = () => {
                   width="24"
                   height="24"
                   viewBox="0 0 100 100"
-                  enable-background="new 0 0 100 100"
+                  enableBackground="new 0 0 100 100"
                 >
                   <path
                     d="M76.5,58.3c0,0.1,0,0.2-0.1,0.2c-0.3,1.1-0.7,2.2-1.1,3.3c-0.5,1.2-1,2.3-1.6,3.4c-1.2,2.2-2.7,4.2-4.5,6
@@ -265,7 +279,11 @@ const SystemPage = () => {
                   lineColor={'brown'}
                   lineBorderRadius={'10px'}
                   label={
-                    <StyledNode layer={userInfo.currentLayer}>
+                    <StyledNode
+                      layer={userInfo.currentLayer}
+                      income={userInfo.income}
+                      totalChild={userInfo.totalChild}
+                    >
                       {treeData.label}
                     </StyledNode>
                   }

@@ -26,11 +26,6 @@ const Profile = () => {
   let {
     email,
     userId,
-    walletAddress1,
-    walletAddress2,
-    walletAddress3,
-    walletAddress4,
-    walletAddress5,
     createdAt,
     id,
     status,
@@ -41,24 +36,20 @@ const Profile = () => {
     phone,
     idCode,
     buyPackage,
-    packages,
-    tier1Time,
-    tier2Time,
-    tier3Time,
-    tier4Time,
-    tier5Time,
-    isSerepayWallet,
     totalHewe,
     availableHewe,
     availableUsdt,
     walletAddress,
-    heweWallet,
     claimedHewe,
     ranking,
     totalEarning,
+    totalHold,
     withdrawPending,
     chartData,
     targetSales,
+    bonusRef,
+    walletAddressChange,
+    currentLayer,
   } = userInfo;
   const totalChild = adjustSales(chartData, targetSales).reduce(
     (acc, num) => acc + num,
@@ -113,16 +104,22 @@ const Profile = () => {
         setLoading(true);
         var formData = new FormData();
 
-        const { imgFront } = data;
+        const { imgFront = [] } = data;
         const [fileObjectImgFront] = imgFront;
 
-        const { imgBack } = data;
+        const { imgBack = [] } = data;
         const [fileObjectImgBack] = imgBack;
 
         formData.append('idCode', idCode.trim());
         formData.append('walletAddress', walletAddress.trim());
-        formData.append('imgFront', fileObjectImgFront);
-        formData.append('imgBack', fileObjectImgBack);
+
+        if (fileObjectImgFront) {
+          formData.append('imgFront', fileObjectImgFront);
+        }
+
+        if (fileObjectImgBack) {
+          formData.append('imgBack', fileObjectImgBack);
+        }
 
         await User.update(id, formData)
           .then((response) => {
@@ -201,6 +198,17 @@ const Profile = () => {
     setShowModal(false);
   };
 
+  const findNextRank = (level) => {
+    const currentRankIndex = USER_RANKINGS.findIndex(
+      (ele) => level <= ele.value,
+    );
+    return USER_RANKINGS[currentRankIndex + 1]?.label || 'PIONEER';
+  };
+
+  const renderRank = (level) => {
+    return USER_RANKINGS.find((ele) => level <= ele.value).label;
+  };
+
   return (
     <DefaultLayout>
       <ToastContainer />
@@ -263,12 +271,14 @@ const Profile = () => {
               <div className="flex justify-center items-center space-x-4">
                 <button
                   onClick={closeModal}
+                  disabled={loadingClaimUsdt}
                   className="py-2 px-3 text-sm font-medium text-gray-500 bg-white rounded-lg border border-gray-200 hover:bg-gray-100 focus:ring-4 focus:outline-none focus:ring-primary-300 hover:text-gray-900 focus:z-10 dark:bg-gray-700 dark:text-gray-300 dark:border-gray-500 dark:hover:text-white dark:hover:bg-gray-600 dark:focus:ring-gray-600"
                 >
                   No, cancel
                 </button>
                 <button
                   onClick={claimUsdt}
+                  disabled={loadingClaimUsdt}
                   className="flex items-center py-2 px-3 text-sm font-medium text-center text-white bg-red-600 rounded-lg hover:bg-red-700 focus:ring-4 focus:outline-none focus:ring-red-300 dark:bg-red-500 dark:hover:bg-red-600 dark:focus:ring-red-900"
                 >
                   {loadingClaimUsdt && <Loading />}
@@ -280,6 +290,28 @@ const Profile = () => {
         </div>
       </Modal>
       <div className="px-2 lg:px-24 py-24 space-y-6 lg:space-y-8">
+        {bonusRef && (
+          <div
+            className="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mb-5"
+            role="alert"
+          >
+            <span className="block sm:inline">
+              {t('Have received 10 USDT from DreamPool fund')}
+            </span>
+          </div>
+        )}
+
+        {walletAddressChange && (
+          <div
+            className="bg-orange-100 border border-orange-400 text-orange-700 px-4 py-3 rounded relative mb-5"
+            role="alert"
+          >
+            <span className="block sm:inline">
+              {t('Wallet information update is pending admin approval')}
+            </span>
+          </div>
+        )}
+
         {status === 'UNVERIFY' && (
           <div
             className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-5"
@@ -311,7 +343,7 @@ const Profile = () => {
           <div className="w-full flex gap-4 items-center justify-between lg:justify-center">
             <p className="font-medium">Available HEWE</p>
             <input
-              className="bg-black rounded-xl text-dreamchain p-2 flex-1"
+              className="bg-black rounded-xl text-NoExcuseChallenge p-2 flex-1"
               readOnly
               value={availableHewe}
             />
@@ -319,9 +351,15 @@ const Profile = () => {
           <div className="w-full flex gap-4 items-center justify-between lg:justify-center">
             <p className="font-medium">Reward HEWE</p>
             <input
-              className="bg-black rounded-xl text-dreamchain p-2 flex-1"
+              className="bg-black rounded-xl text-NoExcuseChallenge p-2 flex-1"
               readOnly
-              value={totalHewe - claimedHewe - availableHewe}
+              value={
+                tier > 1
+                  ? 0
+                  : totalHewe > 0
+                  ? totalHewe - claimedHewe - availableHewe
+                  : availableHewe
+              }
             />
           </div>
           <button
@@ -339,7 +377,7 @@ const Profile = () => {
           <div className="w-full flex gap-4 items-center justify-between lg:justify-center">
             <p className="font-medium">Available USDT</p>
             <input
-              className="bg-black rounded-xl text-dreamchain p-2 flex-1"
+              className="bg-black rounded-xl text-NoExcuseChallenge p-2 flex-1"
               readOnly
               value={availableUsdt}
             />
@@ -347,7 +385,7 @@ const Profile = () => {
           <div className="w-full flex gap-4 items-center justify-between lg:justify-center">
             <p className="font-medium">Processing USDT</p>
             <input
-              className="bg-black rounded-xl text-dreamchain p-2 flex-1"
+              className="bg-black rounded-xl text-NoExcuseChallenge p-2 flex-1"
               readOnly
               value={withdrawPending}
             />
@@ -362,16 +400,8 @@ const Profile = () => {
             WITHDRAW USDT
           </button>
         </div>
-        <div
-          className={`grid ${
-            ranking >= 1 ? 'lg:grid-cols-2' : ''
-          }  gap-10 font-semibold`}
-        >
-          <div
-            className={`${
-              ranking >= 1 ? 'space-y-4' : 'grid grid-cols-2 gap-2'
-            }`}
-          >
+        <div className={`grid gap-10 font-semibold`}>
+          <div className={`grid grid-cols-2 gap-2`}>
             <div className="bg-[#FAFBFC] p-4 rounded-2xl">
               <div className="flex justify-between items-center py-2 px-4">
                 <p>Status</p>
@@ -399,7 +429,9 @@ const Profile = () => {
               </div>
               <div className="flex justify-between py-2 px-4">
                 <p>Completed ranking time</p>
-                <p>{userInfo[`tier${ranking}Time`]}</p>
+                <p className="whitespace-nowrap">
+                  {userInfo[`tier${ranking}Time`]}
+                </p>
               </div>
             </div>
             <div className="bg-[#FAFBFC] p-4 rounded-2xl">
@@ -409,7 +441,7 @@ const Profile = () => {
                   <div
                     className={`p-2 text-sm bg-green-600 text-white rounded-[50px]`}
                   >
-                    {USER_RANKINGS.find((ele) => ele.value === ranking).label}
+                    {renderRank(currentLayer[0] ? currentLayer[0] : 0)}
                   </div>
                 )}
               </div>
@@ -419,10 +451,7 @@ const Profile = () => {
                   <div
                     className={`p-2 text-sm bg-green-600 text-white rounded-[50px]`}
                   >
-                    {
-                      USER_RANKINGS.find((ele) => ele.value === ranking + 1)
-                        .label
-                    }
+                    {findNextRank(currentLayer[0] ? currentLayer[0] : 0)}
                   </div>
                 )}
               </div>
@@ -434,6 +463,14 @@ const Profile = () => {
                   {totalEarning} USD
                 </div>
               </div>
+              <div className="flex items-center justify-between bg-[#E5E9EE] py-2 px-4 rounded-lg">
+                <p>Total Hold</p>
+                <div
+                  className={`p-2 text-sm bg-green-600 text-white rounded-[50px]`}
+                >
+                  {totalHold} USD
+                </div>
+              </div>
               {/* <div className="flex justify-between py-2 px-4">
               <p>Completed tier 1</p>
               <p>{tier1Time}</p>
@@ -443,9 +480,9 @@ const Profile = () => {
               <div className="py-2 px-4">
                 <p className="uppercase mt-2 font-bold">{t('children')}</p>
                 <div className="py-2">
-                  <ul>
+                  <ul className="flex gap-4">
                     {listDirectUser.map((ele) => (
-                      <li className="" key={ele._id}>
+                      <li className="" key={ele.userId}>
                         <div className="py-2">
                           <div className="text-base">
                             <span
@@ -470,69 +507,6 @@ const Profile = () => {
               </div>
             </div>
           </div>
-          {ranking >= 1 && (
-            <div className="bg-[#FAFBFC] p-4 rounded-2xl flex flex-col items-center">
-              <div className="max-w-sm">
-                <Doughnut
-                  data={data}
-                  plugins={[ChartDataLabels]}
-                  options={{
-                    responsive: true,
-                    plugins: {
-                      legend: {
-                        position: 'bottom' as const,
-                      },
-                      tooltip: {
-                        enabled: false,
-                      },
-                      datalabels: {
-                        color: '#ffffff',
-                        anchor: 'center',
-                        font: { size: 16, weight: 'bold' },
-                        formatter: (value) => {
-                          return value <= 0
-                            ? ''
-                            : Math.round((value / targetSales) * 100) + '%';
-                        },
-                      },
-                    },
-                  }}
-                />
-              </div>
-              <div className="w-full mt-2">
-                <ul className="flex flex-col md:flex-row md:justify-center md:items-center gap-3">
-                  <li>
-                    <span className="bg-[#FFCF65] px-2 py-1 text-sm">
-                      Group 1 :
-                    </span>{' '}
-                    {chartData[0]} members
-                  </li>
-                  <li>
-                    <span className="bg-[#02071B] text-white px-2 py-1 text-sm">
-                      Group 2 :
-                    </span>{' '}
-                    {chartData[1]} members
-                  </li>
-                  <li>
-                    <span className="bg-[#C1C9D3] px-2 py-1 text-sm">
-                      Group 3 :
-                    </span>{' '}
-                    {chartData[2]} members
-                  </li>
-                </ul>
-                <ul className="flex justify-center mt-4 gap-4">
-                  <li>
-                    <span className="font-thin">Total members :</span>{' '}
-                    {totalChild} members
-                  </li>
-                  <li>
-                    <span className="font-thin">Remaining target :</span>{' '}
-                    {targetSales - totalChild} members
-                  </li>
-                </ul>
-              </div>
-            </div>
-          )}
         </div>
         {!isEdit && (
           <div className="flex justify-end">

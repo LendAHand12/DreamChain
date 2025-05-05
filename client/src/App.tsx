@@ -29,6 +29,7 @@ import ServicePage from './pages/Service';
 import SettingWallets from './pages/Admin/SettingWallets';
 import AdminTransactionsPage from './pages/Admin/Transactions';
 import SystemPage from './pages/User/System';
+import IceBreakerPage from './pages/User/IceBreaker';
 import TermsPage from './pages/Terms';
 import GuidePage from './pages/Guide';
 import DreamPoolPage from './pages/User/DreamPool';
@@ -44,11 +45,29 @@ import AdminCreateNewsPage from './pages/Admin/News/Create';
 import AdminEditNewsPage from './pages/Admin/News/Edit';
 import NewsDetailPage from './pages/News/Detail';
 import AdminClaimsPage from './pages/Admin/Claims';
+import AdminExportClaimsPage from './pages/Admin/Export/ExportClaims';
 import ForgotPassword from './pages/ForgotPassword';
 import ResetPassword from './pages/ResetPassword';
+import PermissionsPage from './pages/Admin/Permissions';
+import PermissionsDetailsPage from './pages/Admin/Permissions/Details';
+import PermissionsCreatePage from './pages/Admin/Permissions/Create';
+import AdminPage from './pages/Admin/Admin';
+import AdminDetailPage from './pages/Admin/Admin/Detail';
+import AdminCreatePage from './pages/Admin/Admin/Create';
+import IncomePage from './pages/User/Income';
+import ExportUsersPage from './pages/Admin/Export/ExportUsers';
+import ExportPaymentsPage from './pages/Admin/Export/ExportPayments';
+import CreateUserPage from './pages/Admin/CreateUser';
+import ExportWithdrawPage from './pages/Admin/Export/ExportWithdraw';
+import WithdrawsPage from './pages/User/Withdraws';
+import ExportDreampoolPage from './pages/Admin/Export/ExportDreampool';
+import AdminCronjobPage from './pages/Admin/Cronjob';
+import { useSelector } from 'react-redux';
+import ClaimsPage from './pages/User/Claims';
 
 function App() {
   const { pathname } = useLocation();
+  const { userInfo } = useSelector((state) => state.auth);
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -62,7 +81,7 @@ function App() {
           path="/home"
           element={
             <>
-              <PageTitle title="Homepage | DreamChain" />
+              <PageTitle title="Homepage | NoExcuseChallenge" />
               <HomePage />
             </>
           }
@@ -71,7 +90,7 @@ function App() {
           path="/services"
           element={
             <>
-              <PageTitle title="Services | DreamChain" />
+              <PageTitle title="Services | NoExcuseChallenge" />
               <ServicePage />
             </>
           }
@@ -80,7 +99,7 @@ function App() {
           path="/mechanism"
           element={
             <>
-              <PageTitle title="Mechanism | DreamChain" />
+              <PageTitle title="Mechanism | NoExcuseChallenge" />
               <Mechanism />
             </>
           }
@@ -89,7 +108,7 @@ function App() {
           path="/policy"
           element={
             <>
-              <PageTitle title="Policy | DreamChain" />
+              <PageTitle title="Policy | NoExcuseChallenge" />
               <PolicyPage />
             </>
           }
@@ -98,26 +117,8 @@ function App() {
           path="/contact"
           element={
             <>
-              <PageTitle title="Contact | DreamChain" />
+              <PageTitle title="Contact | NoExcuseChallenge" />
               <ContactPage />
-            </>
-          }
-        />
-        <Route
-          path="/terms"
-          element={
-            <>
-              <PageTitle title="Terms & Conditions | DreamChain" />
-              <TermsPage />
-            </>
-          }
-        />
-        <Route
-          path="/guide"
-          element={
-            <>
-              <PageTitle title="Member’s Guidelines | DreamChain" />
-              <GuidePage />
             </>
           }
         />
@@ -125,7 +126,7 @@ function App() {
           path="/news"
           element={
             <>
-              <PageTitle title="News | DreamChain" />
+              <PageTitle title="News | NoExcuseChallenge" />
               <NewsPage />
             </>
           }
@@ -134,8 +135,26 @@ function App() {
           path="/news/:id"
           element={
             <>
-              <PageTitle title="News | DreamChain" />
+              <PageTitle title="News | NoExcuseChallenge" />
               <NewsDetailPage />
+            </>
+          }
+        />
+        <Route
+          path="/terms"
+          element={
+            <>
+              <PageTitle title="Terms & Conditions | NoExcuseChallenge" />
+              <TermsPage />
+            </>
+          }
+        />
+        <Route
+          path="/guide"
+          element={
+            <>
+              <PageTitle title="Member’s Guidelines | NoExcuseChallenge" />
+              <GuidePage />
             </>
           }
         />
@@ -150,126 +169,363 @@ function App() {
           path="/admin/dashboard"
           element={
             <>
-              <PageTitle title="Dashboard | DreamChain" />
+              <PageTitle title="Dashboard | NoExcuseChallenge" />
               <DashboardPage />
             </>
           }
         />
-        <Route
-          path="/admin/transactions"
-          element={
-            <>
-              <PageTitle title="Transactions | DreamChain" />
-              <AdminTransactionsPage />
-            </>
-          }
-        />
-        <Route
-          path="/admin/users/:id"
-          element={
-            <>
-              <PageTitle title="User Profile | DreamChain" />
-              <AdminUserProfile />
-            </>
-          }
-        />
-        <Route
-          path="/admin/transactions/:id"
-          element={
-            <>
-              <PageTitle title="Transaction Detail | DreamChain" />
-              <AdminTransactionDetail />
-            </>
-          }
-        />
-        <Route
-          path="/admin/wallets"
-          element={
-            <>
-              <PageTitle title="Setting Wallets | DreamChain" />
-              <SettingWallets />
-            </>
-          }
-        />
-        <Route
-          path="/admin/users"
-          element={
-            <>
-              <PageTitle title="Users | DreamChain" />
-              <AdminUserPages />
-            </>
-          }
-        />
-        <Route
-          path="/admin/system/:id"
-          element={
-            <>
-              <PageTitle title="System | DreamChain" />
-              <AdminSystemPage />
-            </>
-          }
-        />
-        <Route
-          path="/admin/linkVerify"
-          element={
-            <>
-              <PageTitle title="Link verify | DreamChain" />
-              <GetVerifyLinkPage />
-            </>
-          }
-        />
-        <Route
-          path="/admin/withdraw"
-          element={
-            <>
-              <PageTitle title="Withdraw request | DreamChain" />
-              <AdminWithdrawPages />
-            </>
-          }
-        />
-        <Route
-          path="/admin/news"
-          element={
-            <>
-              <PageTitle title="News | DreamChain" />
-              <AdminNewsPage />
-            </>
-          }
-        />
-        <Route
-          path="/admin/claims"
-          element={
-            <>
-              <PageTitle title="Claims | DreamChain" />
-              <AdminClaimsPage />
-            </>
-          }
-        />
-        <Route
-          path="/admin/news/create"
-          element={
-            <>
-              <PageTitle title="Create News | DreamChain" />
-              <AdminCreateNewsPage />
-            </>
-          }
-        />
-        <Route
-          path="/admin/news/edit"
-          element={
-            <>
-              <PageTitle title="Edit News | DreamChain" />
-              <AdminEditNewsPage />
-            </>
-          }
-        />
+        {userInfo?.permissions
+          ?.find((p) => p.page.path === '/admin/transactions')
+          ?.actions.includes('read') && (
+          <Route
+            path="/admin/transactions"
+            element={
+              <>
+                <PageTitle title="Transactions | NoExcuseChallenge" />
+                <AdminTransactionsPage />
+              </>
+            }
+          />
+        )}
+
+        {userInfo?.permissions
+          ?.find((p) => p.page.path === '/admin/users/:id')
+          ?.actions.includes('read') && (
+          <Route
+            path="/admin/users/:id"
+            element={
+              <>
+                <PageTitle title="User Profile | NoExcuseChallenge" />
+                <AdminUserProfile />
+              </>
+            }
+          />
+        )}
+
+        {userInfo?.permissions
+          ?.find((p) => p.page.path === '/admin/transactions')
+          ?.actions.includes('export') && (
+          <Route
+            path="/admin/transaction/export"
+            element={
+              <>
+                <PageTitle title="Admin Export Transaction | NoExcuseChallenge" />
+                <ExportPaymentsPage />
+              </>
+            }
+          />
+        )}
+
+        {userInfo?.permissions
+          ?.find((p) => p.page.path === '/admin/transactions/:id')
+          ?.actions.includes('read') && (
+          <Route
+            path="/admin/transactions/:id"
+            element={
+              <>
+                <PageTitle title="Transaction Detail | NoExcuseChallenge" />
+                <AdminTransactionDetail />
+              </>
+            }
+          />
+        )}
+        {userInfo?.permissions
+          ?.find((p) => p.page.path === '/admin/wallets')
+          ?.actions.includes('read') && (
+          <Route
+            path="/admin/wallets"
+            element={
+              <>
+                <PageTitle title="Setting Wallets | NoExcuseChallenge" />
+                <SettingWallets />
+              </>
+            }
+          />
+        )}
+        {userInfo?.permissions
+          ?.find((p) => p.page.path === '/admin/users')
+          ?.actions.includes('read') && (
+          <Route
+            path="/admin/users"
+            element={
+              <>
+                <PageTitle title="Users | NoExcuseChallenge" />
+                <AdminUserPages />
+              </>
+            }
+          />
+        )}
+
+        {userInfo?.permissions
+          ?.find((p) => p.page.path === '/admin/system/:id')
+          ?.actions.includes('read') && (
+          <Route
+            path="/admin/system/:id"
+            element={
+              <>
+                <PageTitle title="System | NoExcuseChallenge" />
+                <AdminSystemPage />
+              </>
+            }
+          />
+        )}
+        {userInfo?.permissions
+          ?.find((p) => p.page.path === '/admin/linkVerify')
+          ?.actions.includes('read') && (
+          <Route
+            path="/admin/linkVerify"
+            element={
+              <>
+                <PageTitle title="Link verify | NoExcuseChallenge" />
+                <GetVerifyLinkPage />
+              </>
+            }
+          />
+        )}
+        {userInfo?.permissions
+          ?.find((p) => p.page.path === '/admin/withdraw')
+          ?.actions.includes('read') && (
+          <Route
+            path="/admin/withdraw"
+            element={
+              <>
+                <PageTitle title="Withdraw request | NoExcuseChallenge" />
+                <AdminWithdrawPages />
+              </>
+            }
+          />
+        )}
+        {userInfo?.permissions
+          ?.find((p) => p.page.path === '/admin/withdraw')
+          ?.actions.includes('export') && (
+          <Route
+            path="/admin/withdraw/export"
+            element={
+              <>
+                <PageTitle title="Admin Export Withdraw | NoExcuseChallenge" />
+                <ExportWithdrawPage />
+              </>
+            }
+          />
+        )}
+        {userInfo?.permissions
+          ?.find((p) => p.page.path === '/admin/news')
+          ?.actions.includes('read') && (
+          <Route
+            path="/admin/news"
+            element={
+              <>
+                <PageTitle title="News | NoExcuseChallenge" />
+                <AdminNewsPage />
+              </>
+            }
+          />
+        )}
+        {userInfo?.permissions
+          ?.find((p) => p.page.path === '/admin/claims')
+          ?.actions.includes('read') && (
+          <Route
+            path="/admin/claims"
+            element={
+              <>
+                <PageTitle title="Claims | NoExcuseChallenge" />
+                <AdminClaimsPage />
+              </>
+            }
+          />
+        )}
+        {userInfo?.permissions
+          ?.find((p) => p.page.path === '/admin/claims')
+          ?.actions.includes('export') && (
+          <Route
+            path="/admin/claims/export"
+            element={
+              <>
+                <PageTitle title="Export Claims | NoExcuseChallenge" />
+                <AdminExportClaimsPage />
+              </>
+            }
+          />
+        )}
+        {userInfo?.permissions
+          ?.find((p) => p.page.path === '/admin/news/create')
+          ?.actions.includes('read') && (
+          <Route
+            path="/admin/news/create"
+            element={
+              <>
+                <PageTitle title="Create News | NoExcuseChallenge" />
+                <AdminCreateNewsPage />
+              </>
+            }
+          />
+        )}
+
+        {userInfo?.permissions
+          ?.find((p) => p.page.path === '/admin/news/edit')
+          ?.actions.includes('read') && (
+          <Route
+            path="/admin/news/edit"
+            element={
+              <>
+                <PageTitle title="Edit News | NoExcuseChallenge" />
+                <AdminEditNewsPage />
+              </>
+            }
+          />
+        )}
+
+        {userInfo?.permissions
+          ?.find((p) => p.page.path === '/admin/dreampool')
+          ?.actions.includes('read') && (
+          <Route
+            path="/admin/dreampool"
+            element={
+              <>
+                <PageTitle title="DreamPool | NoExcuseChallenge" />
+                <DreamPoolPage />
+              </>
+            }
+          />
+        )}
+        {userInfo?.permissions
+          ?.find((p) => p.page.path === '/admin/dreampool')
+          ?.actions.includes('export') && (
+          <Route
+            path="/admin/dreampool/export"
+            element={
+              <>
+                <PageTitle title="Export DreamPool | NoExcuseChallenge" />
+                <ExportDreampoolPage />
+              </>
+            }
+          />
+        )}
+        {userInfo?.permissions
+          ?.find((p) => p.page.path === '/admin/permissions')
+          ?.actions.includes('read') && (
+          <Route
+            path="/admin/permissions"
+            element={
+              <>
+                <PageTitle title="Permissions | NoExcuseChallenge" />
+                <PermissionsPage />
+              </>
+            }
+          />
+        )}
+        {userInfo?.permissions
+          ?.find((p) => p.page.path === '/admin/permissions/:id')
+          ?.actions.includes('read') && (
+          <Route
+            path="/admin/permissions/:id"
+            element={
+              <>
+                <PageTitle title="Permissions Details | NoExcuseChallenge" />
+                <PermissionsDetailsPage />
+              </>
+            }
+          />
+        )}
+        {userInfo?.permissions
+          ?.find((p) => p.page.path === '/admin/permissions/create')
+          ?.actions.includes('read') && (
+          <Route
+            path="/admin/permissions/create"
+            element={
+              <>
+                <PageTitle title="Create New Permissions | NoExcuseChallenge" />
+                <PermissionsCreatePage />
+              </>
+            }
+          />
+        )}
+        {userInfo?.permissions
+          ?.find((p) => p.page.path === '/admin/admin')
+          ?.actions.includes('read') && (
+          <Route
+            path="/admin/admin"
+            element={
+              <>
+                <PageTitle title="Admin | NoExcuseChallenge" />
+                <AdminPage />
+              </>
+            }
+          />
+        )}
+        {userInfo?.permissions
+          ?.find((p) => p.page.path === '/admin/create-admin')
+          ?.actions.includes('read') && (
+          <Route
+            path="/admin/create-admin"
+            element={
+              <>
+                <PageTitle title="Create new Admin | NoExcuseChallenge" />
+                <AdminCreatePage />
+              </>
+            }
+          />
+        )}
+        {userInfo?.permissions
+          ?.find((p) => p.page.path === '/admin/admin/:id')
+          ?.actions.includes('read') && (
+          <Route
+            path="/admin/admin/:id"
+            element={
+              <>
+                <PageTitle title="Admin Detail | NoExcuseChallenge" />
+                <AdminDetailPage />
+              </>
+            }
+          />
+        )}
+        {userInfo?.permissions
+          ?.find((p) => p.page.path === '/admin/users')
+          ?.actions.includes('export') && (
+          <Route
+            path="/admin/user/export"
+            element={
+              <>
+                <PageTitle title="Admin Export User | NoExcuseChallenge" />
+                <ExportUsersPage />
+              </>
+            }
+          />
+        )}
+        {userInfo?.permissions
+          ?.find((p) => p.page.path === '/admin/users')
+          ?.actions.includes('create') && (
+          <Route
+            path="/admin/users/create"
+            element={
+              <>
+                <PageTitle title="Admin Create User | NoExcuseChallenge" />
+                <CreateUserPage />
+              </>
+            }
+          />
+        )}
+        {userInfo?.permissions
+          ?.find((p) => p.page.path === '/admin/cronjob')
+          ?.actions.includes('read') && (
+          <Route
+            path="/admin/cronjob"
+            element={
+              <>
+                <PageTitle title="Cronjob | NoExcuseChallenge" />
+                <AdminCronjobPage />
+              </>
+            }
+          />
+        )}
       </Route>
+
       <Route element={<PrivateRoute />}>
         <Route
           path="/user/profile"
           element={
             <>
-              <PageTitle title="Profile | DreamChain" />
+              <PageTitle title="Profile | NoExcuseChallenge" />
               <Profile />
             </>
           }
@@ -278,7 +534,7 @@ function App() {
           path="/user/payment"
           element={
             <>
-              <PageTitle title="Payment | DreamChain" />
+              <PageTitle title="Payment | NoExcuseChallenge" />
               <Payment />
             </>
           }
@@ -287,7 +543,7 @@ function App() {
           path="/user/system"
           element={
             <>
-              <PageTitle title="System | DreamChain" />
+              <PageTitle title="System | NoExcuseChallenge" />
               <SystemPage />
             </>
           }
@@ -296,7 +552,7 @@ function App() {
           path="/user/referral"
           element={
             <>
-              <PageTitle title="Referral | DreamChain" />
+              <PageTitle title="Referral | NoExcuseChallenge" />
               <ReferralPage />
             </>
           }
@@ -305,8 +561,17 @@ function App() {
           path="/user/transactions"
           element={
             <>
-              <PageTitle title="Transactions | DreamChain" />
+              <PageTitle title="Transactions | NoExcuseChallenge" />
               <Transactions />
+            </>
+          }
+        />
+        <Route
+          path="/user/ice-breakers"
+          element={
+            <>
+              <PageTitle title="Ice Breakers | NoExcuseChallenge" />
+              <IceBreakerPage />
             </>
           }
         />
@@ -314,95 +579,40 @@ function App() {
           path="/user/dreampool"
           element={
             <>
-              <PageTitle title="DreamPool | DreamChain" />
+              <PageTitle title="DreamPool | NoExcuseChallenge" />
               <DreamPoolPage />
+            </>
+          }
+        />
+        <Route
+          path="/user/income"
+          element={
+            <>
+              <PageTitle title="Income | NoExcuseChallenge" />
+              <IncomePage />
+            </>
+          }
+        />
+        <Route
+          path="/user/withdraws"
+          element={
+            <>
+              <PageTitle title="Withdraws | NoExcuseChallenge" />
+              <WithdrawsPage />
+            </>
+          }
+        />
+        <Route
+          path="/user/claims"
+          element={
+            <>
+              <PageTitle title="Claims | NoExcuseChallenge" />
+              <ClaimsPage />
             </>
           }
         />
       </Route>
       <Route path="*" element={<NotFoundPage />}></Route>
-      {/* <Route
-          path="/calendar"
-          element={
-            <>
-              <PageTitle title="Calendar | DreamChain" />
-              <Calendar />
-            </>
-          }
-        />
-        
-        <Route
-          path="/forms/form-elements"
-          element={
-            <>
-              <PageTitle title="Form Elements | DreamChain" />
-              <FormElements />
-            </>
-          }
-        />
-        <Route
-          path="/forms/form-layout"
-          element={
-            <>
-              <PageTitle title="Form Layout | DreamChain" />
-              <FormLayout />
-            </>
-          }
-        />
-        <Route
-          path="/tables"
-          element={
-            <>
-              <PageTitle title="Tables | DreamChain" />
-              <Tables />
-            </>
-          }
-        />
-        <Route
-          path="/settings"
-          element={
-            <>
-              <PageTitle title="Settings | DreamChain" />
-              <Settings />
-            </>
-          }
-        />
-        <Route
-          path="/chart"
-          element={
-            <>
-              <PageTitle title="Basic Chart | DreamChain" />
-              <Chart />
-            </>
-          }
-        />
-        <Route
-          path="/ui/alerts"
-          element={
-            <>
-              <PageTitle title="Alerts | DreamChain" />
-              <Alerts />
-            </>
-          }
-        />
-        <Route
-          path="/ui/buttons"
-          element={
-            <>
-              <PageTitle title="Buttons | DreamChain" />
-              <Buttons />
-            </>
-          }
-        />
-        <Route
-          path="/auth/signin"
-          element={
-            <>
-              <PageTitle title="Signin | DreamChain" />
-              <SignIn />
-            </>
-          }
-        /> */}
     </Routes>
   );
 }

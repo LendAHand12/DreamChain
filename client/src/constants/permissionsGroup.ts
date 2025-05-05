@@ -1,9 +1,12 @@
 export default [
-  { title: "dashboard", name: "dashboard" },
-  { title: "users", name: "users" },
-  { title: "transactions", name: "transactions" },
-  { title: "cms", name: "cms" },
-  { title: "posts", name: "posts" },
-  { title: "tree", name: "tree" },
+  { title: "Users", name: "users" },
+  { title: "Transactions", name: "transactions" },
+  { title: "News", name: "news" },
+  { title: "System", name: "system" },
+  { title: "Permissions", name: "permissions" },
+  { title: "Claims", name: "claims" },
+  { title: "Withdraw", name: "withdraw" },
+  { title: "Export", name: "export" },
   { title: "ADMIN", name: "admin" },
+  { title: "Other", name: "other" },
 ];

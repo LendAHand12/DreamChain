@@ -11,6 +11,7 @@ import { useSelector } from 'react-redux';
 import DefaultLayout from '@/layout/DefaultLayout';
 
 const EditPostPage = () => {
+  const { userInfo } = useSelector((state) => state.auth);
   const location = useLocation();
   const queryParams = new URLSearchParams(location.search);
   const { t } = useTranslation();
@@ -42,13 +43,9 @@ const EditPostPage = () => {
       setLoading(true);
       await Posts.getPostsById(id)
         .then((response) => {
-          const { title_vn, title_en, text_vn, text_en, type, desc_vn, desc_en, category } =
-            response.data;
-          setValue('title_vn', title_vn);
+          const { title_en, text_en, type, desc_en, category } = response.data;
           setValue('title_en', title_en);
-          setValue('text_vn', text_vn);
           setValue('text_en', text_en);
-          setValue('desc_vn', desc_vn);
           setValue('desc_en', desc_en);
           setValue('type', type);
           setValue('category', category);
@@ -70,11 +67,8 @@ const EditPostPage = () => {
 
     formData.append('category', values.category);
     formData.append('type', values.type);
-    formData.append('title_vn', values.title_vn);
     formData.append('title_en', values.title_en);
-    formData.append('text_vn', values.text_vn ? values.text_vn : '');
     formData.append('text_en', values.text_en ? values.text_en : '');
-    formData.append('file_vn', values.file_vn);
     formData.append('file_en', values.file_en);
 
     await Posts.updatePost(id, formData)
@@ -122,7 +116,7 @@ const EditPostPage = () => {
               {t("saveDrap")}
             </button> */}
               <button
-                className="w-64 flex justify-center items-center hover:underline text-dreamchain bg-black font-bold rounded-full my-6 py-2 px-8 shadow-lg focus:outline-none focus:shadow-outline transform transition hover:scale-105 duration-300 ease-in-out"
+                className="w-64 flex justify-center items-center hover:underline text-NoExcuseChallenge bg-black font-bold rounded-full my-6 py-2 px-8 shadow-lg focus:outline-none focus:shadow-outline transform transition hover:scale-105 duration-300 ease-in-out"
                 onClick={(e) => {
                   e.preventDefault();
                   navigate('/admin/news');
@@ -152,24 +146,7 @@ const EditPostPage = () => {
             <div className="mt-10">
               <div className="mb-10">
                 <span className="mb-2 block text-lg font-semibold text-gray-900">
-                  Vietnamese title :
-                </span>
-                <div>
-                  <input
-                    id="title_vn"
-                    className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 "
-                    {...register('title_vn', {
-                      required: t('required'),
-                    })}
-                  ></input>
-                  <p className="error-message-text">
-                    {errors.title_vn?.message}
-                  </p>
-                </div>
-              </div>
-              <div className="mb-10">
-                <span className="mb-2 block text-lg font-semibold text-gray-900">
-                  English title :
+                  Title :
                 </span>
                 <div>
                   <input
@@ -206,15 +183,7 @@ const EditPostPage = () => {
                 <>
                   <div className="mb-10">
                     <span className="mb-2 block text-lg font-semibold text-gray-900">
-                      Vietnamese file :
-                    </span>
-                    <UploadFile
-                      onFileChange={(files) => setValue('file_vn', files[0])}
-                    />
-                  </div>
-                  <div className="mb-10">
-                    <span className="mb-2 block text-lg font-semibold text-gray-900">
-                      English files :
+                      Files :
                     </span>
                     <UploadFile
                       onFileChange={(files) => setValue('file_en', files[0])}
@@ -225,24 +194,7 @@ const EditPostPage = () => {
                 <>
                   <div className="mb-10">
                     <span className="mb-2 block font-semibold text-gray-900">
-                      Vietnamese description :
-                    </span>
-                    <div>
-                      <input
-                        id="desc_vn"
-                        className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 "
-                        {...register('desc_vn', {
-                          required: t('required'),
-                        })}
-                      ></input>
-                      <p className="text-sm text-red-500">
-                        {errors.desc_vn?.message}
-                      </p>
-                    </div>
-                  </div>
-                  <div className="mb-10">
-                    <span className="mb-2 block font-semibold text-gray-900">
-                      English description :
+                      Description :
                     </span>
                     <div>
                       <input
@@ -256,20 +208,6 @@ const EditPostPage = () => {
                         {errors.desc_en?.message}
                       </p>
                     </div>
-                  </div>
-                  <div className="mb-10">
-                    <span className="mb-2 block text-lg font-semibold text-gray-900">
-                      Vietnamese content :
-                    </span>
-                    <TextEditor
-                      setContents={getValues('text_vn')}
-                      onChange={(content) => {
-                        setValue('text_vn', content);
-                      }}
-                    />
-                    <p className="error-message-text">
-                      {errors.text_vn?.message}
-                    </p>
                   </div>
                   <div className="mb-10">
                     <span className="mb-2 block text-lg font-semibold text-gray-900">
@@ -287,23 +225,31 @@ const EditPostPage = () => {
                   </div>
                 </>
               )}
-              <button
-                type="submit"
-                className="w-full flex justify-center items-center hover:underline text-dreamchain bg-black font-bold rounded-full my-6 py-4 px-8 shadow-lg focus:outline-none focus:shadow-outline transform transition hover:scale-105 duration-300 ease-in-out"
-              >
-                {t('update')}
-              </button>
+              {userInfo?.permissions
+                .find((p) => p.page.pageName === 'admin-news-edit')
+                ?.actions.includes('update') && (
+                <button
+                  type="submit"
+                  className="w-full flex justify-center items-center hover:underline text-NoExcuseChallenge bg-black font-bold rounded-full my-6 py-4 px-8 shadow-lg focus:outline-none focus:shadow-outline transform transition hover:scale-105 duration-300 ease-in-out"
+                >
+                  {t('update')}
+                </button>
+              )}
 
-              <button
-                onClick={(e) => {
-                  e.preventDefault();
-                  handleDelete();
-                }}
-                className="w-full flex justify-center items-center hover:underline bg-red-500 text-white font-bold rounded-full my-6 py-4 px-8 shadow-lg focus:outline-none focus:shadow-outline transform transition hover:scale-105 duration-300 ease-in-out"
-              >
-                {loadingDelete && <Loading />}
-                {t('delete')}
-              </button>
+              {userInfo?.permissions
+                .find((p) => p.page.pageName === 'admin-news-edit')
+                ?.actions.includes('delete') && (
+                <button
+                  onClick={(e) => {
+                    e.preventDefault();
+                    handleDelete();
+                  }}
+                  className="w-full flex justify-center items-center hover:underline bg-red-500 text-white font-bold rounded-full my-6 py-4 px-8 shadow-lg focus:outline-none focus:shadow-outline transform transition hover:scale-105 duration-300 ease-in-out"
+                >
+                  {loadingDelete && <Loading />}
+                  {t('delete')}
+                </button>
+              )}
             </div>
           )}
         </form>

@@ -68,6 +68,7 @@ const AdminSystemPage = () => {
       isGray,
       indexOnLevel,
       totalChild,
+      income,
     }) => {
       return (
         <div
@@ -87,7 +88,14 @@ const AdminSystemPage = () => {
         >
           <div className="flex flex-col items-center">
             <span>{children}</span>
-            <span>{totalChild}</span>
+            <span>
+              ({totalChild} - {income})
+            </span>
+            {indexOnLevel && (
+              <div className="mt-2 bg-white border border-gray-900 rounded-full text-black w-8 h-8 flex justify-center items-center">
+                {indexOnLevel}
+              </div>
+            )}
           </div>
         </div>
       );
@@ -101,12 +109,13 @@ const AdminSystemPage = () => {
         label={
           <StyledNode
             layer={node.layer}
-            onClick={() => onClick(node.key, node.layer)}
+            onClick={() => onClick(node.key, node.layer, node.isSubId)}
             isRed={node.isRed}
             isGray={node.isGray}
             isYellow={node.isYellow}
             indexOnLevel={node.indexOnLevel}
             totalChild={node.totalChild}
+            income={node.income}
           >
             {node.label}
           </StyledNode>
@@ -122,12 +131,12 @@ const AdminSystemPage = () => {
   };
 
   const handleNodeItemClick = useCallback(
-    async (id, layer) => {
+    async (id, layer, isSubId) => {
       if (loadingItem) {
         toast.error(t('Getting data.Please wait'));
       } else {
         setLoadingItem(true);
-        await User.getChildsOfUserForTree({ id, currentTier })
+        await User.getChildsOfUserForTree({ id, currentTier, isSubId })
           .then((response) => {
             setLoadingItem(false);
             const cloneTreeData = { ...treeData };
@@ -202,8 +211,8 @@ const AdminSystemPage = () => {
               <button
                 key={i}
                 onClick={() => setCurrentTier(i + 1)}
-                className={`flex justify-center items-center hover:underline text-black font-medium ${
-                  currentTier === i + 1 ? 'bg-black text-dreamchain' : ''
+                className={`flex justify-center items-center hover:underline font-medium ${
+                  currentTier === i + 1 ? 'bg-black text-NoExcuseChallenge' : ''
                 } rounded-full my-6 py-4 px-8 border focus:outline-none focus:shadow-outline transform transition hover:scale-105 duration-300 ease-in-out`}
               >
                 {t('tier')} {i + 1}
@@ -219,7 +228,7 @@ const AdminSystemPage = () => {
           <>
             <button
               onClick={() => setShowType(!showType)}
-              className="flex justify-center items-center gap-2 hover:underline bg-black text-dreamchain font-bold rounded-full mt-2 mb-6 py-2 px-6 focus:outline-none focus:shadow-outline transform transition hover:scale-105 duration-300 ease-in-out"
+              className="flex justify-center items-center gap-2 hover:underline bg-black text-NoExcuseChallenge font-bold rounded-full mt-2 mb-6 py-2 px-6 focus:outline-none focus:shadow-outline transform transition hover:scale-105 duration-300 ease-in-out"
             >
               <svg
                 fill="currentColor"
@@ -227,7 +236,7 @@ const AdminSystemPage = () => {
                 width="24"
                 height="24"
                 viewBox="0 0 100 100"
-                enable-background="new 0 0 100 100"
+                enableBackground="new 0 0 100 100"
               >
                 <path
                   d="M76.5,58.3c0,0.1,0,0.2-0.1,0.2c-0.3,1.1-0.7,2.2-1.1,3.3c-0.5,1.2-1,2.3-1.6,3.4c-1.2,2.2-2.7,4.2-4.5,6
@@ -262,7 +271,11 @@ const AdminSystemPage = () => {
                   lineColor={'brown'}
                   lineBorderRadius={'10px'}
                   label={
-                    <StyledNode layer={userInfo.currentLayer}>
+                    <StyledNode
+                      layer={userInfo.currentLayer}
+                      income={treeData.income}
+                      totalChild={treeData.totalChild}
+                    >
                       {treeData.label}
                     </StyledNode>
                   }
@@ -286,7 +299,7 @@ const AdminSystemPage = () => {
                   const key =
                     item.key.split('/')[item.key.split('/').length - 1];
                   !clickedKeys.includes(key) &&
-                    handleNodeItemClick(key, item.layer);
+                    handleNodeItemClick(key, item.layer, item.isSubId);
                 }}
               ></TreeMenu>
             )}
