@@ -97,7 +97,7 @@ const CronjobPage = () => {
             >
               <div className="bg-black rounded-2xl p-4 space-y-6">
                 <div className="flex justify-between items-center gap-6">
-                  <p className="text-NoExcuseChallenge text-sm font-bold uppercase">
+                  <p className="text-DreamChain text-sm font-bold uppercase">
                     {ele.title}
                   </p>
                   <button
@@ -156,7 +156,7 @@ const CronjobPage = () => {
           <div className="border-2 w-full h-fit shadow-lg rounded-2xl max-w-[350px]">
             <div className="bg-black rounded-2xl p-4 space-y-6">
               <div className="flex justify-between items-center gap-6">
-                <p className="text-NoExcuseChallenge text-sm font-bold uppercase">
+                <p className="text-DreamChain text-sm font-bold uppercase">
                   Reset black list
                 </p>
                 <button

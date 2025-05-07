@@ -249,25 +249,27 @@ const getUserInfo = asyncHandler(async (req, res) => {
   if (user) {
     const tree = await Tree.findOne({ userId: user._id, tier: 1 });
     const listDirectUser = [];
-    const listRefIdOfUser = await Tree.find({ refId: tree._id, tier: 1 });
-    if (listRefIdOfUser && listRefIdOfUser.length > 0) {
-      for (let refId of listRefIdOfUser) {
-        const refedUser = await User.findById(refId.userId).select(
-          "userId email walletAddress status countPay countChild tier errLahCode buyPackage"
-        );
-        listDirectUser.push({
-          userId: refedUser.userId,
-          isGray: refedUser.status === "LOCKED" ? (req.user.isAdmin ? true : false) : false,
-          isRed:
-            refedUser.tier === 1 && refedUser.countPay === 0
-              ? true
-              : refedUser.tier === 1 && refedUser.buyPackage === "B" && refedUser.countPay < 7
-              ? true
-              : refedUser.tier === 1 && refedUser.buyPackage === "A" && refedUser.countPay < 13
-              ? true
-              : false,
-          isYellow: refedUser.errLahCode === "OVER30",
-        });
+    if(!user.isOld) {
+      const listRefIdOfUser = await Tree.find({ refId: tree._id, tier: 1 });
+      if (listRefIdOfUser && listRefIdOfUser.length > 0) {
+        for (let refId of listRefIdOfUser) {
+          const refedUser = await User.findById(refId.userId).select(
+            "userId email walletAddress status countPay countChild tier errLahCode buyPackage"
+          );
+          listDirectUser.push({
+            userId: refedUser.userId,
+            isGray: refedUser.status === "LOCKED" ? (req.user.isAdmin ? true : false) : false,
+            isRed:
+              refedUser.tier === 1 && refedUser.countPay === 0
+                ? true
+                : refedUser.tier === 1 && refedUser.buyPackage === "B" && refedUser.countPay < 7
+                ? true
+                : refedUser.tier === 1 && refedUser.buyPackage === "A" && refedUser.countPay < 13
+                ? true
+                : false,
+            isYellow: refedUser.errLahCode === "OVER30",
+          });
+        }
       }
     }
     const listOldParent = [];
@@ -291,7 +293,7 @@ const getUserInfo = asyncHandler(async (req, res) => {
       .reduce((sum, withdraw) => sum + withdraw.amount, 0);
 
     let refUser;
-    if (tree && tree.refId) {
+    if (!user.isOld && tree && tree.refId) {
       const refTree = await Tree.findById(tree.refId);
       refUser = await User.findById(refTree.userId);
     }
@@ -365,6 +367,7 @@ const getUserInfo = asyncHandler(async (req, res) => {
       totalHold,
       totalChild: tree.countChild,
       income: tree.income,
+      isOld: user.isOld
     });
   } else {
     res.status(404);

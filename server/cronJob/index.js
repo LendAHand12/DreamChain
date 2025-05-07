@@ -4,7 +4,10 @@ import moment from "moment";
 import User from "../models/userModel.js";
 import sendMail from "../utils/sendMail.js";
 import { sendMailUpdateLayerForAdmin } from "../utils/sendMailCustom.js";
-import { getCountAllChildren, getCountIncome } from "../controllers/userControllers.js";
+import {
+  getCountAllChildren,
+  getCountIncome,
+} from "../controllers/userControllers.js";
 import { findRootLayer, getUserClosestToNow } from "../utils/methods.js";
 import Tree from "../models/treeModel.js";
 import Transaction from "../models/transactionModel.js";
@@ -12,7 +15,13 @@ import Honor from "../models/honorModel.js";
 
 export const deleteUser24hUnPay = asyncHandler(async () => {
   const listUser = await User.find({
-    $and: [{ tier: 1 }, { countPay: 0 }, { isAdmin: false }, { status: { $ne: "DELETED" } }],
+    $and: [
+      { tier: 1 },
+      { countPay: 0 },
+      { isAdmin: false },
+      { status: { $ne: "DELETED" } },
+      { isOld: false },
+    ],
   });
   for (let u of listUser) {
     console.log({ userId: u.userId });
@@ -67,6 +76,7 @@ export const countChildToData = asyncHandler(async () => {
 export const countLayerToData = asyncHandler(async () => {
   const listUser = await User.find({
     isAdmin: false,
+    isOld: false
   });
 
   const result = [];
@@ -127,7 +137,9 @@ export const areArraysEqual = (arr1, arr2) => {
 export const distributionHewe = asyncHandler(async () => {
   const listUser = await User.find({
     $and: [{ isAdmin: false }, { userId: { $ne: "Admin2" } }, { countPay: 13 }],
-  }).select("userId totalHewe availableHewe hewePerDay claimedHewe currentLayer");
+  }).select(
+    "userId totalHewe availableHewe hewePerDay claimedHewe currentLayer"
+  );
 
   for (let u of listUser) {
     try {
@@ -151,6 +163,7 @@ export const rankingCalc = asyncHandler(async () => {
       { userId: { $ne: "Admin2" } },
       { countPay: 13 },
       { status: "APPROVED" },
+      { isOld: false },
     ],
   }).exec();
 
@@ -172,7 +185,7 @@ export const rankingCalc = asyncHandler(async () => {
           let currentDay = moment();
           const diffDays = currentDay.diff(u.createdAt, "days");
           if (diffDays < 15) {
-            u.availableUsdt = u.availableUsdt + 10;
+            u.availableUsdt = u.availableUsdt + 100;
             u.bonusRef = true;
             await Honor.create({
               userId: u._id,

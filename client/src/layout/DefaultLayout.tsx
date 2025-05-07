@@ -32,7 +32,7 @@ const DefaultLayout: React.FC<{ children: ReactNode }> = ({ children }) => {
           }
         });
       } else {
-        routes = UserRoutes;
+        routes = userInfo?.isOld ? UserRoutes.filter(ele => ele.title === "Profile") :  UserRoutes;
       }
     } catch (err) {
       // handleLogout();
@@ -63,8 +63,8 @@ const DefaultLayout: React.FC<{ children: ReactNode }> = ({ children }) => {
         </div>
         {/* <!-- ===== Content Area End ===== --> */}
       </div>
-      <div className="lg:hidden bg-black text-NoExcuseChallenge text-center py-3">
-        © 2024, made with by <span className="font-bold">NoExcuseChallenge.</span>
+      <div className="lg:hidden bg-black text-DreamChain text-center py-3">
+        © 2024, made with by <span className="font-bold">DreamChain.</span>
       </div>
       {/* <!-- ===== Page Wrapper End ===== --> */}
     </div>

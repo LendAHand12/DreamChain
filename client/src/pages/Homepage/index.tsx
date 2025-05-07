@@ -8,20 +8,30 @@ const HomePage: React.FC = () => {
       <div className="w-full mt-10 lg:mt-0">
         <div className="flex">
           <div className="py-14 2xl:pl-16 px-10">
-            <p className="text-[#] font-bold">About us</p>
             <h1 className="text-black text-4xl font-medium mt-3 mb-2">
-              No Excuse Challenge
+              🫱‍🫲 Lend A Hand
             </h1>
-            <p className="text-[#02071B] text-lg">
-              Get Up. Shut Up. Take Action. No More Excuses. Welcome to the No
-              Excuse Challenge – where weakness gets crushed, and winners are
-              made. You’ve been soft for too long. Excuses won’t pay your bills,
-              won’t build your dreams, and won’t make you stronger. Stop
-              talking. Stop waiting. Stop blaming. It’s time to wake up, put in
-              the work, and take full control of your life – NOW!
+            <p className="text-[#02071B] text-lg font-semibold mt-4 mb-10">
+              "The Power of Unity. The Promise of Change."
             </p>
-            <p className="text-[#02071B] text-lg font-semibold mt-10">
-              "Excuses don’t pay. Effort does. Get to work."
+            <div className="text-[#02071B] text-lg">
+              <p className="font-semibold mb-4">🌍 Our Mission :</p>
+              <ul className="list-disc pl-6">
+                <li>
+                  At <b>Lend A Hand</b>, we believe that no hand should ever
+                  reach out in vain.We are more than a platform — we are a
+                  movement rooted in{' '}
+                  <b>compassion, transparency, and empowerment.</b>
+                </li>
+                <li>
+                  We’re here to <b>redefine community investment</b> through the
+                  power of <b>blockchain technology</b>, where every member can
+                  contribute, support, and grow — together.
+                </li>
+              </ul>
+            </div>
+            <p className="text-[#02071B] text-lg font-semibold my-10">
+              🗣️ “When we lend a hand to one, we lift the spirit of many.”{' '}
             </p>
           </div>
           <img
@@ -33,75 +43,113 @@ const HomePage: React.FC = () => {
           <div className="py-10 2xl:pl-16 px-10 3xl:-mt-64">
             <div className="border w-1/2 border-black"></div>
             <h1 className="text-black text-2xl font-semibold mt-3 mb-6 pt-3">
-              What is the No Excuse Challenge?
+              🔐 Built on Trust. Powered by Blockchain.
             </h1>
             <p className="text-[#02071B] text-lg">
-              This isn’t some feel-good, pat-on-the-back motivation speech. This
-              is a reality check. The No Excuse Challenge is here to shake you,
-              break your old habits, and force you to take responsibility.
-              Success isn’t given—it’s taken. And if you’re not willing to take
-              it, step aside for those who will. Ready to own your life? Prove
-              it.
+              - We use cutting-edge blockchain technology to ensure every
+              transaction is <b>secure, transparent, and traceable</b> .Your
+              contributions don’t vanish into a black box — they go{' '}
+              <b>directly to help real people</b> in real time.
+            </p>
+            <p className="text-[#02071B] text-lg">
+              - At <b>Lend A Hand</b>, we don’t hold your funds. You choose who
+              to support.That’s <b>decentralized giving</b> — pure, fair, and
+              empowering.
             </p>
             <p className="text-[#02071B] text-lg font-semibold mt-10">
-              "Nobody’s coming to save you. Get up and do it yourself."
+              🗝️ “Transparency builds trust, and trust builds unstoppable
+              communities.”
             </p>
           </div>
           <div className="py-10 2xl:pl-16 px-10">
             <div className="border w-1/2 border-black"></div>
             <h1 className="text-black text-2xl font-semibold mt-3 mb-6 pt-3">
-              Why Join the No Excuse Challenge?
+              🤝 How It Works
             </h1>
             <p className="text-[#02071B] text-lg">
-              • No More Excuses – You’re either all in or out. There’s no
-              in-between.
-              <br></br>• Get Uncomfortable – Growth happens when you push past
-              your limits. No pain, no gain.
-              <br></br>• Prove Yourself – Talk is cheap. Show up, work hard, and
-              earn your success.
-              <br></br>• Join a Relentless Community – Winners only. If you’re
-              looking for sympathy, look else where.
+              • You join our community and connect with others committed to
+              positive change.
+              <br></br>• You support fellow members through peer-to-peer
+              contributions.
+              <br></br>• You receive support when it’s your turn — no interest,
+              no debt, no shame.
+              <br></br>• You grow not just your wealth, but your impact.
+            </p>
+            <p className="mt-4 text-lg">
+              This is collective elevation — one hand lifting another.
             </p>
             <p className="text-[#02071B] text-lg font-semibold mt-10">
-              "Soft people make excuses. Strong people make moves."
+              🤲 “One hand can lift a load, but many hands can lift a nation.”
             </p>
           </div>
           <div className="py-10 2xl:pl-16 px-10 3xl:-mt-32">
             <div className="border w-1/2 border-black"></div>
             <h1 className="text-black text-2xl font-semibold mt-3 mb-6 pt-3">
-              How It Works
+              ✨ Turning Dreams into Reality, Together
             </h1>
             <p className="text-[#02071B] text-lg">
-              • Stop Complaining – Nobody cares about your excuses. Nobody. Get
-              up and get to work.
-              <br></br>• Set a Goal – Make it real. Make it tough. No easy wins.
-              <br></br>• Do the Work – No skipping. No shortcuts. No giving up.
-              <br></br>• Own Your Results – Win or lose, it’s on YOU. No
-              blaming. No whining.
+              • Every dream starts with a vision — but it takes{' '}
+              <b>unity to make it real.</b>
+              <br></br>• At Lend A Hand, each contribution is more than
+              financial help — it's a <b>bridge</b> from one member’s dream to
+              another’s support.
+              <br></br>• We believe that by joining hands, we can transform
+              individual ambitions into <b>shared achievements.</b>
+              <br></br>• When the <b>hand of community</b> reaches out, hope
+              becomes action, and dreams become destiny.
             </p>
             <p className="text-[#02071B] text-lg font-semibold mt-10">
-              "You either suffer the pain of discipline or the pain of regret.
-              Choose."
+              💫 “A dream becomes reality when shared by hearts and built by
+              hands.”
             </p>
           </div>
           <div className="py-10 pb-10 2xl:pl-16 px-10">
             <div className="border w-1/2 border-black"></div>
             <h1 className="text-black text-2xl font-semibold mt-3 mb-6 pt-3">
-              Enough Talk. Take Action.
+              🛡️ Privacy Matters
             </h1>
             <p className="text-[#02071B] text-lg">
-              This isn’t for the weak. It’s for those who refuse to stay stuck
-              in the same cycle of failure. It’s time to push harder, level up,
-              and MAKE THINGS HAPPEN. If you can’t handle it, move aside. Join
-              the No Excuse Challenge today. No more whining. No more waiting.
-              Just results.
+              We respect your data, your dignity, and your decisions. <br></br>
+              Your personal information is <b>protected</b>, and your
+              transactions are yours <b>alone.</b>
             </p>
             <p className="text-[#02071B] text-lg font-semibold mt-10">
-              "Success isn’t for crybabies. Step up or step aside."
+              🔒 “True freedom is knowing your data belongs to you — and only
+              you.”
             </p>
           </div>
-          <div className="pb-20 2xl:pl-16 px-10">
+          <div className="py-10 pb-10 2xl:pl-16 px-10">
+            <div className="border w-1/2 border-black"></div>
+            <h1 className="text-black text-2xl font-semibold mt-3 mb-6 pt-3">
+              🌱 Why Lend A Hand?
+            </h1>
+            <p className="text-[#02071B] text-lg">
+              Because too many people struggle alone. <br></br>
+              Because the world doesn’t need another bank — it needs{' '}
+              <b>each other.</b>
+              <br></br>
+              Because when we come together, <b>anything is possible.</b>
+            </p>
+            <p className="text-[#02071B] text-lg font-semibold mt-10">
+            🌍 “We don’t need more institutions. We need each other.”
+            </p>
           </div>
+          <div className="py-10 pb-10 2xl:pl-16 px-10">
+            <div className="border w-1/2 border-black"></div>
+            <h1 className="text-black text-2xl font-semibold mt-3 mb-6 pt-3">
+            💬 Join the Movement
+            </h1>
+            <p className="text-[#02071B] text-lg">
+            Be part of something bigger than yourself. <br></br>
+            Join a community where <b>helping others helps you grow.</b><br></br>
+            Together, we don’t just build wealth —<br></br>
+            We build <b>hope, unity, and legacy.</b>
+            </p>
+            <p className="text-[#02071B] text-lg font-semibold mt-10">
+            Lend A Hand. Because unity is our currency.
+            </p>
+          </div>
+          <div className="pb-20 2xl:pl-16 px-10">🚀 “Alone, we survive. Together, we rise.”</div>
         </div>
       </div>
     </DefaultLayout>

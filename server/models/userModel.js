@@ -186,6 +186,10 @@ const userSchema = mongoose.Schema(
     paymentStep: {
       type: Number,
       default: 0
+    },
+    isOld: {
+      type: Boolean,
+      default: false
     }
   },
   {

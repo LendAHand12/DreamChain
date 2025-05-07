@@ -65,9 +65,9 @@ export const sendActiveLinkOld = async (email, link) => {
     html: `
     <div>
     <h4>
-      Congratulations! You are now a valued member of NoExcuseChallenge!
+      Congratulations! You are now a valued member of DreamChain!
       </h4>
-      NoExcuseChallenge believes that you will continue contributing significantly to the NoExcuseChallenge community and work together toward even greater success.
+      DreamChain believes that you will continue contributing significantly to the DreamChain community and work together toward even greater success.
       <br></br>
       Ameritec IPS specializes in providing security software for mobile devices.
       We are pleased to provide you with the Activation Link (QR CODE) to activate your “MTD “ Ameritec Intrusion Prevention System.
@@ -91,16 +91,16 @@ export const sendActiveLinkOld = async (email, link) => {
       <br></br>
       1.	Please keep your Activation Link (QR CODE) safe and secure.
       <br></br>
-      2.	The license period is 365 days from the date you successfully register as a member on the website: https://NoExcuseChallenge.live. When the license expires, we will send you an email notification with instructions to renew.
+      2.	The license period is 365 days from the date you successfully register as a member on the website: https://DreamChain.live. When the license expires, we will send you an email notification with instructions to renew.
       <br></br>
       3.	This Activation Link is for mobile devices running Android or iOS only.
       <br></br>
       4.	Each Activation Link (QR CODE) is valid for activation on a single device only. Any misuse of the Activation Link may result in the permanent termination of your MTD license.
       <br></br>
       5.	If you have any questions, please contact our technical support team for assistance. Thank you!
-      The NoExcuseChallenge Team,
+      The DreamChain Team,
       <br></br>
-      <b>The NoExcuseChallenge Team</b>
+      <b>The DreamChain Team</b>
     </div>
    `,
     cc: process.env.CC_MAIL,
@@ -123,14 +123,14 @@ export const sendActiveLink = async (senderName, email) => {
   const mailOptions = {
     from: process.env.EMAIL, // sender address
     to: email,
-    subject: "Welcome to No Excuse Challenge – Your Journey Begins!",
+    subject: "Welcome to DreamChain – Your Journey Begins!",
     html: `
     <div>
     Dear <b>${senderName}</b>,
     <br></br>
-    Welcome to <b>No Excuse Challenge</b>, powered by <b>DreamChain</b>! 🎉
+    Welcome to <b>DreamChain</b>, powered by <b>DreamChain</b>! 🎉
     <br></br>
-    You’ve just taken the first step toward a transformative journey where <b>innovation meets opportunity</b>. At <b>No Excuse Challenge</b>, we believe in pushing limits, breaking barriers, and empowering individuals to <b>achieve financial freedom and success</b> through blockchain and AI-driven solutions.
+    You’ve just taken the first step toward a transformative journey where <b>innovation meets opportunity</b>. At <b>DreamChain</b>, we believe in pushing limits, breaking barriers, and empowering individuals to <b>achieve financial freedom and success</b> through blockchain and AI-driven solutions.
     <br></br>
     <h4>
     What’s Next?
@@ -292,14 +292,14 @@ export const sendMailReceiveCommission = async (mailInfo) => {
   const mailOptions = {
     from: process.env.EMAIL,
     to: email,
-    subject: "Direct Commission from No Excuse Challenge",
+    subject: "Direct Commission from DreamChain",
     html: `
     <div>
     Congratulations! You have received <b>$15</b> commission from user <b>${senderName}</b>.
     <br></br>
-    Thank you for participating in our NoExcuseChallenge referral program. 
+    Thank you for participating in our DreamChain referral program. 
     <br></br>
-    No Excuse Challenge believes you will continue to make significant contributions to the No Excuse Challenge community as we work together toward even greater success.
+    DreamChain believes you will continue to make significant contributions to the DreamChain community as we work together toward even greater success.
     <br></br>
     ________________________________________
     <br></br>
@@ -330,13 +330,13 @@ export const sendMailRefDc = async (mailInfo) => {
   const mailOptions = {
     from: process.env.EMAIL,
     to: email,
-    subject: "No Excuse Challenge Fund",
+    subject: "DreamChain Fund",
     html: `
-      Congratulations! You have received <b>$5</b> No Excuse Challenge Contribution Fund from user <b>${senderName}</b>.
+      Congratulations! You have received <b>$5</b> DreamChain Contribution Fund from user <b>${senderName}</b>.
       <br></br>
-      Thank you for participating in our No Excuse Challenge referral program. 
+      Thank you for participating in our DreamChain referral program. 
       <br></br>
-      No Excuse Challenge believes you will continue to make significant contributions to the NoExcuseChallenge community as we work together toward even greater success.
+      DreamChain believes you will continue to make significant contributions to the DreamChain community as we work together toward even greater success.
       <br></br>
       ________________________________________
       <br></br>

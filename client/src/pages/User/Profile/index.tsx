@@ -50,6 +50,7 @@ const Profile = () => {
     bonusRef,
     walletAddressChange,
     currentLayer,
+    isOld
   } = userInfo;
   const totalChild = adjustSales(chartData, targetSales).reduce(
     (acc, num) => acc + num,
@@ -343,7 +344,7 @@ const Profile = () => {
           <div className="w-full flex gap-4 items-center justify-between lg:justify-center">
             <p className="font-medium">Available HEWE</p>
             <input
-              className="bg-black rounded-xl text-NoExcuseChallenge p-2 flex-1"
+              className="bg-black rounded-xl text-DreamChain p-2 flex-1"
               readOnly
               value={availableHewe}
             />
@@ -351,7 +352,7 @@ const Profile = () => {
           <div className="w-full flex gap-4 items-center justify-between lg:justify-center">
             <p className="font-medium">Reward HEWE</p>
             <input
-              className="bg-black rounded-xl text-NoExcuseChallenge p-2 flex-1"
+              className="bg-black rounded-xl text-DreamChain p-2 flex-1"
               readOnly
               value={
                 tier > 1
@@ -377,7 +378,7 @@ const Profile = () => {
           <div className="w-full flex gap-4 items-center justify-between lg:justify-center">
             <p className="font-medium">Available USDT</p>
             <input
-              className="bg-black rounded-xl text-NoExcuseChallenge p-2 flex-1"
+              className="bg-black rounded-xl text-DreamChain p-2 flex-1"
               readOnly
               value={availableUsdt}
             />
@@ -385,7 +386,7 @@ const Profile = () => {
           <div className="w-full flex gap-4 items-center justify-between lg:justify-center">
             <p className="font-medium">Processing USDT</p>
             <input
-              className="bg-black rounded-xl text-NoExcuseChallenge p-2 flex-1"
+              className="bg-black rounded-xl text-DreamChain p-2 flex-1"
               readOnly
               value={withdrawPending}
             />
@@ -508,7 +509,7 @@ const Profile = () => {
             </div>
           </div>
         </div>
-        {!isEdit && (
+        {!isOld && !isEdit && (
           <div className="flex justify-end">
             <button
               onClick={() => setIsEdit(true)}

@@ -106,7 +106,7 @@ const registerUser = asyncHandler(async (req, res) => {
         walletAddress,
         idCode,
         buyPackage: "A",
-        role: "user",
+        role: "user"
       });
 
       const tree = await Tree.create({
@@ -276,6 +276,7 @@ const authUser = asyncHandler(async (req, res) => {
         walletAddressChange: user.walletAddressChange,
         totalChild: tree ? tree.countChild : 0,
         income: tree ? tree.income : 0,
+        isOld: user.isOld
       },
       accessToken,
       refreshToken,

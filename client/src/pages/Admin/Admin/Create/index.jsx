@@ -78,7 +78,7 @@ const CreateAdmin = () => {
             className="md:flex no-wrap md:-mx-2 "
           >
             <div className="w-full">
-              <div className="bg-white py-6 border-t-4 border-NoExcuseChallenge">
+              <div className="bg-white py-6 border-t-4 border-DreamChain">
                 <div className="text-gray-700">
                   <div className="grid grid-cols-1 text-sm">
                     <div className="grid lg:grid-cols-2 grid-cols-1">
@@ -162,7 +162,7 @@ const CreateAdmin = () => {
                 <button
                   type="submit"
                   disabled={loadingUpdate}
-                  className="w-full flex justify-center items-center hover:underline bg-black text-NoExcuseChallenge font-bold rounded-full my-6 py-4 px-8 shadow-lg focus:outline-none focus:shadow-outline transform transition hover:scale-105 duration-300 ease-in-out"
+                  className="w-full flex justify-center items-center hover:underline bg-black text-DreamChain font-bold rounded-full my-6 py-4 px-8 shadow-lg focus:outline-none focus:shadow-outline transform transition hover:scale-105 duration-300 ease-in-out"
                 >
                   {loadingUpdate && <Loading />}
                   {t("create")}

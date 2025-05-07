@@ -7,14 +7,14 @@ const Mechanism: React.FC = () => {
       <div className="w-full md:p-24 py-24 px-10 space-y-10">
         <div>
           <h1 className="text-3xl font-bold mb-4">
-            NoExcuseChallenge Mechanism
+            DreamChain Mechanism
           </h1>
           <p className="">
-            At NoExcuseChallenge, we operate on a robust and transparent
+            At DreamChain, we operate on a robust and transparent
             mechanism designed to foster growth, fairness, and collaboration
             within the community. Our mechanism ensures that all members
             contribute meaningfully while benefiting from the ecosystem. Below
-            are the key components of the NoExcuseChallenge mechanism:
+            are the key components of the DreamChain mechanism:
           </p>
         </div>
         <div className="space-y-8">
@@ -25,7 +25,7 @@ const Mechanism: React.FC = () => {
             <ul className="grid md:grid-cols-2 list-disc gap-4 md:gap-8">
               <li className="ml-6">
                 Members are required to actively participate in the growth of
-                NoExcuseChallenge by introducing a minimum of 2 new members to
+                DreamChain by introducing a minimum of 2 new members to
                 qualify for any rewards and benefits.
               </li>
               <li className="ml-6">
@@ -42,13 +42,13 @@ const Mechanism: React.FC = () => {
             </b>
             <ul className="grid md:grid-cols-2 list-disc gap-4 md:gap-8">
               <li className="ml-6">
-                NoExcuseChallenge ensures that rewards and benefits are
+                DreamChain ensures that rewards and benefits are
                 distributed transparently and fairly.
               </li>
               <li className="ml-6">
                 The allocation of benefits is based on each member’s
                 contributions, including their referrals, engagement in
-                activities, and adherence to NoExcuseChallenge guidelines.
+                activities, and adherence to DreamChain guidelines.
               </li>
             </ul>
           </div>
@@ -91,7 +91,7 @@ const Mechanism: React.FC = () => {
             </b>
             <ul className="grid md:grid-cols-2 list-disc gap-4 md:gap-8">
               <li className="ml-6">
-                NoExcuseChallenge operates on a giving and receiving model,
+                DreamChain operates on a giving and receiving model,
                 where members contribute to the community and, in turn, receive
                 support to achieve their dreams.
               </li>
@@ -115,7 +115,7 @@ const Mechanism: React.FC = () => {
               </li>
               <li className="ml-6">
                 This mechanism ensures that the community has a voice in shaping
-                NoExcuseChallenge’s future, creating a sense of ownership and
+                DreamChain’s future, creating a sense of ownership and
                 accountability.
               </li>
             </ul>
@@ -128,7 +128,7 @@ const Mechanism: React.FC = () => {
             </b>
             <ul className="grid md:grid-cols-2 list-disc gap-4 md:gap-8">
               <li className="ml-6">
-                Members can access NoExcuseChallenge services anytime, anywhere
+                Members can access DreamChain services anytime, anywhere
                 through user-friendly mobile and web applications.
               </li>
               <li className="ml-6">
@@ -146,7 +146,7 @@ const Mechanism: React.FC = () => {
             </b>
             <ul className="grid md:grid-cols-2 list-disc gap-4 md:gap-8">
               <li className="ml-6">
-                NoExcuseChallenge prioritizes member data security and complies
+                DreamChain prioritizes member data security and complies
                 with relevant regulations to protect sensitive information.
               </li>
               <li className="ml-6">
@@ -168,15 +168,15 @@ const Mechanism: React.FC = () => {
               </li>
               <li className="ml-6">
                 This mechanism motivates ongoing engagement and ensures
-                NoExcuseChallenge remains vibrant and dynamic.
+                DreamChain remains vibrant and dynamic.
               </li>
             </ul>
           </div>
         </div>
         <div className="bg-[#F2F4F7] p-4 rounded-2xl">
-          NoExcuseChallenge’s mechanism is designed to balance growth, fairness,
+          DreamChain’s mechanism is designed to balance growth, fairness,
           and community-driven collaboration. By aligning individual
-          contributions with collective success, NoExcuseChallenge empowers
+          contributions with collective success, DreamChain empowers
           members to achieve their dreams while fostering a supportive and
           thriving ecosystem.
         </div>

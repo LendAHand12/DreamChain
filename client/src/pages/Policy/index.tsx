@@ -6,11 +6,11 @@ const PolicyPage: React.FC = () => {
     <DefaultLayout>
       <div className="w-full md:p-24 py-24 px-10 space-y-10">
         <div>
-          <h1 className="text-3xl font-bold mb-4">NoExcuseChallenge Policy</h1>
+          <h1 className="text-3xl font-bold mb-4">DreamChain Policy</h1>
           <p className="">
-            Welcome to NoExcuseChallenge, where we build a supportive and thriving
+            Welcome to DreamChain, where we build a supportive and thriving
             community dedicated to helping members achieve their dreams through
-            mutual collaboration and innovation. By joining NoExcuseChallenge, members
+            mutual collaboration and innovation. By joining DreamChain, members
             agree to abide by the following policies and guidelines to ensure a
             harmonious and productive environment for everyone.
           </p>
@@ -20,7 +20,7 @@ const PolicyPage: React.FC = () => {
             <b className="text-xl font-bold">1. Voluntary Participation</b>
             <ul className="grid md:grid-cols-2 list-disc gap-4 md:gap-8">
               <li className="ml-6">
-                Membership in NoExcuseChallenge is entirely voluntary. Members are free
+                Membership in DreamChain is entirely voluntary. Members are free
                 to join without coercion, contribute, and engage at their own
                 discretion.
               </li>
@@ -38,12 +38,12 @@ const PolicyPage: React.FC = () => {
             <b className="text-xl font-bold">2. Commitment to Guidelines</b>
             <ul className="grid md:grid-cols-2 list-disc gap-4 md:gap-8">
               <li className="ml-6">
-                By becoming a member, you agree to follow NoExcuseChallenge’s
+                By becoming a member, you agree to follow DreamChain’s
                 guidelines, which are designed to promote fairness,
                 transparency, and respect within the community.
               </li>
               <li className="ml-6">
-                Members are expected to adhere to the principles of NoExcuseChallenge,
+                Members are expected to adhere to the principles of DreamChain,
                 including collaboration, accountability, and respect for others.
               </li>
             </ul>
@@ -86,12 +86,12 @@ const PolicyPage: React.FC = () => {
             <b className="text-xl font-bold">5. Contributions and Benefits</b>
             <ul className="grid md:grid-cols-2 list-disc gap-4 md:gap-8">
               <li className="ml-6">
-                Contributions made to NoExcuseChallenge, whether financial or through
+                Contributions made to DreamChain, whether financial or through
                 participation, are voluntary and non-refundable.
               </li>
               <li className="ml-6">
                 Benefits and rewards will be distributed fairly and
-                transparently, based on NoExcuseChallenge’s established contribution
+                transparently, based on DreamChain’s established contribution
                 and engagement criteria.
               </li>
             </ul>
@@ -106,7 +106,7 @@ const PolicyPage: React.FC = () => {
                 their account details and personal information.
               </li>
               <li className="ml-6">
-                NoExcuseChallenge is committed to protecting member data in compliance
+                DreamChain is committed to protecting member data in compliance
                 with applicable privacy laws. Members must not share or misuse
                 sensitive information belonging to others.
               </li>
@@ -118,7 +118,7 @@ const PolicyPage: React.FC = () => {
             <b className="text-xl font-bold">7. Prohibited Activities</b>
             <p className="font-medium">
               The following activities are strictly prohibited within the
-              NoExcuseChallenge community:
+              DreamChain community:
             </p>
             <ul className="grid md:grid-cols-3 gap-4 md:gap-8">
               <li className="flex items-start gap-6">
@@ -198,7 +198,7 @@ const PolicyPage: React.FC = () => {
                 </svg>
 
                 <span>
-                  Speaking negatively about other members or the NoExcuseChallenge
+                  Speaking negatively about other members or the DreamChain
                   community.
                 </span>
               </li>
@@ -228,16 +228,16 @@ const PolicyPage: React.FC = () => {
         <div className="space-y-8">
           <div className="space-y-4">
             <b className="text-xl font-bold">
-              8. Commitment to the NoExcuseChallenge Mission
+              8. Commitment to the DreamChain Mission
             </b>
             <ul className="grid md:grid-cols-2 list-disc gap-4 md:gap-8">
               <li className="ml-6">
                 Members are expected to actively contribute to the success and
-                growth of the community by aligning with NoExcuseChallenge’s mission of
+                growth of the community by aligning with DreamChain’s mission of
                 mutual giving and receiving.
               </li>
               <li className="ml-6">
-                NoExcuseChallenge reserves the right to remove members who fail to
+                DreamChain reserves the right to remove members who fail to
                 adhere to these policies or disrupt the community.
               </li>
             </ul>
@@ -249,10 +249,10 @@ const PolicyPage: React.FC = () => {
             <ul className="grid md:grid-cols-2 list-disc gap-4 md:gap-8">
               <li className="ml-6">
                 In the event of a dispute, members are encouraged to reach out
-                to NoExcuseChallenge’s support team for mediation.
+                to DreamChain’s support team for mediation.
               </li>
               <li className="ml-6">
-                NoExcuseChallenge aims to resolve conflicts fairly and amicably in
+                DreamChain aims to resolve conflicts fairly and amicably in
                 accordance with its policies.
               </li>
             </ul>
@@ -263,7 +263,7 @@ const PolicyPage: React.FC = () => {
             <b className="text-xl font-bold">10. Changes to the Policy</b>
             <ul className="grid md:grid-cols-2 list-disc gap-4 md:gap-8">
               <li className="ml-6">
-                NoExcuseChallenge reserves the right to update or modify these policies
+                DreamChain reserves the right to update or modify these policies
                 as needed to reflect changes in the platform, community, or
                 applicable laws.
               </li>
@@ -276,7 +276,7 @@ const PolicyPage: React.FC = () => {
           </div>
         </div>
         <div className="bg-[#F2F4F7] p-4 rounded-2xl">
-          By joining NoExcuseChallenge, you contribute to a vision of collaboration,
+          By joining DreamChain, you contribute to a vision of collaboration,
           transparency, and shared success. Together, we can create a platform
           that empowers individuals and builds a community where dreams turn
           into reality.
