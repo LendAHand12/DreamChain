@@ -220,7 +220,7 @@ const ExportUsersPage = () => {
           )}
           <button
             type="submit"
-            className="flex justify-center items-center hover:underline bg-black text-DreamChain font-bold rounded-md my-6 py-2 px-6 shadow-lg focus:outline-none focus:shadow-outline transform transition hover:scale-105 duration-300 ease-in-out"
+            className="flex justify-center items-center hover:underline bg-black text-NoExcuseChallenge font-bold rounded-md my-6 py-2 px-6 shadow-lg focus:outline-none focus:shadow-outline transform transition hover:scale-105 duration-300 ease-in-out"
           >
             Export
           </button>

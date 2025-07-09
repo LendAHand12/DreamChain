@@ -95,7 +95,7 @@ const Admins = () => {
           </div>
           <button
             onClick={() => navigate("/admin/create-admin")}
-            className="px-8 py-4 flex text-xs justify-center items-center hover:underline bg-black text-DreamChain font-bold rounded-full shadow-lg focus:outline-none focus:shadow-outline transform transition hover:scale-105 duration-300 ease-in-out"
+            className="px-8 py-4 flex text-xs justify-center items-center hover:underline bg-black text-NoExcuseChallenge font-bold rounded-full shadow-lg focus:outline-none focus:shadow-outline transform transition hover:scale-105 duration-300 ease-in-out"
           >
             {t("createAdmin")}
           </button>
@@ -145,7 +145,7 @@ const Admins = () => {
                         ?.actions.includes("read") && (
                         <button
                           onClick={() => handleDetail(ele._id)}
-                          className="font-medium text-gray-500 hover:text-DreamChain"
+                          className="font-medium text-gray-500 hover:text-NoExcuseChallenge"
                         >
                           <svg
                             fill="currentColor"

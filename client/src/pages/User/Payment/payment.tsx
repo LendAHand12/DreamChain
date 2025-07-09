@@ -70,7 +70,7 @@ const PaymentPage = () => {
         const { transactionHash } = referralTransaction;
         await donePayment(transactionHash);
         setPaymentCompleted(true);
-        // window.location.reload();
+        window.location.reload();
       } else {
         setLoadingPayment(false);
         throw new Error(t('payment error'));
@@ -124,7 +124,7 @@ const PaymentPage = () => {
                     <div className="mb-3">
                       <p className="text-lg mb-2 ml-1">
                         <span className="font-bold">{t('buyPackage')}</span> :
-                        DreamChain
+                        NoExcuseChallenge
                       </p>
                     </div>
                     <div className="mb-3">
@@ -148,6 +148,8 @@ const PaymentPage = () => {
                             ? 'bg-pink-100'
                             : payment.type === 'COMPANY'
                             ? 'bg-purple-100'
+                            : payment.type === 'KYC'
+                            ? 'bg-teal-100'
                             : 'bg-blue-50 text-blue-800'
                         }`}
                         role="alert"
@@ -176,6 +178,8 @@ const PaymentPage = () => {
                                 ? 'Dream Pool'
                                 : payment.type === 'COMPANY'
                                 ? 'HEWE'
+                                : payment.type === 'KYC'
+                                ? 'KYC Fee'
                                 : t('Foundation Contribution')}
                               <span> : </span>
                             </span>

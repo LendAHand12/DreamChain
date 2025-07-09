@@ -185,7 +185,7 @@ const DreamPoolPage: React.FC = () => {
               onClick={() => setCurrentTier(i + 1)}
               className={`flex justify-center items-center hover:underline font-medium ${
                 currentTier === i + 1
-                  ? 'bg-black text-DreamChain border-DreamChain'
+                  ? 'bg-black text-NoExcuseChallenge border-NoExcuseChallenge'
                   : 'text-gray-200'
               } rounded-full py-4 px-8 border focus:outline-none focus:shadow-outline transform transition hover:scale-105 duration-300 ease-in-out`}
             >
@@ -204,7 +204,7 @@ const DreamPoolPage: React.FC = () => {
                 ?.find((p) => p.page.path === '/admin/dreampool')
                 ?.actions.includes('update') && (
                 <button
-                  className="text-DreamChain hover:opacity-70"
+                  className="text-NoExcuseChallenge hover:opacity-70"
                   onClick={() => setShowEditDreampool(true)}
                 >
                   <svg
@@ -244,7 +244,7 @@ const DreamPoolPage: React.FC = () => {
           )}
 
           <div className="flex flex-col gap-4">
-            <p className="text-xl text-DreamChain">DreamPool Total :</p>
+            <p className="text-xl text-NoExcuseChallenge">DreamPool Total :</p>
             <div className="relative w-full sm:w-64">
               <img src={FRAME_PIG} className="sm:w-64 h-full" />
               <p className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-xl font-bold text-[#F4E096]">
@@ -306,9 +306,15 @@ const DreamPoolPage: React.FC = () => {
                     !loading &&
                     iceBreakers.map((ele) => (
                       <tr className="border-b" key={ele._id}>
-                        <td className="px-6 py-4">{ele.userId.userId}</td>
                         <td className="px-6 py-4">
-                          {shortenWalletAddress(ele.userId.email, 16)}
+                          {ele.userId && ele.userId.userId
+                            ? ele.userId.userId
+                            : 'Unknow'}
+                        </td>
+                        <td className="px-6 py-4">
+                          {ele.userId && ele.userId.email
+                            ? shortenWalletAddress(ele.userId.email, 16)
+                            : 'Unknow'}
                         </td>
                         <td className="px-6 py-4">
                           {new Date(ele.createdAt).toLocaleDateString('vi')}

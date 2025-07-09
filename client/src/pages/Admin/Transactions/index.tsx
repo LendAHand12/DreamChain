@@ -142,7 +142,7 @@ const AdminTransactionsPage = () => {
               onClick={() => handleChangeTier(i + 1)}
               className={`flex justify-center items-center hover:underline font-medium ${
                 parseInt(objectFilter.tier) === i + 1
-                  ? 'bg-black text-DreamChain'
+                  ? 'bg-black text-NoExcuseChallenge'
                   : ''
               } rounded-full py-4 px-8 border focus:outline-none focus:shadow-outline transform transition hover:scale-105 duration-300 ease-in-out`}
             >
@@ -170,6 +170,9 @@ const AdminTransactionsPage = () => {
                   </option>
                   <option value="PIG" key="PIG">
                     DreamPool
+                  </option>
+                  <option value="KYC" key="KYC">
+                    KYC Fee
                   </option>
                   <option value="DIRECT" key="DIRECT">
                     {t('DIRECT')}{' '}
@@ -292,7 +295,7 @@ const AdminTransactionsPage = () => {
                     >
                       <div className="">
                         <div className="text-base font-semibold">
-                          {ele.userId}
+                          {ele.userId}{' '}
                         </div>
                         <div className="font-normal text-gray-500">
                           {ele.email}
@@ -311,8 +314,17 @@ const AdminTransactionsPage = () => {
                               'Purchase HEWE'
                             ) : (
                               <div className="">
-                                <div className="text-base font-semibold">
-                                  {ele.userReceiveId}
+                                <div className="text-base flex items-center gap-2 font-semibold">
+                                  {ele.userReceiveId}{' '}
+                                  <div
+                                    className={`w-4 h-4 rounded-full ${
+                                      ele.isOk && ele.isOk === true
+                                        ? 'bg-green-500'
+                                        : ele.isOk && ele.isOk === false
+                                        ? 'bg-red-500'
+                                        : ''
+                                    }`}
+                                  ></div>
                                 </div>
                                 <div className="font-normal text-gray-500">
                                   {ele.userReceiveEmail}

@@ -49,7 +49,7 @@ const NewsDetailPage = () => {
                 <h1 className="sm:text-4xl text-3xl font-medium title-font mb-2 text-gray-900">
                   {news?.title_en}
                 </h1>
-                <div className="h-1 w-20 bg-DreamChain rounded"></div>
+                <div className="h-1 w-20 bg-NoExcuseChallenge rounded"></div>
               </div>
             </div>
             <div className="md:mt-10">
@@ -58,7 +58,7 @@ const NewsDetailPage = () => {
                 <div>
                   <p className="text-sm text-gray-600">Posted By</p>
                   <p className="text-black font-semibold mt-2">
-                    DreamChain
+                    NoExcuseChallenge
                   </p>
                 </div>
                 <div>

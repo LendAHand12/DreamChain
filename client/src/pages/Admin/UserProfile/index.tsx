@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from 'react';
 
 import User from '@/api/User';
+import KYC from '@/api/KYC';
 import Loading from '@/components/Loading';
 import USER_RANKINGS from '@/constants/userRankings';
 import { confirmAlert } from 'react-confirm-alert';
@@ -24,6 +25,7 @@ const UserProfile = () => {
   const { t } = useTranslation();
   const [loading, setLoading] = useState(true);
   const [loadingUpdate, setLoadingUpdate] = useState(false);
+  const [loadingCheckKyc, setLoadingCheckKyc] = useState(false);
   const [loadingDelete, setLoadingDelete] = useState(false);
   const [data, setData] = useState({});
   const [isEditting, setEditting] = useState(false);
@@ -34,6 +36,7 @@ const UserProfile = () => {
   const [phone, setPhone] = useState('');
   const [errorPhone, setErrPhone] = useState(false);
   const [isBonusRef, setIsBonusRef] = useState(false);
+  const [kycFee, setKycFee] = useState(false);
   const [walletChange, setWalletChange] = useState('');
   const [loadingChangeWallet, setLoadingChangeWallet] = useState(false);
 
@@ -61,7 +64,7 @@ const UserProfile = () => {
             openLah,
             closeLah,
             bonusRef,
-            walletAddressChange,
+            kycFee,
           } = response.data;
           setValue('userId', userId);
           setValue('email', email);
@@ -72,7 +75,7 @@ const UserProfile = () => {
           setCurrentOpenLah(openLah);
           setCurrentCloseLah(closeLah);
           setIsBonusRef(bonusRef);
-          setWalletChange(walletAddressChange);
+          setKycFee(kycFee);
         })
         .catch((error) => {
           let message =
@@ -91,12 +94,6 @@ const UserProfile = () => {
         return;
       }
       var formData = new FormData();
-
-      const { imgFront } = values;
-      const [fileObjectImgFront] = imgFront;
-
-      const { imgBack } = values;
-      const [fileObjectImgBack] = imgBack;
 
       if (values.rewardHewe !== data.totalHewe) {
         formData.append('rewardHewe', values.rewardHewe);
@@ -131,12 +128,6 @@ const UserProfile = () => {
       if (currentCloseLah !== data.closeLah) {
         formData.append('closeLah', currentCloseLah);
       }
-      if (imgFront) {
-        formData.append('imgFront', fileObjectImgFront);
-      }
-      if (imgBack) {
-        formData.append('imgBack', fileObjectImgBack);
-      }
       if (values.newStatus !== data.status) {
         formData.append('newStatus', values.newStatus);
       }
@@ -160,7 +151,13 @@ const UserProfile = () => {
         formData.append('holdLevel', values.holdLevel);
       }
 
+      if (values.level !== data.level) {
+        formData.append('level', values.level);
+      }
+
       formData.append('isRegistered', values.isRegistered);
+
+      formData.append('removeErrLahCode', values.removeErrLahCode);
 
       setLoadingUpdate(true);
       await User.adminUpdateUser(id, formData)
@@ -357,21 +354,33 @@ const UserProfile = () => {
       });
   };
 
+  const handleCheckKyc = async () => {
+    setLoadingCheckKyc(true);
+    await KYC.checkKyc({ userId: id })
+      .then((response) => {
+        const { message, success } = response.data;
+        setLoadingCheckKyc(false);
+        if (success) {
+          toast.success(t(message));
+          setRefresh(!refresh);
+        } else {
+          toast.error(message);
+        }
+      })
+      .catch((error) => {
+        let message =
+          error.response && error.response.data.message
+            ? error.response.data.message
+            : error.message;
+        toast.error(t(message));
+        setLoadingCheckKyc(false);
+      });
+  };
+
   useEffect(() => {
     if (data.countPay === 0) {
       setPackageOptions(['A', 'B', 'C']);
     } else {
-      // if (data.buyPackage === "A") {
-      //   setPackageOptions([]);
-      // } else if (data.buyPackage === "B") {
-      //   if (data.countPay === 7) {
-      //     setPackageOptions(["B", "C"]);
-      //   }
-      // } else if (data.buyPackage === "C") {
-      //   if (data.countPay === 7) {
-      //     setPackageOptions(["B", "C"]);
-      //   }
-      // }
       setPackageOptions([data.buyPackage]);
     }
   }, [data]);
@@ -417,9 +426,34 @@ const UserProfile = () => {
             </div>
           )}
 
+          {kycFee && (
+            <div
+              className="w-full bg-orange-100 border border-orange-400 text-orange-700 px-4 py-3 rounded mb-5"
+              role="alert"
+            >
+              <span className="block sm:inline">
+                {t(
+                  'To enhance security, facial recognition verification and a 2 USDT/year fee will be applied. The fee will be auto-deducted annually. Thank you for your support!',
+                )}
+              </span>
+            </div>
+          )}
+
+          {data.tier === 2 && data.tryToTier2 === 'YES' && (
+            <div
+              className="w-full text-lg bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-5"
+              role="alert"
+            >
+              <span className="block sm:inline">
+                You have only <b>{data.countdown}</b> days left to complete the
+                126 required IDs to be eligible for Tier 2 benefits.
+              </span>
+            </div>
+          )}
+
           <form onSubmit={handleSubmit(onSubmit)} className="md:flex no-wrap">
             <div className="w-full lg:w-3/12 lg:mx-2 mb-4 lg:mb-0">
-              <div className="bg-white shadow-md p-3 border-t-4 border-DreamChain">
+              <div className="bg-white shadow-md p-3 border-t-4 border-NoExcuseChallenge">
                 <ul className=" text-gray-600 py-2 px-3 mt-3 divide-y rounded">
                   <li className="flex items-center py-3">
                     <span>{t('status')}</span>
@@ -633,7 +667,7 @@ const UserProfile = () => {
                   )}
                 </ul>
               </div>
-              <div className="mt-10 bg-white shadow-md p-3 border-t-4 border-DreamChain">
+              <div className="mt-10 bg-white shadow-md p-3 border-t-4 border-NoExcuseChallenge">
                 <p className="uppercase mt-2 font-bold">{t('children')}</p>
                 <div className="py-2">
                   <ul>
@@ -650,8 +684,12 @@ const UserProfile = () => {
                                   ? 'bg-[#8c8c8c]'
                                   : ele.isRed
                                   ? 'bg-[#b91c1c]'
+                                  : ele.isBlue
+                                  ? 'bg-[#0000ff]'
                                   : ele.isYellow
                                   ? 'bg-[#F4B400]'
+                                  : ele.isPink
+                                  ? 'bg-[#e600769c]'
                                   : 'bg-[#16a34a]'
                               } py-1 px-2 rounded text-white text-sm`}
                             >
@@ -664,7 +702,53 @@ const UserProfile = () => {
                   </ul>
                 </div>
               </div>
-              <div className="mt-10 bg-white shadow-md p-3 border-t-4 border-DreamChain">
+              {data.tier === 2 && (
+                <div className="mt-10 bg-white shadow-md p-3 border-t-4 border-NoExcuseChallenge">
+                  <p className="uppercase mt-2 font-bold">
+                    {t('Sales are working')}
+                  </p>
+                  <div className="lg:py-2">
+                    <ul className="flex flex-col list-disc">
+                      <li className="ml-4">
+                        Branch 1 : {data.notEnoughtChild?.countChild1 + 1} IDs
+                      </li>
+                      <li className="ml-4">
+                        Branch 2 : {data.notEnoughtChild?.countChild2 + 1} IDs
+                      </li>
+                    </ul>
+                  </div>
+                  <div className="py-2">
+                    <p className="uppercase mt-2 font-bold">
+                      {t('Sales must be compensated')}
+                    </p>
+                    <div className="lg:py-2">
+                      <ul className="flex flex-col list-disc">
+                        <li className="ml-4">
+                          Branch 1 :{' '}
+                          {import.meta.env.VITE_MAX_IDS_OF_BRANCH -
+                            data.notEnoughtChild?.countChild1 >
+                          0
+                            ? import.meta.env.VITE_MAX_IDS_OF_BRANCH -
+                              data.notEnoughtChild?.countChild1
+                            : 0 || 0}{' '}
+                          IDs
+                        </li>
+                        <li className="ml-4">
+                          Branch 2 :{' '}
+                          {import.meta.env.VITE_MAX_IDS_OF_BRANCH -
+                            data.notEnoughtChild?.countChild2 >
+                          0
+                            ? import.meta.env.VITE_MAX_IDS_OF_BRANCH -
+                              data.notEnoughtChild?.countChild2
+                            : 0 || 0}{' '}
+                          IDs
+                        </li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+              )}
+              <div className="mt-10 bg-white shadow-md p-3 border-t-4 border-NoExcuseChallenge">
                 <p className="uppercase mt-2 font-bold">{t('refUserName')}</p>
                 <div className="py-2">
                   <ul>
@@ -682,7 +766,7 @@ const UserProfile = () => {
                   </ul>
                 </div>
               </div>
-              <div className="mt-10 bg-white shadow-md p-3 border-t-4 border-DreamChain">
+              <div className="mt-10 bg-white shadow-md p-3 border-t-4 border-NoExcuseChallenge">
                 <p className="uppercase mt-2 font-bold">{t('oldParent')}</p>
                 {data.listOldParent.length > 0 && (
                   <div className="py-2">
@@ -775,7 +859,7 @@ const UserProfile = () => {
               </div> */}
             </div>
             <div className="w-full lg:w-2/3 lg:mx-2">
-              <div className="bg-white p-6 shadow-md rounded-sm border-t-4 border-DreamChain">
+              <div className="bg-white p-6 shadow-md rounded-sm border-t-4 border-NoExcuseChallenge">
                 <div className="text-gray-700">
                   <div className="grid grid-cols-1 text-sm">
                     <div className="grid lg:grid-cols-2 grid-cols-1">
@@ -902,7 +986,7 @@ const UserProfile = () => {
                               type="radio"
                               {...register('isRegistered')}
                             ></input>
-                            <p>Đã hoàn thành</p>
+                            <p>Finished</p>
                           </div>
                         )}
                         {!isEditting || data.countPay >= 1
@@ -1064,6 +1148,23 @@ const UserProfile = () => {
                       <div className="px-4 py-2">{data.totalHold} USDT</div>
                     </div>
                     <div className="grid lg:grid-cols-2 grid-cols-1">
+                      <div className="px-4 py-2 font-semibold">
+                        Overdue referral
+                      </div>
+                      <div className="px-4 py-2">
+                        {isEditting && data.errLahCode !== '' && (
+                          <div className="flex gap-4">
+                            <input
+                              type="radio"
+                              {...register('removeErrLahCode')}
+                            ></input>
+                            <p>Reset</p>
+                          </div>
+                        )}
+                        {!isEditting && data.errLahCode}
+                      </div>
+                    </div>
+                    <div className="grid lg:grid-cols-2 grid-cols-1">
                       <div className="px-4 py-2 font-semibold">{t('fine')}</div>
                       {isEditting ? (
                         <div className="px-4">
@@ -1077,6 +1178,26 @@ const UserProfile = () => {
                         </div>
                       ) : (
                         <div className="px-4 py-2">{data.fine}</div>
+                      )}
+                    </div>
+                    <div className="grid lg:grid-cols-2 grid-cols-1">
+                      <div className="px-4 py-2 font-semibold">Level</div>
+                      {isEditting ? (
+                        <div className="px-4">
+                          <input
+                            className="w-full px-4 py-1.5 rounded-md border border-gray-200 placeholder-gray-500 text-sm focus:outline-none focus:border-gray-400 focus:bg-white"
+                            {...register('level', {
+                              required: 'Level is required',
+                            })}
+                            defaultValue={
+                              data.currentLayer[parseInt(data.tier) - 1]
+                            }
+                          />
+                        </div>
+                      ) : (
+                        <div className="px-4 py-2">
+                          {data.currentLayer[parseInt(data.tier) - 1]}
+                        </div>
                       )}
                     </div>
                     <div className="grid lg:grid-cols-2 grid-cols-1">
@@ -1097,47 +1218,46 @@ const UserProfile = () => {
                         <div className="px-4 py-2">{data.note}</div>
                       )}
                     </div>
-
-                    <>
-                      <div className="w-full flex justify-center">
-                        <div className="w-full grid lg:grid-cols-2 gap-2 lg:gap-0 items-center py-2 px-4">
-                          <p className="font-semibold"> {t('idCardFront')} :</p>
-                          <div className="flex flex-col items-center justify-center w-full">
-                            <UploadFile
-                              register={register}
-                              watch={watch}
-                              required={false}
-                              imgSrc={data.imgFront}
-                              userStatus={data.status}
-                              name="imgFront"
-                              isEdit={isEditting}
+                    <div className="w-full flex justify-center">
+                      <div className="w-full grid lg:grid-cols-2 gap-2 lg:gap-0 items-center py-2 px-4">
+                        <p className="font-semibold"> FaceTec Image :</p>
+                        <div className="flex flex-col items-center justify-center w-full">
+                          {data.facetecTid !== '' && (
+                            <img
+                              src={`${
+                                import.meta.env.VITE_FACETEC_URL
+                              }/api/liveness/image?tid=${data.facetecTid}`}
+                              className="w-full h-full rounded-md object-cover"
+                              alt="FaceTec image"
                             />
-                            <p className="text-red-500 text-sm">
-                              {errors.imgFront?.message}
-                            </p>
-                          </div>
+                          )}
                         </div>
                       </div>
-                      <div className="flex justify-center">
-                        <div className="w-full grid lg:grid-cols-2 gap-2 lg:gap-0 items-center py-2 px-4">
-                          <p className="font-semibold"> {t('idCardBack')} :</p>
-                          <div className="flex items-center justify-center w-full">
-                            <UploadFile
-                              register={register}
-                              watch={watch}
-                              required={false}
-                              name="imgBack"
-                              imgSrc={data.imgBack}
-                              userStatus={data.status}
-                              isEdit={isEditting}
-                            />
-                            <p className="text-red-500 text-sm">
-                              {errors.imgBack?.message}
-                            </p>
-                          </div>
+                    </div>
+                    <div className="w-full flex justify-center">
+                      <div className="w-full grid lg:grid-cols-2 gap-2 lg:gap-0 items-center py-2 px-4">
+                        <p className="font-semibold"> FaceTec Url :</p>
+                        <div className="flex flex-col w-full">
+                          {data.facetecTid !== '' && (
+                            <a
+                              target="_blank"
+                              className="text-blue-500"
+                              href={`${
+                                import.meta.env.VITE_FACETEC_DASHBOARD_URL
+                              }/session-details?path=%2Fenrollment-3d&externalDatabaseRefID=ID_${
+                                data.id
+                              }`}
+                            >
+                              {`${
+                                import.meta.env.VITE_FACETEC_DASHBOARD_URL
+                              }/session-details?path=%2Fenrollment-3d&externalDatabaseRefID=ID_${
+                                data.id
+                              }`}
+                            </a>
+                          )}
                         </div>
                       </div>
-                    </>
+                    </div>
                   </div>
                 </div>
                 {/* {data.status === 'PENDING' && (
@@ -1155,7 +1275,7 @@ const UserProfile = () => {
                     <button
                       onClick={() => setEditting(true)}
                       disabled={loading}
-                      className="w-full flex justify-center items-center hover:underline bg-black text-DreamChain font-semibold rounded-full my-2 py-2 px-6 shadow-lg focus:outline-none focus:shadow-outline transform transition hover:scale-105 duration-300 ease-in-out"
+                      className="w-full flex justify-center items-center hover:underline bg-black text-NoExcuseChallenge font-semibold rounded-full my-2 py-2 px-6 shadow-lg focus:outline-none focus:shadow-outline transform transition hover:scale-105 duration-300 ease-in-out"
                     >
                       {loading && <Loading />}
                       {t('update')}
@@ -1175,7 +1295,7 @@ const UserProfile = () => {
                   data.status !== 'DELETED' && (
                     <button
                       onClick={() => setEditting(true)}
-                      className="w-full flex justify-center items-center hover:underline text-DreamChain bg-black font-bold rounded-full my-2 py-2 px-6 shadow-lg focus:outline-none focus:shadow-outline transform transition hover:scale-105 duration-300 ease-in-out"
+                      className="w-full flex justify-center items-center hover:underline text-NoExcuseChallenge bg-black font-bold rounded-full my-2 py-2 px-6 shadow-lg focus:outline-none focus:shadow-outline transform transition hover:scale-105 duration-300 ease-in-out"
                     >
                       {t('edit')}
                     </button>
@@ -1201,6 +1321,19 @@ const UserProfile = () => {
                       className="w-full flex justify-center items-center cursor-pointer hover:underline border font-bold rounded-full my-2 py-2 px-6 shadow-lg focus:outline-none focus:shadow-outline transform transition hover:scale-105 duration-300 ease-in-out bg-orange-500 text-white"
                     >
                       {t('Approve change wallet address')}
+                    </div>
+                  )}
+                {userInfo?.permissions
+                  .find((p) => p.page.pageName === 'admin-users-details')
+                  ?.actions.includes('update') &&
+                  data.facetecTid === '' &&
+                  data.status === 'UNVERIFY' && (
+                    <div
+                      onClick={handleCheckKyc}
+                      className="w-full flex justify-center items-center cursor-pointer hover:underline border font-bold rounded-full my-2 py-2 px-6 shadow-lg focus:outline-none focus:shadow-outline transform transition hover:scale-105 duration-300 ease-in-out bg-orange-500 text-white"
+                    >
+                      {loadingCheckKyc && <Loading />}
+                      Check KYC
                     </div>
                   )}
               </div>

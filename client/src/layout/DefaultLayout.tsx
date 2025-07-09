@@ -27,12 +27,17 @@ const DefaultLayout: React.FC<{ children: ReactNode }> = ({ children }) => {
         routes = AdminRoutes.filter((route) => {
           let currentRoute = `${route.link}`;
           let page = permissions.find((ele) => ele.page?.path === currentRoute);
-          if (page && page.actions.includes("read")) {
+          if (page && page.actions.includes('read')) {
             return route;
           }
         });
       } else {
-        routes = userInfo?.isOld ? UserRoutes.filter(ele => ele.title === "Profile") :  UserRoutes;
+        routes =
+          userInfo.errLahCode === 'OVER45'
+            ? UserRoutes.filter((route) => route.link === '/user/profile')
+            : userInfo.tier === 1
+            ? UserRoutes.filter((route) => route.link !== '/user/tier2')
+            : UserRoutes;
       }
     } catch (err) {
       // handleLogout();
@@ -63,8 +68,9 @@ const DefaultLayout: React.FC<{ children: ReactNode }> = ({ children }) => {
         </div>
         {/* <!-- ===== Content Area End ===== --> */}
       </div>
-      <div className="lg:hidden bg-black text-DreamChain text-center py-3">
-        © 2024, made with by <span className="font-bold">DreamChain.</span>
+      <div className="lg:hidden bg-black text-NoExcuseChallenge text-center py-3">
+        © 2024, made with by{' '}
+        <span className="font-bold">NoExcuseChallenge.</span>
       </div>
       {/* <!-- ===== Page Wrapper End ===== --> */}
     </div>

@@ -65,9 +65,9 @@ export const sendActiveLinkOld = async (email, link) => {
     html: `
     <div>
     <h4>
-      Congratulations! You are now a valued member of DreamChain!
+      Congratulations! You are now a valued member of NoExcuseChallenge!
       </h4>
-      DreamChain believes that you will continue contributing significantly to the DreamChain community and work together toward even greater success.
+      NoExcuseChallenge believes that you will continue contributing significantly to the NoExcuseChallenge community and work together toward even greater success.
       <br></br>
       Ameritec IPS specializes in providing security software for mobile devices.
       We are pleased to provide you with the Activation Link (QR CODE) to activate your “MTD “ Ameritec Intrusion Prevention System.
@@ -91,16 +91,16 @@ export const sendActiveLinkOld = async (email, link) => {
       <br></br>
       1.	Please keep your Activation Link (QR CODE) safe and secure.
       <br></br>
-      2.	The license period is 365 days from the date you successfully register as a member on the website: https://DreamChain.live. When the license expires, we will send you an email notification with instructions to renew.
+      2.	The license period is 365 days from the date you successfully register as a member on the website: https://NoExcuseChallenge.live. When the license expires, we will send you an email notification with instructions to renew.
       <br></br>
       3.	This Activation Link is for mobile devices running Android or iOS only.
       <br></br>
       4.	Each Activation Link (QR CODE) is valid for activation on a single device only. Any misuse of the Activation Link may result in the permanent termination of your MTD license.
       <br></br>
       5.	If you have any questions, please contact our technical support team for assistance. Thank you!
-      The DreamChain Team,
+      The NoExcuseChallenge Team,
       <br></br>
-      <b>The DreamChain Team</b>
+      <b>The NoExcuseChallenge Team</b>
     </div>
    `,
     cc: process.env.CC_MAIL,
@@ -123,14 +123,14 @@ export const sendActiveLink = async (senderName, email) => {
   const mailOptions = {
     from: process.env.EMAIL, // sender address
     to: email,
-    subject: "Welcome to DreamChain – Your Journey Begins!",
+    subject: "Welcome to No Excuse Challenge – Your Journey Begins!",
     html: `
     <div>
     Dear <b>${senderName}</b>,
     <br></br>
-    Welcome to <b>DreamChain</b>, powered by <b>DreamChain</b>! 🎉
+    Welcome to <b>No Excuse Challenge</b>, powered by <b>DreamChain</b>! 🎉
     <br></br>
-    You’ve just taken the first step toward a transformative journey where <b>innovation meets opportunity</b>. At <b>DreamChain</b>, we believe in pushing limits, breaking barriers, and empowering individuals to <b>achieve financial freedom and success</b> through blockchain and AI-driven solutions.
+    You’ve just taken the first step toward a transformative journey where <b>innovation meets opportunity</b>. At <b>No Excuse Challenge</b>, we believe in pushing limits, breaking barriers, and empowering individuals to <b>achieve financial freedom and success</b> through blockchain and AI-driven solutions.
     <br></br>
     <h4>
     What’s Next?
@@ -252,26 +252,20 @@ export const sendMailChangeWalletToAdmin = async (mailInfo) => {
   const mailOptions = {
     from: process.env.EMAIL,
     to: process.env.CC_MAIL,
-    subject: "THÔNG TIN NGƯỜI DÙNG CẦN DUYỆT ĐỔI VÍ",
+    subject: "THÔNG TIN NGƯỜI DÙNG CẦN DUYỆT ĐỔI THÔNG TIN",
     html: `
     <div>
     <h1>
-     Thông tin người cần duyệt đổi ví
+     Thông tin người cần duyệt đổi thông tin
     </h1>
     <p>
     <strong>Họ và tên :</strong> ${userName}
-    </p><p>
-    <strong>Số điện thoại :</strong> ${phone}
-    </p>
-    <p>
-    <strong>Email :</strong> ${email}
-    </p>
     <p>
     <strong>Link profile :</strong> <a href="${process.env.FRONTEND_BASE_URL}/admin/users/${userId}" target="_blank">${process.env.FRONTEND_BASE_URL}/admin/users/${userId}</a>
     </p>
     </div>
 			`,
-    cc: [process.env.MAIL_ADMIN1, process.env.MAIL_ADMIN2]
+    cc: [process.env.MAIL_ADMIN1, process.env.MAIL_ADMIN2],
   };
 
   const mailSent = await transporter.sendMail(mailOptions, (err, info) => {
@@ -292,14 +286,14 @@ export const sendMailReceiveCommission = async (mailInfo) => {
   const mailOptions = {
     from: process.env.EMAIL,
     to: email,
-    subject: "Direct Commission from DreamChain",
+    subject: "Direct Commission from No Excuse Challenge",
     html: `
     <div>
     Congratulations! You have received <b>$15</b> commission from user <b>${senderName}</b>.
     <br></br>
-    Thank you for participating in our DreamChain referral program. 
+    Thank you for participating in our NoExcuseChallenge referral program. 
     <br></br>
-    DreamChain believes you will continue to make significant contributions to the DreamChain community as we work together toward even greater success.
+    No Excuse Challenge believes you will continue to make significant contributions to the No Excuse Challenge community as we work together toward even greater success.
     <br></br>
     ________________________________________
     <br></br>
@@ -330,13 +324,13 @@ export const sendMailRefDc = async (mailInfo) => {
   const mailOptions = {
     from: process.env.EMAIL,
     to: email,
-    subject: "DreamChain Fund",
+    subject: "No Excuse Challenge Fund",
     html: `
-      Congratulations! You have received <b>$5</b> DreamChain Contribution Fund from user <b>${senderName}</b>.
+      Congratulations! You have received <b>$5</b> No Excuse Challenge Contribution Fund from user <b>${senderName}</b>.
       <br></br>
-      Thank you for participating in our DreamChain referral program. 
+      Thank you for participating in our No Excuse Challenge referral program. 
       <br></br>
-      DreamChain believes you will continue to make significant contributions to the DreamChain community as we work together toward even greater success.
+      No Excuse Challenge believes you will continue to make significant contributions to the NoExcuseChallenge community as we work together toward even greater success.
       <br></br>
       ________________________________________
       <br></br>
@@ -393,6 +387,52 @@ export const sendMailReject = async (mailInfo) => {
       www.noexcuse.live
 			`,
     cc: process.env.CC_MAIL,
+  };
+
+  const mailSent = await transporter.sendMail(mailOptions, (err, info) => {
+    if (err) {
+      console.log(err);
+    } else {
+      console.log(info);
+    }
+  });
+
+  // send a promise since nodemailer is async
+  if (mailSent) return Promise.resolve(1);
+};
+
+export const sendMailGetHewePrice = async () => {
+  const mailOptions = {
+    from: process.env.EMAIL,
+    to: process.env.MAIL_ADMIN1,
+    subject: "Please check connect API get HEWE price",
+    html: `
+    <h1>Warning: Please check connect API get HEWE price</h1>
+			`,
+    cc: [process.env.CC_MAIL, process.env.MAIL_ADMIN4],
+  };
+
+  const mailSent = await transporter.sendMail(mailOptions, (err, info) => {
+    if (err) {
+      console.log(err);
+    } else {
+      console.log(info);
+    }
+  });
+
+  // send a promise since nodemailer is async
+  if (mailSent) return Promise.resolve(1);
+};
+
+export const sendMailChangeSystemForUser = async (userListString) => {
+  const mailOptions = {
+    from: process.env.EMAIL,
+    to: process.env.MAIL_ADMIN1,
+    subject: "Please check connect API get HEWE price",
+    html: `
+    <h1>Warning: Please select parent ID for the following users for payments to work properly : ${userListString} </h1>
+			`,
+    cc: [process.env.CC_MAIL, process.env.MAIL_ADMIN4],
   };
 
   const mailSent = await transporter.sendMail(mailOptions, (err, info) => {

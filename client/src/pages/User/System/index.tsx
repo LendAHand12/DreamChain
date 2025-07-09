@@ -10,21 +10,31 @@ import './index.css';
 import DefaultLayout from '../../../layout/DefaultLayout';
 
 const colors = [
-  '#ea580c',
-  '#d97706',
-  '#65a30d',
-  '#c026d3',
-  '#be185d',
-  '#e11d48',
-  '#059669',
-  '#0284c7',
-  '#ca8a04',
-  '#0d9488',
-  '#0891b2',
-  '#2563eb',
-  '#4f46e5',
-  '#7c3aed',
-  '#9333ea',
+  // '#ea580c',
+  // '#d97706',
+  // '#65a30d',
+  // '#c026d3',
+  // '#be185d',
+  // '#e11d48',
+  // '#059669',
+  // '#0284c7',
+  // '#ca8a04',
+  // '#0d9488',
+  // '#0891b2',
+  // '#2563eb',
+  // '#4f46e5',
+  // '#7c3aed',
+  // '#9333ea',
+  '#33ccff',
+  '#33ccff',
+  '#33ccff',
+  '#33ccff',
+  '#33ccff',
+  '#33ccff',
+  '#33ccff',
+  '#33ccff',
+  '#33ccff',
+  '#33ccff',
 ];
 
 const SystemPage = () => {
@@ -46,6 +56,8 @@ const SystemPage = () => {
       isRed,
       isYellow,
       isGray,
+      isBlue,
+      isPink,
       totalChild,
       income,
     }) => {
@@ -57,12 +69,16 @@ const SystemPage = () => {
             backgroundColor: isGray
               ? '#8c8c8c'
               : isRed
-              ? '#b91c1c'
+              ? '#ee0000'
+              : isBlue
+              ? '#0033ff'
               : isYellow
-              ? '#F4B400'
+              ? '#ffcc00'
+              : isPink
+              ? '#ff3399'
               : layer <= userInfo.currentLayer[currentTier - 1]
               ? colors[userInfo.currentLayer[currentTier - 1]]
-              : '#16a34a',
+              : '#009933',
           }}
         >
           <div className="flex flex-col items-center">
@@ -115,6 +131,8 @@ const SystemPage = () => {
             isRed={node.isRed}
             isGray={node.isGray}
             isYellow={node.isYellow}
+            isBlue={node.isBlue}
+            isPink={node.isPink}
             totalChild={node.totalChild}
             income={node.income}
           >
@@ -216,7 +234,7 @@ const SystemPage = () => {
                   onClick={() => setCurrentTier(i + 1)}
                   className={`flex justify-center items-center hover:underline font-medium ${
                     currentTier === i + 1
-                      ? 'bg-black text-DreamChain'
+                      ? 'bg-black text-NoExcuseChallenge'
                       : ''
                   } rounded-full my-6 py-4 px-8 border focus:outline-none focus:shadow-outline transform transition hover:scale-105 duration-300 ease-in-out`}
                 >
@@ -227,7 +245,7 @@ const SystemPage = () => {
             {!loading && (
               <button
                 onClick={() => setShowType(!showType)}
-                className="flex justify-center items-center gap-2 hover:underline bg-black text-DreamChain font-bold rounded-full mt-2 mb-6 py-2 px-6 focus:outline-none focus:shadow-outline transform transition hover:scale-105 duration-300 ease-in-out"
+                className="flex justify-center items-center gap-2 hover:underline bg-black text-NoExcuseChallenge font-bold rounded-full mt-2 mb-6 py-2 px-6 focus:outline-none focus:shadow-outline transform transition hover:scale-105 duration-300 ease-in-out"
               >
                 <svg
                   fill="currentColor"

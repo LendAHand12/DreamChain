@@ -1,20 +1,19 @@
 import { useDispatch, useSelector } from 'react-redux';
 import DefaultLayout from '../../../layout/DefaultLayout';
-import { shortenWalletAddress, adjustSales } from '../../../utils';
+import { shortenWalletAddress } from '../../../utils';
 import { useTranslation } from 'react-i18next';
 import Loading from '@/components/Loading';
 import { UPDATE_USER_INFO } from '@/slices/auth';
 import { useForm } from 'react-hook-form';
-import UploadFile from './UploadInfo';
 import User from '@/api/User';
-import Claim from '@/api/Claim';
+import KYC from '@/api/KYC';
 import { useCallback, useEffect, useState } from 'react';
 import { ToastContainer, toast } from 'react-toastify';
 import USER_RANKINGS from '@/constants/userRankings';
 import Modal from 'react-modal';
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js';
-import { Doughnut } from 'react-chartjs-2';
-import ChartDataLabels from 'chartjs-plugin-datalabels';
+import PhoneInput from 'react-phone-number-input';
+import './index.css';
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
@@ -45,19 +44,17 @@ const Profile = () => {
     totalEarning,
     totalHold,
     withdrawPending,
-    chartData,
-    targetSales,
     bonusRef,
-    walletAddressChange,
     currentLayer,
-    isOld
+    facetecTid,
+    kycFee,
+    errLahCode,
+    pendingUpdateInfo,
+    notEnoughtChild,
+    tryToTier2,
+    countdown,
   } = userInfo;
-  const totalChild = adjustSales(chartData, targetSales).reduce(
-    (acc, num) => acc + num,
-    0,
-  );
-  const [imgFront, setImgFront] = useState('');
-  const [imgBack, setImgBack] = useState('');
+
   const [phoneNumber, setPhoneNumber] = useState(phone);
   const [errorPhone, setErrPhone] = useState(false);
   const [isEdit, setIsEdit] = useState(false);
@@ -65,30 +62,22 @@ const Profile = () => {
   const [loadingClaimHewe, setLoadingClaimHewe] = useState(false);
   const [loadingClaimUsdt, setLoadingClaimUsdt] = useState(false);
   const [showModal, setShowModal] = useState(false);
-
-  const data = {
-    labels: ['Group 1', 'Group 2', 'Group 3', 'Remaining target'],
-    datasets: [
-      {
-        label: 'Members',
-        data: [
-          ...adjustSales(chartData, targetSales),
-          targetSales - totalChild,
-        ],
-        backgroundColor: ['#FFCF65', '#02071B', '#C1C9D3', 'red'],
-      },
-    ],
-  };
+  const [showFaceId, setShowFaceId] = useState(
+    facetecTid === '' ? true : false,
+  );
+  const [showMoveSystem, setShowMoveSystem] = useState(false);
+  const [errAgrre, setErrAgrre] = useState(false);
+  const [valueCheckAgrree, setValueCheckAgrree] = useState('');
 
   const {
     register,
     handleSubmit,
-    watch,
     formState: { errors },
   } = useForm({
     defaultValues: {
       idCode: status !== 'REJECTED' ? idCode : null,
       phone,
+      email,
       walletAddress,
       imgBackData: '',
       imgFrontData: '',
@@ -97,58 +86,31 @@ const Profile = () => {
 
   const onSubmit = useCallback(
     async (data) => {
-      const { idCode, walletAddress } = data;
+      const { walletAddress, email } = data;
       if (!phoneNumber || phoneNumber === '') {
         setErrPhone(true);
       } else {
         setErrPhone(false);
-        setLoading(true);
-        var formData = new FormData();
-
-        const { imgFront = [] } = data;
-        const [fileObjectImgFront] = imgFront;
-
-        const { imgBack = [] } = data;
-        const [fileObjectImgBack] = imgBack;
-
-        formData.append('idCode', idCode.trim());
-        formData.append('walletAddress', walletAddress.trim());
-
-        if (fileObjectImgFront) {
-          formData.append('imgFront', fileObjectImgFront);
-        }
-
-        if (fileObjectImgBack) {
-          formData.append('imgBack', fileObjectImgBack);
-        }
-
-        await User.update(id, formData)
-          .then((response) => {
-            setLoading(false);
-            toast.success(t(response.data.message));
-            dispatch(UPDATE_USER_INFO(response.data.data));
-            setIsEdit(false);
-          })
-          .catch((error) => {
-            let message =
-              error.response && error.response.data.error
-                ? error.response.data.error
-                : error.message;
-            toast.error(t(message));
-            setLoading(false);
-          });
+        const callbackUrl = `${
+          import.meta.env.VITE_URL
+        }/user/update-info?walletAddress=${walletAddress}&phone=${phoneNumber}&email=${email}`;
+        window.location.href = `${
+          import.meta.env.VITE_FACETEC_URL
+        }/verify.html?callback=${encodeURIComponent(
+          callbackUrl,
+        )}&user_id=${id}`;
       }
     },
-    [imgFront, imgBack, phoneNumber],
+    [phoneNumber],
   );
 
   const claimHewe = async () => {
     setLoadingClaimHewe(true);
-    await Claim.hewe()
+    await KYC.claim({ coin: 'hewe' })
       .then((response) => {
-        toast.success(t(response.data.message));
-        setLoadingClaimHewe(false);
-        setRefresh(!refresh);
+        if (response.data.url) {
+          window.location.href = response.data.url;
+        }
       })
       .catch((error) => {
         let message =
@@ -162,12 +124,11 @@ const Profile = () => {
 
   const claimUsdt = async () => {
     setLoadingClaimUsdt(true);
-    await Claim.usdt()
+    await KYC.claim({ coin: 'usdt' })
       .then((response) => {
-        toast.success(t(response.data.message));
-        setLoadingClaimUsdt(false);
-        setShowModal(false);
-        setRefresh(!refresh);
+        if (response.data.url) {
+          window.location.href = response.data.url;
+        }
       })
       .catch((error) => {
         let message =
@@ -175,14 +136,56 @@ const Profile = () => {
             ? error.response.data.error
             : error.message;
         toast.error(t(message));
-        setLoadingClaimUsdt(false);
+        setLoadingClaimHewe(false);
       });
   };
+
+  // const claimHewe = async () => {
+  //   setLoadingClaimHewe(true);
+  //   await Claim.hewe()
+  //     .then((response) => {
+  //       toast.success(t(response.data.message));
+  //       setLoadingClaimHewe(false);
+  //       setRefresh(!refresh);
+  //     })
+  //     .catch((error) => {
+  //       let message =
+  //         error.response && error.response.data.error
+  //           ? error.response.data.error
+  //           : error.message;
+  //       toast.error(t(message));
+  //       setLoadingClaimHewe(false);
+  //     });
+  // };
+
+  // const claimUsdt = async () => {
+  //   setLoadingClaimUsdt(true);
+  //   await Claim.usdt()
+  //     .then((response) => {
+  //       toast.success(t(response.data.message));
+  //       setLoadingClaimUsdt(false);
+  //       setShowModal(false);
+  //       setRefresh(!refresh);
+  //     })
+  //     .catch((error) => {
+  //       let message =
+  //         error.response && error.response.data.error
+  //           ? error.response.data.error
+  //           : error.message;
+  //       toast.error(t(message));
+  //       setLoadingClaimUsdt(false);
+  //     });
+  // };
 
   useEffect(() => {
     (async () => {
       await User.getUserInfo()
         .then((response) => {
+          if (response.data.facetecTid === '') {
+            setShowFaceId(true);
+          } else {
+            setShowFaceId(false);
+          }
           dispatch(UPDATE_USER_INFO(response.data));
         })
         .catch((error) => {
@@ -209,6 +212,46 @@ const Profile = () => {
   const renderRank = (level) => {
     return USER_RANKINGS.find((ele) => level <= ele.value).label;
   };
+
+  const handleStartKYC = async () => {
+    await KYC.startKYC()
+      .then((response) => {
+        if (response.data.url) {
+          window.location.href = response.data.url;
+        }
+      })
+      .catch((error) => {
+        let message =
+          error.response && error.response.data.message
+            ? error.response.data.message
+            : error.message;
+        toast.error(t(message));
+      });
+  };
+
+  const handleChangeTickAgrree = (e) => {
+    setValueCheckAgrree(e.target.value);
+  };
+
+  const handleMoveSystem = useCallback(async () => {
+    if (valueCheckAgrree === 'on') {
+      await KYC.moveSystem()
+        .then((response) => {
+          if (response.data.url) {
+            window.location.href = response.data.url;
+          }
+        })
+        .catch((error) => {
+          let message =
+            error.response && error.response.data.error
+              ? error.response.data.error
+              : error.message;
+          toast.error(t(message));
+        });
+    } else {
+      setErrAgrre(true);
+    }
+  }, [valueCheckAgrree]);
 
   return (
     <DefaultLayout>
@@ -290,6 +333,170 @@ const Profile = () => {
           </div>
         </div>
       </Modal>
+
+      <Modal
+        isOpen={showFaceId}
+        onRequestClose={() => setShowFaceId(false)}
+        style={{
+          content: {
+            top: '50%',
+            left: '50%',
+            right: 'auto',
+            bottom: 'auto',
+            marginRight: '-50%',
+            transform: 'translate(-50%, -50%)',
+          },
+        }}
+      >
+        <div className="overflow-y-auto overflow-x-hidden justify-center items-center w-full md:inset-0 h-modal md:h-full">
+          <div className="relative w-full max-w-md h-full md:h-auto">
+            <div className="relative text-center bg-white rounded-lg sm:p-5">
+              <button
+                onClick={() => setShowFaceId(false)}
+                className="text-gray-400 absolute top-2.5 right-2.5 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center dark:hover:bg-gray-600 dark:hover:text-white"
+              >
+                <svg
+                  aria-hidden="true"
+                  className="w-5 h-5"
+                  fill="currentColor"
+                  viewBox="0 0 20 20"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    fillRule="evenodd"
+                    d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+                    clipRule="evenodd"
+                  ></path>
+                </svg>
+                <span className="sr-only">Close modal</span>
+              </button>
+              <div className="pr-6 flex flex-col items-center">
+                <div
+                  className="text-left text-red-700 rounded relative mb-5"
+                  role="alert"
+                >
+                  <span className="block sm:inline">
+                    <b>Attention:</b> To withdraw your assets, please ensure you
+                    complete the KYC (Know Your Customer) diligence process.
+                  </span>
+                  <span>
+                    Failure to complete the KYC process will result in your
+                    account being <b>blocked</b> at 00:00.
+                  </span>
+                </div>
+                <div>
+                  <button
+                    onClick={handleStartKYC}
+                    className="flex items-center gap-2 px-6 py-2 bg-blue-600 text-white rounded-md hover:opacity-70"
+                  >
+                    <svg
+                      width="26"
+                      height="26"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        d="M12.5 11V12.5L11.5 13M15 8V10M9 8V10M9 20H5C4.44772 20 4 19.5523 4 19V15M20 15V19C20 19.5523 19.5523 20 19 20H15M20 9V5C20 4.44772 19.5523 4 19 4H15M4 9V5C4 4.44772 4.44772 4 5 4H9M9 16C9 16 10 17 12 17C14 17 15 16 15 16"
+                        stroke="currentColor"
+                        strokeWidth="1.5"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
+                    </svg>
+                    Set Up Face ID
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </Modal>
+      <Modal
+        isOpen={showMoveSystem}
+        onRequestClose={() => setShowMoveSystem(false)}
+        style={{
+          content: {
+            top: '50%',
+            left: '50%',
+            right: 'auto',
+            bottom: 'auto',
+            marginRight: '-50%',
+            transform: 'translate(-50%, -50%)',
+          },
+        }}
+      >
+        <div className="overflow-y-auto overflow-x-hidden justify-center items-center w-full md:inset-0 h-modal md:h-full">
+          <div className="relative w-full max-w-md h-full md:h-auto">
+            <div className="relative text-center bg-white rounded-lg sm:p-5">
+              <button
+                onClick={() => setShowMoveSystem(false)}
+                className="text-gray-400 absolute top-2.5 right-2.5 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center dark:hover:bg-gray-600 dark:hover:text-white"
+              >
+                <svg
+                  aria-hidden="true"
+                  className="w-5 h-5"
+                  fill="currentColor"
+                  viewBox="0 0 20 20"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    fillRule="evenodd"
+                    d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+                    clipRule="evenodd"
+                  ></path>
+                </svg>
+                <span className="sr-only">Close modal</span>
+              </button>
+              <div className="pr-6 flex flex-col items-center">
+                <div
+                  className="text-left text-gray-900 rounded relative mb-5"
+                  role="alert"
+                >
+                  Members agree to transfer ID at <b>No Excuse Challenge</b>{' '}
+                  through
+                  <b> DreamChain</b>.
+                  <ul className="list-disc">
+                    <li className="ml-4">
+                      Participate in activities at <b>DreamChain</b> (completely
+                      voluntary participation without being forced or influenced
+                      by outside forces.)
+                    </li>
+                    <li className="ml-4">
+                      {' '}
+                      When participating in <b>DreamChain</b>, members
+                      voluntarily give up all rights and claims related to{' '}
+                      <b>No Excuse Challenge</b>.
+                    </li>
+                  </ul>
+                  <div className="my-4 flex items-center justify-center gap-2">
+                    <input
+                      type="checkbox"
+                      id="agree"
+                      onChange={handleChangeTickAgrree}
+                    />
+                    <label htmlFor="agree">I have read and agree</label>
+                  </div>
+                  {errAgrre && (
+                    <div className="text-center text-red-500 italic">
+                      Please read and confirm{' '}
+                    </div>
+                  )}
+                </div>
+                <div>
+                  <button
+                    onClick={handleMoveSystem}
+                    className="flex items-center gap-2 px-6 py-2 bg-blue-600 text-white rounded-md hover:opacity-70"
+                  >
+                    Confirm
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </Modal>
+
       <div className="px-2 lg:px-24 py-24 space-y-6 lg:space-y-8">
         {bonusRef && (
           <div
@@ -302,23 +509,27 @@ const Profile = () => {
           </div>
         )}
 
-        {walletAddressChange && (
+        {pendingUpdateInfo && (
           <div
             className="bg-orange-100 border border-orange-400 text-orange-700 px-4 py-3 rounded relative mb-5"
             role="alert"
           >
             <span className="block sm:inline">
-              {t('Wallet information update is pending admin approval')}
+              {t('Your information update is awaiting admin approval')}
             </span>
           </div>
         )}
 
-        {status === 'UNVERIFY' && (
+        {kycFee && (
           <div
-            className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-5"
+            className="w-full bg-orange-100 border border-orange-400 text-orange-700 px-4 py-3 rounded mb-5"
             role="alert"
           >
-            <span className="block sm:inline">{t('verifyAccountAlert')}</span>
+            <span className="block sm:inline">
+              {t(
+                'To enhance security, facial recognition verification and a 2 USDT/year fee will be applied. The fee will be auto-deducted annually. Thank you for your support!',
+              )}
+            </span>
           </div>
         )}
 
@@ -331,12 +542,15 @@ const Profile = () => {
           </div>
         )}
 
-        {(phone === '' || idCode === '') && (
+        {tier === 2 && tryToTier2 === 'YES' && (
           <div
-            className="relative px-4 py-3 mb-5 text-red-700 bg-red-100 border border-red-400 rounded"
+            className="w-full text-lg bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-5"
             role="alert"
           >
-            <span className="block sm:inline">{t('infoAccountAlert')}</span>
+            <span className="block sm:inline">
+              You have only <b>{countdown}</b> days left to complete the 126
+              required IDs to be eligible for Tier 2 benefits.
+            </span>
           </div>
         )}
 
@@ -344,7 +558,7 @@ const Profile = () => {
           <div className="w-full flex gap-4 items-center justify-between lg:justify-center">
             <p className="font-medium">Available HEWE</p>
             <input
-              className="bg-black rounded-xl text-DreamChain p-2 flex-1"
+              className="bg-black rounded-xl text-NoExcuseChallenge p-2 flex-1"
               readOnly
               value={availableHewe}
             />
@@ -352,7 +566,7 @@ const Profile = () => {
           <div className="w-full flex gap-4 items-center justify-between lg:justify-center">
             <p className="font-medium">Reward HEWE</p>
             <input
-              className="bg-black rounded-xl text-DreamChain p-2 flex-1"
+              className="bg-black rounded-xl text-NoExcuseChallenge p-2 flex-1"
               readOnly
               value={
                 tier > 1
@@ -365,9 +579,13 @@ const Profile = () => {
           </div>
           <button
             className={`w-full border border-black rounded-2xl px-12 py-2 flex justify-center hover:bg-black hover:text-white ${
-              availableHewe === 0 || status !== 'APPROVED' ? 'opacity-30' : ''
+              availableHewe === 0 || status !== 'APPROVED' || facetecTid === ''
+                ? 'opacity-30'
+                : ''
             }`}
-            disabled={availableHewe === 0 || status !== 'APPROVED'}
+            disabled={
+              availableHewe === 0 || status !== 'APPROVED' || facetecTid === ''
+            }
             onClick={claimHewe}
           >
             {loadingClaimHewe && <Loading />}
@@ -378,7 +596,7 @@ const Profile = () => {
           <div className="w-full flex gap-4 items-center justify-between lg:justify-center">
             <p className="font-medium">Available USDT</p>
             <input
-              className="bg-black rounded-xl text-DreamChain p-2 flex-1"
+              className="bg-black rounded-xl text-NoExcuseChallenge p-2 flex-1"
               readOnly
               value={availableUsdt}
             />
@@ -386,23 +604,33 @@ const Profile = () => {
           <div className="w-full flex gap-4 items-center justify-between lg:justify-center">
             <p className="font-medium">Processing USDT</p>
             <input
-              className="bg-black rounded-xl text-DreamChain p-2 flex-1"
+              className="bg-black rounded-xl text-NoExcuseChallenge p-2 flex-1"
               readOnly
               value={withdrawPending}
             />
           </div>
           <button
             className={`w-full border border-black rounded-2xl px-12 py-2 flex justify-center hover:bg-black hover:text-white ${
-              availableUsdt === 0 || status !== 'APPROVED' ? 'opacity-30' : ''
+              errLahCode === 'OVER45' ||
+              availableUsdt === 0 ||
+              status !== 'APPROVED' ||
+              facetecTid === ''
+                ? 'opacity-30'
+                : ''
             }`}
-            disabled={availableUsdt === 0 || status !== 'APPROVED'}
+            disabled={
+              errLahCode === 'OVER45' ||
+              availableUsdt === 0 ||
+              status !== 'APPROVED' ||
+              facetecTid === ''
+            }
             onClick={() => setShowModal(true)}
           >
             WITHDRAW USDT
           </button>
         </div>
         <div className={`grid gap-10 font-semibold`}>
-          <div className={`grid grid-cols-2 gap-2`}>
+          <div className={`grid lg:grid-cols-2 gap-2`}>
             <div className="bg-[#FAFBFC] p-4 rounded-2xl">
               <div className="flex justify-between items-center py-2 px-4">
                 <p>Status</p>
@@ -472,30 +700,31 @@ const Profile = () => {
                   {totalHold} USD
                 </div>
               </div>
-              {/* <div className="flex justify-between py-2 px-4">
-              <p>Completed tier 1</p>
-              <p>{tier1Time}</p>
-            </div> */}
             </div>
+
             <div className="bg-[#FAFBFC] p-4 rounded-2xl">
               <div className="py-2 px-4">
                 <p className="uppercase mt-2 font-bold">{t('children')}</p>
-                <div className="py-2">
-                  <ul className="flex gap-4">
+                <div className="lg:py-2">
+                  <ul className="flex flex-row flex-wrap gap-2">
                     {listDirectUser.map((ele) => (
                       <li className="" key={ele.userId}>
                         <div className="py-2">
-                          <div className="text-base">
+                          <div className="text-base w-full">
                             <span
                               className={`${
                                 ele.isGray
                                   ? 'bg-[#8c8c8c]'
                                   : ele.isRed
                                   ? 'bg-[#b91c1c]'
+                                  : ele.isBlue
+                                  ? 'bg-[#0000ff]'
                                   : ele.isYellow
                                   ? 'bg-[#F4B400]'
+                                  : ele.isPink
+                                  ? 'bg-[#e600769c]'
                                   : 'bg-[#16a34a]'
-                              } py-1 px-2 rounded text-white text-sm`}
+                              } py-1 px-2 rounded text-white text-sm min-w-fit`}
                             >
                               {ele.userId}
                             </span>
@@ -507,10 +736,64 @@ const Profile = () => {
                 </div>
               </div>
             </div>
+            {tier === 2 && (
+              <div className="bg-[#FAFBFC] p-4 rounded-2xl">
+                <div className="py-2 px-4">
+                  <p className="uppercase mt-2 font-bold">
+                    {t('Sales are working')}
+                  </p>
+                  <div className="lg:py-2">
+                    <ul className="flex flex-col list-disc">
+                      <li className="ml-4">
+                        Branch 1 : {notEnoughtChild?.countChild1 + 1} IDs
+                      </li>
+                      <li className="ml-4">
+                        Branch 2 : {notEnoughtChild?.countChild2 + 1} IDs
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+                <div className="py-2 px-4">
+                  <p className="uppercase mt-2 font-bold">
+                    {t('Sales must be compensated')}
+                  </p>
+                  <div className="lg:py-2">
+                    <ul className="flex flex-col list-disc">
+                      <li className="ml-4">
+                        Branch 1 :{' '}
+                        {import.meta.env.VITE_MAX_IDS_OF_BRANCH -
+                          notEnoughtChild?.countChild1 >
+                        0
+                          ? import.meta.env.VITE_MAX_IDS_OF_BRANCH -
+                            notEnoughtChild?.countChild1
+                          : 0 || 0}{' '}
+                        IDs
+                      </li>
+                      <li className="ml-4">
+                        Branch 2 :{' '}
+                        {import.meta.env.VITE_MAX_IDS_OF_BRANCH -
+                          notEnoughtChild?.countChild2 >
+                        0
+                          ? import.meta.env.VITE_MAX_IDS_OF_BRANCH -
+                            notEnoughtChild?.countChild2
+                          : 0 || 0}{' '}
+                        IDs
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
         </div>
-        {!isOld && !isEdit && (
-          <div className="flex justify-end">
+        <div className="flex justify-between">
+          <button
+            className="bg-blue-900 text-white px-6 py-2 rounded-lg"
+            onClick={() => setShowMoveSystem(true)}
+          >
+            Migrate ID to dreamchain
+          </button>
+          {errLahCode !== 'OVER45' && !isEdit && status === 'APPROVED' && (
             <button
               onClick={() => setIsEdit(true)}
               className="flex gap-2 font-semibold py-2 px-4 rounded-lg"
@@ -529,8 +812,8 @@ const Profile = () => {
                 />
               </svg>
             </button>
-          </div>
-        )}
+          )}
+        </div>
         {isEdit && (
           <div className="flex justify-end">
             <button
@@ -568,11 +851,41 @@ const Profile = () => {
             </div>
             <div className="grid lg:grid-cols-2 gap-2 lg:gap-0 items-center py-2 px-4">
               <p>Email :</p>
-              <p>{email}</p>
+              {isEdit ? (
+                <div className="">
+                  <input
+                    className="w-full px-4 py-1.5 rounded-md border border-gray-200 placeholder-gray-500 text-sm focus:outline-none focus:border-gray-400 focus:bg-white"
+                    {...register('email', {
+                      required: t('email is required'),
+                    })}
+                    autoComplete="off"
+                  />
+                  <p className="text-sm text-red-500">
+                    {errors.email?.message}
+                  </p>
+                </div>
+              ) : (
+                <p>{email}</p>
+              )}
             </div>
             <div className="grid lg:grid-cols-2 gap-2 lg:gap-0 bg-[#E5E9EE] py-2 px-4 rounded-lg">
               <p>Phone number :</p>
-              <p>{phone}</p>
+              {isEdit ? (
+                <div className="">
+                  <PhoneInput
+                    defaultCountry="VN"
+                    placeholder={t('phone')}
+                    value={phoneNumber}
+                    onChange={setPhoneNumber}
+                    className="-my-1 ml-4 w-full"
+                  />
+                  <p className="text-red-500 text-sm">
+                    {errorPhone && t('Phone is required')}
+                  </p>
+                </div>
+              ) : (
+                <p>{phone}</p>
+              )}
             </div>
             <div className="grid lg:grid-cols-2 gap-2 lg:gap-0 items-center py-2 px-4">
               <p>ID/DL/Passport number :</p>
@@ -593,14 +906,6 @@ const Profile = () => {
                 <p>{status !== 'REJECTED' && idCode}</p>
               )}
             </div>
-            {/* <div className="grid lg:grid-cols-2 gap-2 lg:gap-0  py-2 px-4 rounded-lg">
-              <p>Serepay wallet (USDT) :</p>
-              <p>{shortenWalletAddress(walletAddress1, 14)}</p>
-            </div> */}
-            {/* <div className="grid lg:grid-cols-2 gap-2 lg:gap-0 bg-[#E5E9EE] py-2 px-4 rounded-lg">
-              <p>Serepay wallet (HEWE) :</p>
-              <p>{shortenWalletAddress(heweWallet, 14)}</p>
-            </div> */}
             <div className="grid lg:grid-cols-2 gap-2 bg-[#E5E9EE] lg:gap-0 items-center py-2 px-4 rounded-lg">
               <p>Wallet Address :</p>
               {isEdit ? (
@@ -620,22 +925,6 @@ const Profile = () => {
                 <p>{shortenWalletAddress(walletAddress, 14)}</p>
               )}
             </div>
-            {/* <div className="grid lg:grid-cols-2 gap-2 lg:gap-0 items-center py-2 px-4">
-              <p>Wallet address Tier 2</p>
-              <p>{shortenWalletAddress(walletAddress2, 14)}</p>
-            </div>
-            <div className="grid lg:grid-cols-2 gap-2 lg:gap-0 bg-[#E5E9EE] py-2 px-4 rounded-lg">
-              <p>Wallet address Tier 3</p>
-              <p>{shortenWalletAddress(walletAddress3, 14)}</p>
-            </div>
-            <div className="grid lg:grid-cols-2 gap-2 lg:gap-0 items-center py-2 px-4">
-              <p>Wallet address Tier 4</p>
-              <p>{shortenWalletAddress(walletAddress4, 14)}</p>
-            </div>
-            <div className="grid lg:grid-cols-2 gap-2 lg:gap-0 bg-[#E5E9EE] py-2 px-4 rounded-lg">
-              <p>Wallet address Tier 5</p>
-              <p>{shortenWalletAddress(walletAddress5, 14)}</p>
-            </div> */}
             <div className="grid lg:grid-cols-2 gap-2 lg:gap-0  py-2 px-4 rounded-lg">
               <p>Completed Registration :</p>
               <p>{countPay === 13 ? 'Finished' : 'Unfinished'}</p>
@@ -644,10 +933,6 @@ const Profile = () => {
               <p>Number of contribution :</p>
               <p>{countPay === 13 ? 10 : 0}</p>
             </div>
-            {/* <div className="grid grid-cols-2 bg-[#E5E9EE] py-2 px-4">
-              <p>Tier :</p>
-              <p>{tier}</p>
-            </div> */}
             <div className="grid lg:grid-cols-2 gap-2 lg:gap-0 py-2 px-4 rounded-lg">
               <p>Package :</p>
               <p>{buyPackage}</p>
@@ -656,46 +941,6 @@ const Profile = () => {
               <p>Fine :</p>
               <p>{fine} USDT</p>
             </div>
-            <>
-              <div className="w-full flex justify-center">
-                <div className="w-full grid lg:grid-cols-2 gap-2 lg:gap-0 items-center py-2 px-4">
-                  <p> {t('idCardFront')} :</p>
-                  <div className="flex flex-col items-center justify-center w-full">
-                    <UploadFile
-                      register={register}
-                      watch={watch}
-                      required={false}
-                      imgSrc={userInfo.imgFront}
-                      userStatus={userInfo.status}
-                      name="imgFront"
-                      isEdit={isEdit}
-                    />
-                    <p className="text-red-500 text-sm">
-                      {errors.imgFront?.message}
-                    </p>
-                  </div>
-                </div>
-              </div>
-              <div className="flex justify-center bg-[#E5E9EE] rounded-lg">
-                <div className="w-full grid lg:grid-cols-2 gap-2 lg:gap-0 items-center py-2 px-4">
-                  <p> {t('idCardBack')} :</p>
-                  <div className="flex items-center justify-center w-full">
-                    <UploadFile
-                      register={register}
-                      watch={watch}
-                      required={false}
-                      name="imgBack"
-                      imgSrc={userInfo.imgBack}
-                      userStatus={userInfo.status}
-                      isEdit={isEdit}
-                    />
-                    <p className="text-red-500 text-sm">
-                      {errors.imgBack?.message}
-                    </p>
-                  </div>
-                </div>
-              </div>
-            </>
           </div>
           {isEdit && (
             <button

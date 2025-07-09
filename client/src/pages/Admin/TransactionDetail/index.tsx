@@ -253,15 +253,15 @@ const AdminTransactionDetail = () => {
                     </ul>
                   </div>
                   {trans.isHoldRefund && !trans.isPaid && (
-                    <p className='pt-10 font-semibold text-DreamChain'>Admin change status (Not Paid)</p>
+                    <p className='pt-10 font-semibold text-NoExcuseChallenge'>Admin change status (Not Paid)</p>
                   )}
                   {trans.isHoldRefund && trans.isPaid && (
-                    <p className='pt-10 font-semibold text-DreamChain'>Admin has paid</p>
+                    <p className='pt-10 font-semibold text-NoExcuseChallenge'>Admin has paid</p>
                   )}
                   {!trans.isHoldRefund && trans.type.includes('HOLD') && (
                     <button
                       onClick={changeToRefunded}
-                      className="w-xl flex justify-center items-center hover:underline bg-black text-DreamChain font-bold rounded-full my-6 py-4 px-8 shadow-lg focus:outline-none focus:shadow-outline transform transition hover:scale-105 duration-300 ease-in-out"
+                      className="w-xl flex justify-center items-center hover:underline bg-black text-NoExcuseChallenge font-bold rounded-full my-6 py-4 px-8 shadow-lg focus:outline-none focus:shadow-outline transform transition hover:scale-105 duration-300 ease-in-out"
                     >
                       {loadingChangeToRefunded && <Loading />}
                       {t('changeToRefunded')}

@@ -7,10 +7,11 @@ const GuidePage: React.FC = () => {
       <div className="w-full md:p-24 py-24 px-10 space-y-10">
         <div>
           <h1 className="text-3xl font-bold mb-4">
-            LEND A HAND - MEMBER’S GUIDELINES
+            NO EXCUSE - MEMBER’S GUIDELINES
           </h1>
           <p className="mb-4 font-semibold">
-            LEND A AHND is your Path to Prosperity and Purpose By DreamChain
+            NO EXCUSE CHALLENGE is your Path to Prosperity and Purpose By
+            DreamChain
           </p>
           <p className="">
             Congratulations on stepping into a world where your dreams are not
@@ -28,27 +29,27 @@ const GuidePage: React.FC = () => {
               DreamChain is built for dreamers and doers—those who have the
               vision to achieve greatness and the drive to make it happen.
               Membership is entirely voluntary, with no pressure or obligation
-              to join. When a new member joins DreamChain, they contribute 1000
+              to join. When a new member joins DreamChain, they contribute 100
               USDT, which is distributed as follows:
             </p>
             <ul className="grid gap-4">
               <li className="flex items-start gap-6">
                 <span>
                   <span className="font-semibold">1. Direct Commission:</span>{' '}
-                  The person who recruits the new member receives 200 USDT as a
+                  The person who recruits the new member receives 15 USDT as a
                   direct commission.
                 </span>
               </li>
               <li className="flex items-start gap-6">
                 <span>
-                  <span className="font-semibold">2. Member Fee: 50 USDT </span>{' '}
+                  <span className="font-semibold">2. Member Fee: 5 USDT </span>{' '}
                   is allocated for platform operations and services.
                 </span>
               </li>
               <li className="flex items-start gap-6">
                 <span>
                   <span className="font-semibold">
-                    3. DreamPool Contribution: 50 USDT
+                    3. DreamPool Contribution: 5 USDT
                   </span>{' '}
                   is contributed to the DreamPool, a community-driven reward
                   system.
@@ -57,12 +58,12 @@ const GuidePage: React.FC = () => {
               <li className="flex items-start gap-6">
                 <span>
                   <span className="font-semibold">
-                    4. HEWE Token Holding: 200 USDT
+                    4. HEWE Token Holding: 25 USDT
                   </span>
                   is allocated to holding HEWE tokens at the current price.
                   Members will benefit from{' '}
                   <span className="font-semibold">
-                    1000 USDT worth of HEWE tokens
+                    100 USDT worth of HEWE tokens
                   </span>{' '}
                   over a <span className="font-semibold">540-day period.</span>
                 </span>
@@ -70,10 +71,74 @@ const GuidePage: React.FC = () => {
               <li className="flex items-start gap-6">
                 <span>
                   <span className="font-semibold">5. Community Support:</span>{' '}
-                  The remaining <span className="font-semibold">500 USDT</span>
+                  The remaining <span className="font-semibold">50 USDT</span>
                   is distributed among 10 members who joined DreamChain before
                   you, with each receiving{' '}
-                  <span className="font-semibold">50 USDT</span>.
+                  <span className="font-semibold">5 USDT</span>.
+                </span>
+              </li>
+            </ul>
+            <div className="text-xl font-bold">For US and Canada</div>
+            <p className="">
+              DreamChain is built for dreamers and doers — those with the vision
+              to achieve greatness and the drive to make it happen. Membership
+              is entirely voluntary, with no pressure or obligation to join.When
+              a new member joins DreamChain, they contribute $200.00, which is
+              distributed as follows:Due to differences in the cost of living
+              across countries, the Tier 1 membership fee and contribution for
+              the No Excuse Challenge vary by country. Starting from Tier 2, the
+              fee and contribution are the same globally.
+            </p>
+            <ul className="grid gap-4">
+              <li className="flex items-start gap-6">
+                <span>
+                  <span className="font-semibold">1. Appreciation Reward:</span>{' '}
+                  The person who successfully invites a new member will receive
+                  <b> $55.00</b> as an appreciation reward..
+                </span>
+              </li>
+              <li className="flex items-start gap-6">
+                <span>
+                  <span className="font-semibold">2. Member Fee: $10.00 </span>{' '}
+                  is allocated for platform operations and services
+                </span>
+              </li>
+              <li className="flex items-start gap-6">
+                <span>
+                  <span className="font-semibold">
+                    3. DreamPool Contribution: 5 USDT
+                  </span>{' '}
+                  is contributed to the DreamPool, a community-driven reward
+                  system.
+                </span>
+              </li>
+              <li className="flex items-start gap-6">
+                <span>
+                  <span className="font-semibold">
+                    4. HEWE Token Holding: 25 USDT
+                  </span>
+                  is allocated to holding HEWE tokens at the current price.
+                  Members will benefit from{' '}
+                  <span className="font-semibold">
+                    100 USDT worth of HEWE tokens
+                  </span>{' '}
+                  over a <span className="font-semibold">540-day period.</span>
+                </span>
+              </li>
+              <li className="flex items-start gap-6">
+                <span>
+                  <span className="font-semibold">5. Community Support:</span>{' '}
+                  The remaining <span className="font-semibold">100 USDT</span>
+                  is distributed among 10 members who joined DreamChain before
+                  you, with each receiving{' '}
+                  <span className="font-semibold">10 USDT</span>.
+                </span>
+              </li>
+              <li className="flex items-start gap-6">
+                <span>
+                  <span className="font-semibold">
+                    6. KYC Face Recognition and Transaction Fees: $5.00
+                  </span>
                 </span>
               </li>
             </ul>
@@ -95,7 +160,7 @@ const GuidePage: React.FC = () => {
                     2 direct members within 45 days
                   </span>{' '}
                   and receive an additional{' '}
-                  <span className="font-semibold">100 USDT</span> as a bonus if
+                  <span className="font-semibold">10 USDT</span> as a bonus if
                   member achieved 2 direct refurral within 15 days
                 </span>
               </li>
@@ -103,7 +168,7 @@ const GuidePage: React.FC = () => {
                 <span>
                   <span className="font-semibold">• Unlimited Potential:</span>
                   Recruit as many members as you want and earn{' '}
-                  <span className="font-semibold">200 USDT</span> as direct
+                  <span className="font-semibold">15 USDT</span> as direct
                   commission for each recruit—no limits on earning potential.
                 </span>
               </li>
@@ -173,12 +238,16 @@ const GuidePage: React.FC = () => {
                   </span>
                 </li>
                 <li className="flex items-start gap-6">
-                  • <b>25%</b> awarded through a <b>lucky draw</b> to the{' '}
-                  <b>25 luckiest members</b>
+                  <span>
+                    • <b>25%</b> awarded through a <b>lucky draw</b> to the
+                    <b>25 luckiest members</b>
+                  </span>
                 </li>
                 <li className="flex items-start gap-6">
-                  • <b>25%</b> awarded through a <b>lucky draw</b> to{' '}
-                  <b>50 additional lucky members</b>
+                  <span>
+                    • <b>25%</b> awarded through a <b>lucky draw</b> to
+                    <b>50 additional lucky members</b>
+                  </span>
                 </li>
               </ul>
               <p>

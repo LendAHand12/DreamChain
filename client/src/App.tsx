@@ -62,8 +62,19 @@ import ExportWithdrawPage from './pages/Admin/Export/ExportWithdraw';
 import WithdrawsPage from './pages/User/Withdraws';
 import ExportDreampoolPage from './pages/Admin/Export/ExportDreampool';
 import AdminCronjobPage from './pages/Admin/Cronjob';
+import RulesPage from './pages/Rules';
 import { useSelector } from 'react-redux';
 import ClaimsPage from './pages/User/Claims';
+import RegisterKYCPage from './pages/User/RegisterKYC';
+import ClaimKYCPage from './pages/User/ClaimKYC';
+import MoveSystemPage from './pages/User/MoveSystemKYC';
+import AdminDoubleKycPage from './pages/Admin/DoubleKyc';
+import AdminConfigPage from './pages/Admin/Config';
+import UserHistoryPage from './pages/Admin/UserHistory';
+import UserUpdateInfoKYCPage from './pages/User/UpdateInfoKYC';
+import UsersTier2 from './pages/User/UsersTier2';
+import MoveSystem from './pages/Admin/MoveSystem';
+import MoveSystemList from './pages/Admin/MoveSystemList';
 
 function App() {
   const { pathname } = useLocation();
@@ -81,7 +92,7 @@ function App() {
           path="/home"
           element={
             <>
-              <PageTitle title="Homepage | DreamChain" />
+              <PageTitle title="Homepage | NoExcuseChallenge" />
               <HomePage />
             </>
           }
@@ -90,7 +101,7 @@ function App() {
           path="/services"
           element={
             <>
-              <PageTitle title="Services | DreamChain" />
+              <PageTitle title="Services | NoExcuseChallenge" />
               <ServicePage />
             </>
           }
@@ -99,7 +110,7 @@ function App() {
           path="/mechanism"
           element={
             <>
-              <PageTitle title="Mechanism | DreamChain" />
+              <PageTitle title="Mechanism | NoExcuseChallenge" />
               <Mechanism />
             </>
           }
@@ -108,7 +119,7 @@ function App() {
           path="/policy"
           element={
             <>
-              <PageTitle title="Policy | DreamChain" />
+              <PageTitle title="Policy | NoExcuseChallenge" />
               <PolicyPage />
             </>
           }
@@ -117,7 +128,7 @@ function App() {
           path="/contact"
           element={
             <>
-              <PageTitle title="Contact | DreamChain" />
+              <PageTitle title="Contact | NoExcuseChallenge" />
               <ContactPage />
             </>
           }
@@ -126,8 +137,17 @@ function App() {
           path="/news"
           element={
             <>
-              <PageTitle title="News | DreamChain" />
+              <PageTitle title="News | NoExcuseChallenge" />
               <NewsPage />
+            </>
+          }
+        />
+        <Route
+          path="/rules"
+          element={
+            <>
+              <PageTitle title="Rules | NoExcuseChallenge" />
+              <RulesPage />
             </>
           }
         />
@@ -135,7 +155,7 @@ function App() {
           path="/news/:id"
           element={
             <>
-              <PageTitle title="News | DreamChain" />
+              <PageTitle title="News | NoExcuseChallenge" />
               <NewsDetailPage />
             </>
           }
@@ -144,7 +164,7 @@ function App() {
           path="/terms"
           element={
             <>
-              <PageTitle title="Terms & Conditions | DreamChain" />
+              <PageTitle title="Terms & Conditions | NoExcuseChallenge" />
               <TermsPage />
             </>
           }
@@ -153,7 +173,7 @@ function App() {
           path="/guide"
           element={
             <>
-              <PageTitle title="Member’s Guidelines | DreamChain" />
+              <PageTitle title="Member’s Guidelines | NoExcuseChallenge" />
               <GuidePage />
             </>
           }
@@ -169,7 +189,7 @@ function App() {
           path="/admin/dashboard"
           element={
             <>
-              <PageTitle title="Dashboard | DreamChain" />
+              <PageTitle title="Dashboard | NoExcuseChallenge" />
               <DashboardPage />
             </>
           }
@@ -181,8 +201,22 @@ function App() {
             path="/admin/transactions"
             element={
               <>
-                <PageTitle title="Transactions | DreamChain" />
+                <PageTitle title="Transactions | NoExcuseChallenge" />
                 <AdminTransactionsPage />
+              </>
+            }
+          />
+        )}
+
+        {userInfo?.permissions
+          ?.find((p) => p.page.path === '/admin/move-system-list')
+          ?.actions.includes('read') && (
+          <Route
+            path="/admin/move-system-list"
+            element={
+              <>
+                <PageTitle title="Move System List | NoExcuseChallenge" />
+                <MoveSystemList />
               </>
             }
           />
@@ -195,8 +229,22 @@ function App() {
             path="/admin/users/:id"
             element={
               <>
-                <PageTitle title="User Profile | DreamChain" />
+                <PageTitle title="User Profile | NoExcuseChallenge" />
                 <AdminUserProfile />
+              </>
+            }
+          />
+        )}
+
+        {userInfo?.permissions
+          ?.find((p) => p.page.path === '/admin/move-system/:id')
+          ?.actions.includes('read') && (
+          <Route
+            path="/admin/move-system/:id"
+            element={
+              <>
+                <PageTitle title="Move System | NoExcuseChallenge" />
+                <MoveSystem />
               </>
             }
           />
@@ -209,7 +257,7 @@ function App() {
             path="/admin/transaction/export"
             element={
               <>
-                <PageTitle title="Admin Export Transaction | DreamChain" />
+                <PageTitle title="Admin Export Transaction | NoExcuseChallenge" />
                 <ExportPaymentsPage />
               </>
             }
@@ -223,7 +271,7 @@ function App() {
             path="/admin/transactions/:id"
             element={
               <>
-                <PageTitle title="Transaction Detail | DreamChain" />
+                <PageTitle title="Transaction Detail | NoExcuseChallenge" />
                 <AdminTransactionDetail />
               </>
             }
@@ -236,7 +284,7 @@ function App() {
             path="/admin/wallets"
             element={
               <>
-                <PageTitle title="Setting Wallets | DreamChain" />
+                <PageTitle title="Setting Wallets | NoExcuseChallenge" />
                 <SettingWallets />
               </>
             }
@@ -249,7 +297,7 @@ function App() {
             path="/admin/users"
             element={
               <>
-                <PageTitle title="Users | DreamChain" />
+                <PageTitle title="Users | NoExcuseChallenge" />
                 <AdminUserPages />
               </>
             }
@@ -263,7 +311,7 @@ function App() {
             path="/admin/system/:id"
             element={
               <>
-                <PageTitle title="System | DreamChain" />
+                <PageTitle title="System | NoExcuseChallenge" />
                 <AdminSystemPage />
               </>
             }
@@ -276,7 +324,7 @@ function App() {
             path="/admin/linkVerify"
             element={
               <>
-                <PageTitle title="Link verify | DreamChain" />
+                <PageTitle title="Link verify | NoExcuseChallenge" />
                 <GetVerifyLinkPage />
               </>
             }
@@ -289,7 +337,7 @@ function App() {
             path="/admin/withdraw"
             element={
               <>
-                <PageTitle title="Withdraw request | DreamChain" />
+                <PageTitle title="Withdraw request | NoExcuseChallenge" />
                 <AdminWithdrawPages />
               </>
             }
@@ -302,7 +350,7 @@ function App() {
             path="/admin/withdraw/export"
             element={
               <>
-                <PageTitle title="Admin Export Withdraw | DreamChain" />
+                <PageTitle title="Admin Export Withdraw | NoExcuseChallenge" />
                 <ExportWithdrawPage />
               </>
             }
@@ -315,7 +363,7 @@ function App() {
             path="/admin/news"
             element={
               <>
-                <PageTitle title="News | DreamChain" />
+                <PageTitle title="News | NoExcuseChallenge" />
                 <AdminNewsPage />
               </>
             }
@@ -328,7 +376,7 @@ function App() {
             path="/admin/claims"
             element={
               <>
-                <PageTitle title="Claims | DreamChain" />
+                <PageTitle title="Claims | NoExcuseChallenge" />
                 <AdminClaimsPage />
               </>
             }
@@ -341,7 +389,7 @@ function App() {
             path="/admin/claims/export"
             element={
               <>
-                <PageTitle title="Export Claims | DreamChain" />
+                <PageTitle title="Export Claims | NoExcuseChallenge" />
                 <AdminExportClaimsPage />
               </>
             }
@@ -354,7 +402,7 @@ function App() {
             path="/admin/news/create"
             element={
               <>
-                <PageTitle title="Create News | DreamChain" />
+                <PageTitle title="Create News | NoExcuseChallenge" />
                 <AdminCreateNewsPage />
               </>
             }
@@ -368,7 +416,7 @@ function App() {
             path="/admin/news/edit"
             element={
               <>
-                <PageTitle title="Edit News | DreamChain" />
+                <PageTitle title="Edit News | NoExcuseChallenge" />
                 <AdminEditNewsPage />
               </>
             }
@@ -382,7 +430,7 @@ function App() {
             path="/admin/dreampool"
             element={
               <>
-                <PageTitle title="DreamPool | DreamChain" />
+                <PageTitle title="DreamPool | NoExcuseChallenge" />
                 <DreamPoolPage />
               </>
             }
@@ -395,7 +443,7 @@ function App() {
             path="/admin/dreampool/export"
             element={
               <>
-                <PageTitle title="Export DreamPool | DreamChain" />
+                <PageTitle title="Export DreamPool | NoExcuseChallenge" />
                 <ExportDreampoolPage />
               </>
             }
@@ -408,7 +456,7 @@ function App() {
             path="/admin/permissions"
             element={
               <>
-                <PageTitle title="Permissions | DreamChain" />
+                <PageTitle title="Permissions | NoExcuseChallenge" />
                 <PermissionsPage />
               </>
             }
@@ -421,7 +469,7 @@ function App() {
             path="/admin/permissions/:id"
             element={
               <>
-                <PageTitle title="Permissions Details | DreamChain" />
+                <PageTitle title="Permissions Details | NoExcuseChallenge" />
                 <PermissionsDetailsPage />
               </>
             }
@@ -434,7 +482,7 @@ function App() {
             path="/admin/permissions/create"
             element={
               <>
-                <PageTitle title="Create New Permissions | DreamChain" />
+                <PageTitle title="Create New Permissions | NoExcuseChallenge" />
                 <PermissionsCreatePage />
               </>
             }
@@ -447,7 +495,7 @@ function App() {
             path="/admin/admin"
             element={
               <>
-                <PageTitle title="Admin | DreamChain" />
+                <PageTitle title="Admin | NoExcuseChallenge" />
                 <AdminPage />
               </>
             }
@@ -460,7 +508,7 @@ function App() {
             path="/admin/create-admin"
             element={
               <>
-                <PageTitle title="Create new Admin | DreamChain" />
+                <PageTitle title="Create new Admin | NoExcuseChallenge" />
                 <AdminCreatePage />
               </>
             }
@@ -473,7 +521,7 @@ function App() {
             path="/admin/admin/:id"
             element={
               <>
-                <PageTitle title="Admin Detail | DreamChain" />
+                <PageTitle title="Admin Detail | NoExcuseChallenge" />
                 <AdminDetailPage />
               </>
             }
@@ -486,7 +534,7 @@ function App() {
             path="/admin/user/export"
             element={
               <>
-                <PageTitle title="Admin Export User | DreamChain" />
+                <PageTitle title="Admin Export User | NoExcuseChallenge" />
                 <ExportUsersPage />
               </>
             }
@@ -499,7 +547,7 @@ function App() {
             path="/admin/users/create"
             element={
               <>
-                <PageTitle title="Admin Create User | DreamChain" />
+                <PageTitle title="Admin Create User | NoExcuseChallenge" />
                 <CreateUserPage />
               </>
             }
@@ -512,31 +560,83 @@ function App() {
             path="/admin/cronjob"
             element={
               <>
-                <PageTitle title="Cronjob | DreamChain" />
+                <PageTitle title="Cronjob | NoExcuseChallenge" />
                 <AdminCronjobPage />
               </>
             }
           />
         )}
-      </Route>
+        {userInfo?.permissions
+          ?.find((p) => p.page.path === '/admin/double-kyc')
+          ?.actions.includes('read') && (
+          <Route
+            path="/admin/double-kyc"
+            element={
+              <>
+                <PageTitle title="Double KYC | NoExcuseChallenge" />
+                <AdminDoubleKycPage />
+              </>
+            }
+          />
+        )}
+        {userInfo?.permissions
+          ?.find((p) => p.page.path === '/admin/config')
+          ?.actions.includes('read') && (
+          <Route
+            path="/admin/config"
+            element={
+              <>
+                <PageTitle title="Config | NoExcuseChallenge" />
+                <AdminConfigPage />
+              </>
+            }
+          />
+        )}
+        {userInfo?.permissions
+          ?.find((p) => p.page.path === '/admin/user-history')
+          ?.actions.includes('read') && (
+          <Route
+            path="/admin/user-history"
+            element={
+              <>
+                <PageTitle title="User History | NoExcuseChallenge" />
+                <UserHistoryPage />
+              </>
+            }
+          />
+        )}
 
+        {userInfo?.permissions
+          ?.find((p) => p.page.path === '/admin/user/tier2')
+          ?.actions.includes('read') && (
+          <Route
+            path="/admin/user/tier2"
+            element={
+              <>
+                <PageTitle title="Users Tier2 | NoExcuseChallenge" />
+                <UsersTier2 />
+              </>
+            }
+          />
+        )}
+      </Route>
       <Route element={<PrivateRoute />}>
         <Route
           path="/user/profile"
           element={
             <>
-              <PageTitle title="Profile | DreamChain" />
+              <PageTitle title="Profile | NoExcuseChallenge" />
               <Profile />
             </>
           }
         />
-        {!userInfo?.isOld && (
+        {userInfo?.errLahCode !== 'OVER45' && (
           <>
             <Route
               path="/user/payment"
               element={
                 <>
-                  <PageTitle title="Payment | DreamChain" />
+                  <PageTitle title="Payment | NoExcuseChallenge" />
                   <Payment />
                 </>
               }
@@ -545,7 +645,7 @@ function App() {
               path="/user/system"
               element={
                 <>
-                  <PageTitle title="System | DreamChain" />
+                  <PageTitle title="System | NoExcuseChallenge" />
                   <SystemPage />
                 </>
               }
@@ -554,7 +654,7 @@ function App() {
               path="/user/referral"
               element={
                 <>
-                  <PageTitle title="Referral | DreamChain" />
+                  <PageTitle title="Referral | NoExcuseChallenge" />
                   <ReferralPage />
                 </>
               }
@@ -563,7 +663,7 @@ function App() {
               path="/user/transactions"
               element={
                 <>
-                  <PageTitle title="Transactions | DreamChain" />
+                  <PageTitle title="Transactions | NoExcuseChallenge" />
                   <Transactions />
                 </>
               }
@@ -572,7 +672,7 @@ function App() {
               path="/user/ice-breakers"
               element={
                 <>
-                  <PageTitle title="Ice Breakers | DreamChain" />
+                  <PageTitle title="Ice Breakers | NoExcuseChallenge" />
                   <IceBreakerPage />
                 </>
               }
@@ -581,7 +681,7 @@ function App() {
               path="/user/dreampool"
               element={
                 <>
-                  <PageTitle title="DreamPool | DreamChain" />
+                  <PageTitle title="DreamPool | NoExcuseChallenge" />
                   <DreamPoolPage />
                 </>
               }
@@ -590,7 +690,7 @@ function App() {
               path="/user/income"
               element={
                 <>
-                  <PageTitle title="Income | DreamChain" />
+                  <PageTitle title="Income | NoExcuseChallenge" />
                   <IncomePage />
                 </>
               }
@@ -599,7 +699,7 @@ function App() {
               path="/user/withdraws"
               element={
                 <>
-                  <PageTitle title="Withdraws | DreamChain" />
+                  <PageTitle title="Withdraws | NoExcuseChallenge" />
                   <WithdrawsPage />
                 </>
               }
@@ -608,14 +708,61 @@ function App() {
               path="/user/claims"
               element={
                 <>
-                  <PageTitle title="Claims | DreamChain" />
+                  <PageTitle title="Claims | NoExcuseChallenge" />
                   <ClaimsPage />
                 </>
               }
             />
+            <Route
+              path="/user/kyc"
+              element={
+                <>
+                  <PageTitle title="Register KYC | NoExcuseChallenge" />
+                  <RegisterKYCPage />
+                </>
+              }
+            />
+            <Route
+              path="/user/update-info"
+              element={
+                <>
+                  <PageTitle title="Update Info | NoExcuseChallenge" />
+                  <UserUpdateInfoKYCPage />
+                </>
+              }
+            />
+            {userInfo?.tier > 1 && (
+              <Route
+                path="/user/tier2"
+                element={
+                  <>
+                    <PageTitle title="Users Tier 2 | NoExcuseChallenge" />
+                    <UsersTier2 />
+                  </>
+                }
+              />
+            )}
           </>
         )}
       </Route>
+      <Route
+        path="/user/claim"
+        element={
+          <>
+            <PageTitle title="Claim KYC | NoExcuseChallenge" />
+            <ClaimKYCPage />
+          </>
+        }
+      />
+      <Route
+        path="/user/move-system"
+        element={
+          <>
+            <PageTitle title="Move System KYC | NoExcuseChallenge" />
+            <MoveSystemPage />
+          </>
+        }
+      />
       <Route path="*" element={<NotFoundPage />}></Route>
     </Routes>
   );

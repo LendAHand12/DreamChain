@@ -34,16 +34,20 @@ const treeSchema = mongoose.Schema(
     },
     isSubId: {
       type: Boolean,
-      default: false
+      default: false,
     },
     countChild: {
       type: Number,
-      default: 0
+      default: 0,
     },
     income: {
       type: Number,
-      default: 0
-    }
+      default: 0,
+    },
+    disable: {
+      type: Boolean,
+      default: false,
+    },
   },
   { timestamps: true }
 );

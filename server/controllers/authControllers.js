@@ -106,7 +106,8 @@ const registerUser = asyncHandler(async (req, res) => {
         walletAddress,
         idCode,
         buyPackage: "A",
-        role: "user"
+        role: "user",
+        kycFee: true,
       });
 
       const tree = await Tree.create({
@@ -211,7 +212,7 @@ const authUser = asyncHandler(async (req, res) => {
 
     const tree = await Tree.findOne({ userId: user._id, tier: 1 });
     const listDirectUser = [];
-    if(tree) {
+    if (tree) {
       const listRefIdOfUser = await Tree.find({ refId: tree._id, tier: 1 });
       if (listRefIdOfUser && listRefIdOfUser.length > 0) {
         for (let refId of listRefIdOfUser) {
@@ -222,7 +223,6 @@ const authUser = asyncHandler(async (req, res) => {
         }
       }
     }
-    
 
     const packages = await getActivePackages();
 
@@ -273,10 +273,11 @@ const authUser = asyncHandler(async (req, res) => {
         chartData: mergeIntoThreeGroups(listDirectUser),
         targetSales: process.env[`LEVEL_${user.ranking + 1}`],
         bonusRef: user.bonusRef,
-        walletAddressChange: user.walletAddressChange,
         totalChild: tree ? tree.countChild : 0,
         income: tree ? tree.income : 0,
-        isOld: user.isOld
+        facetecTid: user.facetecTid,
+        kycFee: user.kycFee,
+        errLahCode: user.errLahCode,
       },
       accessToken,
       refreshToken,
@@ -297,6 +298,7 @@ const resetUserPassword = asyncHandler(async (req, res) => {
       user.password = password;
       const updatedUser = await user.save();
 
+      console.log({ updatedUser });
       if (updatedUser) {
         res.status(200).json({
           message: "Password updated. Please login with new password",

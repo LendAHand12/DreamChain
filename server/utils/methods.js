@@ -5,6 +5,8 @@ import User from "../models/userModel.js";
 import axios from "axios";
 import ADMIN_ID from "../constants/AdminId.js";
 import { areArraysEqual } from "../cronJob/index.js";
+import jwt from "jsonwebtoken";
+import mongoose from "mongoose";
 
 export const getParentUser = async (userId, tier) => {
   const tree = await Tree.findOne({ userId, tier });
@@ -388,4 +390,135 @@ export const countLayerOfAdmin = async () => {
     u.currentLayer = newLayer;
     await u.save();
   }
+};
+
+export const createCallbackToken = (userId) => {
+  const payload = {
+    userId,
+    purpose: "kyc",
+  };
+
+  return jwt.sign(payload, process.env.JWT_REFRESH_TOKEN_SECRET, {
+    expiresIn: "10m", // thời gian hết hạn token
+  });
+};
+
+export const decodeCallbackToken = (token) => {
+  try {
+    const decoded = jwt.verify(token, process.env.JWT_REFRESH_TOKEN_SECRET);
+    return decoded; // { userId, purpose: "kyc", iat, exp }
+  } catch (err) {
+    throw new Error("Token expired, please try again");
+  }
+};
+
+export const updateValueAtIndex = (arr, index, newValue) => {
+  if (index >= 0 && index < arr.length) {
+    arr[index] = newValue;
+  } else {
+    console.error("Index is out of bounds");
+  }
+};
+
+export const getFaceTecData = async (externalDatabaseRefID) => {
+  return axios
+    .get(
+      `${process.env.FACETEC_HOST}/api/sessionDetails?externalDatabaseRefID=${externalDatabaseRefID}&pageNumber=0&pageSize=10&path=/enrollment-3d`
+    )
+    .then(async (response) => {
+      return response.data;
+    })
+    .catch((error) => {
+      throw new Error("FaceTec error");
+    });
+};
+
+export const countChildOfEachLevel = async (rootId) => {
+  const result = { tier0: 1 }; // tầng 0 là node gốc
+
+  // Hàm đệ quy thật sự
+  const recurse = async (ids, tier) => {
+    if (!ids.length) return;
+
+    // Lấy các node tương ứng
+    const nodes = await Tree.find({ _id: { $in: ids } })
+      .select("children")
+      .lean();
+
+    // Gom các _id của children
+    const childIds = [];
+    const workingChildIds = [];
+    for (const node of nodes) {
+      if (node.children?.length > 0) {
+        for (const childId of node.children) {
+          const tree = await Tree.findById(childId);
+          const child = await User.findById(tree.userId);
+          if (child.errLahCode !== "OVER45") {
+            workingChildIds.push(new mongoose.Types.ObjectId(childId));
+          }
+          childIds.push(new mongoose.Types.ObjectId(childId));
+        }
+      }
+    }
+
+    if (childIds.length > 0) {
+      result[`level${tier}`] = workingChildIds.length;
+      await recurse(childIds, tier + 1);
+    }
+  };
+
+  await recurse([new mongoose.Types.ObjectId(rootId)], 1);
+
+  return result;
+};
+
+export const totalChildOn2Branch = async (treeOfUserId) => {
+  const treeOfUser = await Tree.findById(treeOfUserId);
+  if (treeOfUser.children.length < 2) {
+    throw new Error("Children not have 2 ID");
+  }
+  const child1 = await Tree.findById(treeOfUser.children[0]);
+  const child2 = await Tree.findById(treeOfUser.children[1]);
+  const countChild1 = child1.countChild;
+  const countChild2 = child2.countChild;
+  return {
+    countChild1,
+    countChild2,
+  };
+};
+
+export const sumLevels = (obj, fromLevel = 5, toLevel = 9) => {
+  let sum = 0;
+
+  for (let i = fromLevel; i <= toLevel; i++) {
+    const key = `level${i}`;
+    sum += obj[key] || 0;
+  }
+
+  return sum;
+};
+
+export const checkUserCanNextTier = async (treeOfUser) => {
+  const { countChild1, countChild2 } = await getTotalLevel6ToLevel10OfUser(treeOfUser);
+  console.log({ countChild1, countChild2 });
+
+  if (treeOfUser.countChild >= 127) {
+    // if (treeOfUser.countChild >= 126) {
+    if (countChild1 >= 32 && countChild2 >= 32) {
+      // if (countChild1 >= 0 && countChild2 >= 0) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+};
+
+export const getTotalLevel6ToLevel10OfUser = async (treeOfUser) => {
+  const countWithLevelChild1 = await countChildOfEachLevel(treeOfUser.children[0]);
+  const countWithLevelChild2 = await countChildOfEachLevel(treeOfUser.children[1]);
+
+  const countChild1 = sumLevels(countWithLevelChild1, 1, 9);
+  const countChild2 = sumLevels(countWithLevelChild2, 1, 9);
+
+  return { countChild1, countChild2 };
 };

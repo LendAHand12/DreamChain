@@ -76,7 +76,7 @@ const userSchema = mongoose.Schema(
     errLahCode: {
       type: String,
       default: "",
-      enum: ["", "TIER", "OVER180", "OVER60", "OVER30"],
+      enum: ["", "TIER", "OVER35", "OVER45", "OVER90"],
     },
     tierDate: {
       type: Date,
@@ -173,11 +173,7 @@ const userSchema = mongoose.Schema(
     },
     bonusRef: {
       type: Boolean,
-      default: false
-    },
-    walletAddressChange: {
-      type: String,
-      default: ""
+      default: false,
     },
     role: {
       type: String,
@@ -185,12 +181,27 @@ const userSchema = mongoose.Schema(
     },
     paymentStep: {
       type: Number,
-      default: 0
+      default: 0,
     },
-    isOld: {
+    facetecTid: {
+      type: String,
+      default: "",
+    },
+    kycFee: {
       type: Boolean,
-      default: false
-    }
+      default: false,
+    },
+    ageEstimate: {
+      type: Number,
+    },
+    tryToTier2: {
+      type: String,
+      default: "",
+      enum: ["", "YES", "DONE", "REDO"],
+    },
+    timeToTry: {
+      type: Date,
+    },
   },
   {
     timestamps: true,

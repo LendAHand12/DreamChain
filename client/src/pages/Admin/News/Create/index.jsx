@@ -60,7 +60,7 @@ const CreatePostPage = () => {
             <h1 className="text-2xl font-bold">Create a new news</h1>
             <div className="flex items-center gap-6">
               <button
-                className="w-64 flex justify-center gap-2 items-center hover:underline text-DreamChain bg-black rounded-full py-2 shadow-lg focus:outline-none focus:shadow-outline transform transition hover:scale-105 duration-300 ease-in-out"
+                className="w-64 flex justify-center gap-2 items-center hover:underline text-NoExcuseChallenge bg-black rounded-full py-2 shadow-lg focus:outline-none focus:shadow-outline transform transition hover:scale-105 duration-300 ease-in-out"
                 onClick={(e) => {
                   e.preventDefault();
                   navigate('/admin/news');
@@ -168,7 +168,7 @@ const CreatePostPage = () => {
 
             <button
               type="submit"
-              className="w-full flex justify-center items-center hover:underline text-DreamChain bg-black font-bold rounded-full my-6 py-4 px-8 shadow-lg focus:outline-none focus:shadow-outline transform transition hover:scale-105 duration-300 ease-in-out"
+              className="w-full flex justify-center items-center hover:underline text-NoExcuseChallenge bg-black font-bold rounded-full my-6 py-4 px-8 shadow-lg focus:outline-none focus:shadow-outline transform transition hover:scale-105 duration-300 ease-in-out"
             >
               {loading ? <Loading /> : 'Create'}
             </button>

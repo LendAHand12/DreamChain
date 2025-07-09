@@ -29,6 +29,10 @@ import withdrawRoutes from "./routes/withdrawRoutes.js";
 import iceBreakerRoutes from "./routes/iceBreakerRoutes.js";
 import incomeRoutes from "./routes/incomeRoutes.js";
 import cronjobRoutes from "./routes/cronjobRoutes.js";
+import kycRoutes from "./routes/kycRoutes.js";
+import configRoutes from "./routes/configRoutes.js";
+import userHistoryRoutes from "./routes/userHistoryRoutes.js";
+import moveSystemRoutes from "./routes/moveSystemRoutes.js";
 
 import {
   countChildToData,
@@ -36,7 +40,12 @@ import {
   deleteUser24hUnPay,
   distributionHewe,
   rankingCalc,
+  checkRefWithTime,
+  blockUserNotKYC,
+  updateHewePrice,
+  checkUserTryToTier2,
 } from "./cronJob/index.js";
+import { sendTelegramMessage } from "./utils/sendTelegram.js";
 
 const app = express();
 
@@ -79,6 +88,10 @@ app.use("/api/withdraw", withdrawRoutes);
 app.use("/api/ice-breaker", iceBreakerRoutes);
 app.use("/api/income", incomeRoutes);
 app.use("/api/cronjob", cronjobRoutes);
+app.use("/api/kyc", kycRoutes);
+app.use("/api/config", configRoutes);
+app.use("/api/user-history", userHistoryRoutes);
+app.use("/api/move-system", moveSystemRoutes);
 
 app.use(notFound);
 
@@ -97,6 +110,20 @@ const cron1 = new CronJob("00 01 * * *", async () => {
   console.log("Delete user start");
   await deleteUser24hUnPay();
   console.log("Delete user done");
+});
+
+const cron12 = new CronJob("30 01 * * *", async () => {
+  // 1h30
+  console.log("Block user not KYC start");
+  await blockUserNotKYC();
+  console.log("Block user not KYC done");
+});
+
+const cron13 = new CronJob("45 01 * * *", async () => {
+  // 1h30
+  console.log("Check User try to Tier2 start");
+  await checkUserTryToTier2();
+  console.log("Check User try to Tier2 done");
 });
 
 const cron2 = new CronJob("00 02 * * *", async () => {
@@ -120,11 +147,29 @@ const cron4 = new CronJob("00 04 * * *", async () => {
   console.log("Ranking calc done");
 });
 
+const cron5 = new CronJob("00 05 * * *", async () => {
+  // 5h
+  console.log("Check ref with time start");
+  await checkRefWithTime();
+  console.log("Check ref with time done");
+});
+
+const cron6 = new CronJob("0 * * * *", async () => {
+  // evry hour
+  await updateHewePrice();
+});
+
+// await test1();
+
 cron0.start();
 cron1.start();
+cron12.start();
+cron13.start();
 cron2.start();
 cron3.start();
 cron4.start();
+cron5.start();
+cron6.start();
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () =>

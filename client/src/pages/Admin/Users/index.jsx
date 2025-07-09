@@ -163,6 +163,10 @@ const AdminUserPages = () => {
     navigate(`/admin/users/${id}`);
   };
 
+  const handleMoveSystem = (id) => {
+    navigate(`/admin/move-system/${id}`);
+  };
+
   const handleTree = (id) => {
     navigate(`/admin/system/${id}`);
   };
@@ -336,6 +340,18 @@ const AdminUserPages = () => {
                     </p>
                   )}
                 </div>
+                <div>
+                  FaceTec Url :{' '}
+                  <a
+                    target="_blank"
+                    className="text-blue-500"
+                    href={`${
+                      import.meta.env.VITE_FACETEC_DASHBOARD_URL
+                    }/session-details?path=%2Fenrollment-3d&externalDatabaseRefID=ID_${currentKYCId}`}
+                  >
+                    Link
+                  </a>
+                </div>
                 <div className="flex justify-center items-center space-x-4">
                   <button
                     onClick={handleRejectUser}
@@ -394,13 +410,13 @@ const AdminUserPages = () => {
                   type="text"
                   onChange={onSearch}
                   className="block p-2 pl-10 text-sm text-gray-900 border border-gray-300 rounded-lg w-80 bg-gray-50"
-                  placeholder={t('search with user name or email')}
+                  placeholder={t('search with user name or email or wallet')}
                   defaultValue={objectFilter.keyword}
                 />
                 <button
                   onClick={handleSearch}
                   disabled={loading}
-                  className="h-8 flex text-xs justify-center items-center hover:underline bg-black text-DreamChain font-bold rounded-full py-1 px-4 shadow-lg focus:outline-none focus:shadow-outline transform transition hover:scale-105 duration-300 ease-in-out"
+                  className="h-8 flex text-xs justify-center items-center hover:underline bg-black text-NoExcuseChallenge font-bold rounded-full py-1 px-4 shadow-lg focus:outline-none focus:shadow-outline transform transition hover:scale-105 duration-300 ease-in-out"
                 >
                   {t('search')}
                 </button>
@@ -467,6 +483,9 @@ const AdminUserPages = () => {
                 Email
               </th>
               <th scope="col" className="px-6 py-3">
+                Age
+              </th>
+              <th scope="col" className="px-6 py-3">
                 Wallet Address
               </th>
               <th scope="col" className="px-6 py-3">
@@ -498,6 +517,36 @@ const AdminUserPages = () => {
                   </th>
                   <td className="px-6 py-4">{ele.email}</td>
                   <td className="px-6 py-4">
+                    {ele.ageEstimate && (
+                      <a
+                        className={`hover:underline ${
+                          ele.ageEstimate && ele.ageEstimate < 5
+                            ? 'text-red-500'
+                            : 'text-blue-500'
+                        }`}
+                        href={`http://3.107.26.68:3002/session-details?path=%2Fenrollment-3d&externalDatabaseRefID=ID_${ele._id}`}
+                        target="_blank"
+                      >
+                        {ele.ageEstimate === 2
+                          ? '8+'
+                          : ele.ageEstimate === 3
+                          ? '13+'
+                          : ele.ageEstimate === 4
+                          ? '16+'
+                          : ele.ageEstimate === 5
+                          ? '18+'
+                          : ele.ageEstimate === 6
+                          ? '21+'
+                          : ele.ageEstimate === 7
+                          ? '25+'
+                          : ele.ageEstimate === 8
+                          ? '30+'
+                          : ''}
+                      </a>
+                    )}
+                    {!ele.ageEstimate && <p>N/A</p>}
+                  </td>
+                  <td className="px-6 py-4">
                     {shortenWalletAddress(ele.walletAddress, 12)}
                   </td>
                   <td className="px-6 py-4">
@@ -518,7 +567,7 @@ const AdminUserPages = () => {
                         ele.status === 'PENDING' && (
                           <button
                             onClick={() => handleApprove(ele._id)}
-                            className="font-medium text-gray-500 hover:text-DreamChain"
+                            className="font-medium text-gray-500 hover:text-NoExcuseChallenge"
                           >
                             <svg
                               fill="currentColor"
@@ -551,7 +600,7 @@ const AdminUserPages = () => {
                           ?.actions.includes('read') && (
                           <button
                             onClick={() => handleDetail(ele._id)}
-                            className="font-medium text-gray-500 hover:text-DreamChain"
+                            className="font-medium text-gray-500 hover:text-NoExcuseChallenge"
                           >
                             <svg
                               fill="currentColor"
@@ -570,7 +619,7 @@ const AdminUserPages = () => {
                           ?.actions.includes('read') && (
                           <button
                             onClick={() => handleTree(ele._id)}
-                            className="font-medium text-gray-500 hover:text-DreamChain"
+                            className="font-medium text-gray-500 hover:text-NoExcuseChallenge"
                           >
                             <svg
                               className="w-6 h-auto"
@@ -616,6 +665,59 @@ const AdminUserPages = () => {
                           </button>
                         )}
 
+                      {ele.status !== 'DELETED' &&
+                        userInfo?.permissions
+                          .find((p) => p.page.pageName === 'admin-move-system')
+                          ?.actions.includes('read') && (
+                          <button
+                            onClick={() => handleMoveSystem(ele._id)}
+                            className="font-medium text-gray-500 hover:text-NoExcuseChallenge"
+                          >
+                            <svg
+                              width="24"
+                              height="24"
+                              viewBox="0 0 48 48"
+                              fill="none"
+                              xmlns="http://www.w3.org/2000/svg"
+                            >
+                              <rect
+                                width="48"
+                                height="48"
+                                fill="white"
+                                fill-opacity="0.01"
+                              />
+                              <path
+                                d="M18 31H38V5"
+                                stroke="currentColor"
+                                stroke-width="4"
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                              />
+                              <path
+                                d="M30 21H10V43"
+                                stroke="currentColor"
+                                stroke-width="4"
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                              />
+                              <path
+                                d="M44 11L38 5L32 11"
+                                stroke="currentColor"
+                                stroke-width="4"
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                              />
+                              <path
+                                d="M16 37L10 43L4 37"
+                                stroke="currentColor"
+                                stroke-width="4"
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                              />
+                            </svg>
+                          </button>
+                        )}
+
                       {userInfo?.permissions
                         .find((p) => p.page.pageName === 'admin-users-details')
                         ?.actions.includes('delete') &&
@@ -623,7 +725,7 @@ const AdminUserPages = () => {
                         ele.status !== 'DELETED' && (
                           <button
                             onClick={() => handleDelete(ele._id)}
-                            className="font-medium text-gray-500 hover:text-DreamChain"
+                            className="font-medium text-gray-500 hover:text-NoExcuseChallenge"
                           >
                             <svg
                               fill="currentColor"

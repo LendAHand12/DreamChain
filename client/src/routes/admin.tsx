@@ -227,6 +227,29 @@ const routes = [
     ),
   },
   {
+    title: 'Double KYC',
+    link: '/admin/double-kyc',
+    icon: (
+      <svg
+        width="20"
+        height="20"
+        viewBox="0 0 16 16"
+        xmlns="http://www.w3.org/2000/svg"
+        fill="none"
+      >
+        <g fill="currentColor">
+          <path d="M2.25 0A2.25 2.25 0 000 2.25v7.5A2.25 2.25 0 002.25 12h.25a.75.75 0 000-1.5h-.25a.75.75 0 01-.75-.75v-7.5a.75.75 0 01.75-.75h7.5a.75.75 0 01.75.75v.25a.75.75 0 001.5 0v-.25A2.25 2.25 0 009.75 0h-7.5z" />
+
+          <path
+            fillRule="evenodd"
+            d="M6.25 4A2.25 2.25 0 004 6.25v7.5A2.25 2.25 0 006.25 16h7.5A2.25 2.25 0 0016 13.75v-7.5A2.25 2.25 0 0013.75 4h-7.5zM5.5 6.25a.75.75 0 01.75-.75h7.5a.75.75 0 01.75.75v7.5a.75.75 0 01-.75.75h-7.5a.75.75 0 01-.75-.75v-7.5z"
+            clipRule="evenodd"
+          />
+        </g>
+      </svg>
+    ),
+  },
+  {
     title: 'DreamPool',
     link: '/admin/dreampool',
     icon: (
@@ -299,6 +322,133 @@ const routes = [
           strokeWidth="4"
           strokeLinecap="round"
           strokeLinejoin="round"
+        />
+      </svg>
+    ),
+  },
+  {
+    title: 'Config',
+    link: '/admin/config',
+    icon: (
+      <svg
+        width="24"
+        height="24"
+        viewBox="0 0 48 48"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <rect width="48" height="48" fill="white" fillOpacity="0.01" />
+        <path
+          d="M41.5 10H35.5"
+          stroke="currentColor"
+          strokeWidth="4"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
+        <path
+          d="M27.5 6V14"
+          stroke="currentColor"
+          strokeWidth="4"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
+        <path
+          d="M27.5 10L5.5 10"
+          stroke="currentColor"
+          strokeWidth="4"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
+        <path
+          d="M13.5 24H5.5"
+          stroke="currentColor"
+          strokeWidth="4"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
+        <path
+          d="M21.5 20V28"
+          stroke="currentColor"
+          strokeWidth="4"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
+        <path
+          d="M43.5 24H21.5"
+          stroke="currentColor"
+          strokeWidth="4"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
+        <path
+          d="M41.5 38H35.5"
+          stroke="currentColor"
+          strokeWidth="4"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
+        <path
+          d="M27.5 34V42"
+          stroke="currentColor"
+          strokeWidth="4"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
+        <path
+          d="M27.5 38H5.5"
+          stroke="currentColor"
+          strokeWidth="4"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
+      </svg>
+    ),
+  },
+  {
+    title: 'User History',
+    link: '/admin/user-history',
+    icon: (
+      <svg
+        fill="currentColor"
+        width="24"
+        height="24"
+        viewBox="0 0 24 24"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <path d="M12,2A10,10,0,0,0,5.12,4.77V3a1,1,0,0,0-2,0V7.5a1,1,0,0,0,1,1H8.62a1,1,0,0,0,0-2H6.22A8,8,0,1,1,4,12a1,1,0,0,0-2,0A10,10,0,1,0,12,2Zm0,6a1,1,0,0,0-1,1v3a1,1,0,0,0,1,1h2a1,1,0,0,0,0-2H13V9A1,1,0,0,0,12,8Z" />
+      </svg>
+    ),
+  },
+  {
+    title: 'Users Tier 2',
+    link: '/admin/user/tier2',
+    icon: (
+      <svg
+        fill="currentColor"
+        width="26"
+        height="26"
+        viewBox="0 0 256 256"
+        id="Flat"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <path d="M223.999,128a8.00039,8.00039,0,0,1-8,8H104a8,8,0,0,1,0-16H215.999A8.00039,8.00039,0,0,1,223.999,128ZM104,72H215.999a8,8,0,0,0,0-16H104a8,8,0,0,0,0,16ZM215.999,184h-112a8,8,0,1,0,0,16h112a8,8,0,0,0,0-16ZM43.57764,67.15527,48,64.94434v43.0498a8,8,0,1,0,16,0V52a7.99928,7.99928,0,0,0-11.57764-7.15527l-16,8a7.99984,7.99984,0,1,0,7.15528,14.31054ZM72.23828,170.30566a22.00226,22.00226,0,1,0-38.50635-20.87109A8,8,0,1,0,48.46826,155.667a6.00233,6.00233,0,1,1,10.59717,5.55176l-25.46729,33.9834A8.00014,8.00014,0,0,0,40,208H68a8,8,0,0,0,0-16H55.99219l16.01855-21.375Q72.12867,170.46827,72.23828,170.30566Z" />
+      </svg>
+    ),
+  },
+  {
+    title: 'Move System List',
+    link: '/admin/move-system-list',
+    icon: (
+      <svg
+        width="24"
+        height="24"
+        viewBox="0 0 24 24"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <path
+          d="M4 7a1 1 0 0 1 1-1h1a1 1 0 0 1 0 2H5a1 1 0 0 1-1-1zm5 0a1 1 0 0 1 1-1h9a1 1 0 1 1 0 2h-9a1 1 0 0 1-1-1zm-5 5a1 1 0 0 1 1-1h1a1 1 0 1 1 0 2H5a1 1 0 0 1-1-1zm5 0a1 1 0 0 1 1-1h9a1 1 0 1 1 0 2h-9a1 1 0 0 1-1-1zm-5 5a1 1 0 0 1 1-1h1a1 1 0 1 1 0 2H5a1 1 0 0 1-1-1zm5 0a1 1 0 0 1 1-1h9a1 1 0 1 1 0 2h-9a1 1 0 0 1-1-1z"
+          fill="currentColor"
         />
       </svg>
     ),
