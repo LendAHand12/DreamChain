@@ -1,7 +1,6 @@
 import React from 'react';
 import DefaultLayout from '../../layout/DefaultLayout';
 import features from '../../constants/features';
-import { Link } from 'react-router-dom';
 
 const ServicePage: React.FC = () => {
   return (
@@ -20,14 +19,11 @@ const ServicePage: React.FC = () => {
         <div>
           <div className="grid md:grid-cols-2 gap-20">
             {features.map((feature) => (
-              <Link
-                to={feature.link}
-                className="relative border border-black rounded-2xl p-4 flex flex-col items-center gap-8"
-              >
+              <div className="relative border border-black rounded-2xl p-4 flex flex-col items-center gap-8">
                 <h4 className="text-xl font-bold ml-20">{feature.title}</h4>
                 <p>{feature.desc}</p>
                 <img className="absolute -top-8 left-2" src={feature.icon} />
-              </Link>
+              </div>
             ))}
           </div>
         </div>

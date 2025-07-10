@@ -14,7 +14,7 @@ export default [
   },
   {
     title: 'Community-Building Platform',
-    desc: 'NoExcuseChallenge helps create a supportive community where members collaborate, contribute, and help each other achieve their dreams through a giving and receiving model.',
+    desc: 'DreamChain helps create a supportive community where members collaborate, contribute, and help each other achieve their dreams through a giving and receiving model.',
     icon: Feature2Icon,
     link: '/',
   },
