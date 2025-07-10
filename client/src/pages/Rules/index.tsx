@@ -6,7 +6,7 @@ const RulesPage: React.FC = () => {
     <DefaultLayout>
       <div className="w-full md:p-24 py-24 px-10 space-y-10">
         <div>
-          <h1 className="text-3xl font-bold mb-4">🚀 No Excuse Challenge</h1>
+          <h1 className="text-3xl font-bold mb-4">🚀 DreamChain</h1>
           <p className="">RULES & REGULATIONS</p>
         </div>
         <div className="space-y-8">
@@ -82,7 +82,7 @@ const RulesPage: React.FC = () => {
                   <li className="ml-6">
                     Failure to comply will result in{' '}
                     <b>account disqualification</b>
-                    and loss of all benefits from the No Excuse Challenge community.
+                    and loss of all benefits from the DreamChain community.
                   </li>
                 </ul>
               </li>
@@ -104,7 +104,7 @@ const RulesPage: React.FC = () => {
                 <b>Binary System Clarification:</b>
                 <ul className="grid list-disc gap-2 mt-2">
                   <li className="ml-6">
-                    No Excuse Challenge uses a <b>binary concept.</b>
+                    DreamChain uses a <b>binary concept.</b>
                   </li>
                   <li className="ml-6">
                     Members will <b>only benefit</b> from the branch (left or
@@ -143,7 +143,7 @@ const RulesPage: React.FC = () => {
             <b className="text-xl font-bold">5. Important Legal Notes</b>
             <ul className="grid list-disc gap-2">
               <li className="ml-6">
-                <b>No Excuse Challenge, DreamChain, and Ameritec IPS</b> are{' '}
+                <b>DreamChain, DreamChain, and Ameritec IPS</b> are{' '}
                 <b>not financial advisors.</b>
               </li>
               <li className="ml-6">
@@ -196,7 +196,7 @@ const RulesPage: React.FC = () => {
               </li>
               <li className="ml-6">
                 The organizers reserve the right to disqualify participants to
-                preserve the integrity and spirit of the No Excuse Challenge.
+                preserve the integrity and spirit of the DreamChain.
               </li>
             </ul>
           </div>
