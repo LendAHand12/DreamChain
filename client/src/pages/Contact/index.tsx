@@ -81,7 +81,7 @@ const ContactPage: React.FC = () => {
 
                 <div className="space-y-2">
                   <p className="font-bold">Email</p>
-                  <p>support@noexcuse.live</p>
+                  <p>support@dreamchain.live</p>
                 </div>
               </div>
             </div>
