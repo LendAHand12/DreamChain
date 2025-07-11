@@ -67,14 +67,11 @@ import { useSelector } from 'react-redux';
 import ClaimsPage from './pages/User/Claims';
 import RegisterKYCPage from './pages/User/RegisterKYC';
 import ClaimKYCPage from './pages/User/ClaimKYC';
-import MoveSystemPage from './pages/User/MoveSystemKYC';
 import AdminDoubleKycPage from './pages/Admin/DoubleKyc';
 import AdminConfigPage from './pages/Admin/Config';
 import UserHistoryPage from './pages/Admin/UserHistory';
 import UserUpdateInfoKYCPage from './pages/User/UpdateInfoKYC';
 import UsersTier2 from './pages/User/UsersTier2';
-import MoveSystem from './pages/Admin/MoveSystem';
-import MoveSystemList from './pages/Admin/MoveSystemList';
 
 function App() {
   const { pathname } = useLocation();
@@ -209,20 +206,6 @@ function App() {
         )}
 
         {userInfo?.permissions
-          ?.find((p) => p.page.path === '/admin/move-system-list')
-          ?.actions.includes('read') && (
-          <Route
-            path="/admin/move-system-list"
-            element={
-              <>
-                <PageTitle title="Move System List | DreamChain" />
-                <MoveSystemList />
-              </>
-            }
-          />
-        )}
-
-        {userInfo?.permissions
           ?.find((p) => p.page.path === '/admin/users/:id')
           ?.actions.includes('read') && (
           <Route
@@ -231,20 +214,6 @@ function App() {
               <>
                 <PageTitle title="User Profile | DreamChain" />
                 <AdminUserProfile />
-              </>
-            }
-          />
-        )}
-
-        {userInfo?.permissions
-          ?.find((p) => p.page.path === '/admin/move-system/:id')
-          ?.actions.includes('read') && (
-          <Route
-            path="/admin/move-system/:id"
-            element={
-              <>
-                <PageTitle title="Move System | DreamChain" />
-                <MoveSystem />
               </>
             }
           />
@@ -630,7 +599,7 @@ function App() {
             </>
           }
         />
-        {userInfo?.errLahCode !== 'OVER45' && (
+        {userInfo?.errLahCode !== 'OVER45' && userInfo?.isOld === false && (
           <>
             <Route
               path="/user/payment"
@@ -751,15 +720,6 @@ function App() {
           <>
             <PageTitle title="Claim KYC | DreamChain" />
             <ClaimKYCPage />
-          </>
-        }
-      />
-      <Route
-        path="/user/move-system"
-        element={
-          <>
-            <PageTitle title="Move System KYC | DreamChain" />
-            <MoveSystemPage />
           </>
         }
       />

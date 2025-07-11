@@ -62,19 +62,19 @@ const PaymentPage = () => {
   const paymentMetamask = useCallback(async () => {
     setLoadingPayment(true);
     try {
-      const referralTransaction = await transfer(
-        import.meta.env.VITE_MAIN_WALLET_ADDRESS,
-        total,
-      );
-      if (referralTransaction) {
-        const { transactionHash } = referralTransaction;
-        await donePayment(transactionHash);
+      // const referralTransaction = await transfer(
+      //   import.meta.env.VITE_MAIN_WALLET_ADDRESS,
+      //   total,
+      // );
+      // if (referralTransaction) {
+      //   const { transactionHash } = referralTransaction;
+        await donePayment("transactionHash");
         setPaymentCompleted(true);
         window.location.reload();
-      } else {
-        setLoadingPayment(false);
-        throw new Error(t('payment error'));
-      }
+      // } else {
+      //   setLoadingPayment(false);
+      //   throw new Error(t('payment error'));
+      // }
     } catch (error) {
       toast.error(t(error.message));
       setLoadingPayment(false);
@@ -124,7 +124,7 @@ const PaymentPage = () => {
                     <div className="mb-3">
                       <p className="text-lg mb-2 ml-1">
                         <span className="font-bold">{t('buyPackage')}</span> :
-                        NoExcuseChallenge
+                        DreamChain
                       </p>
                     </div>
                     <div className="mb-3">

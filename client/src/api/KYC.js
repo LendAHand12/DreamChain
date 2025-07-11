@@ -16,9 +16,6 @@ const Page = {
   },
   checkKyc: (body) => {
     return API.post(`${URL_API_KYC}/checkKyc`, body);
-  },
-  moveSystem: (body) => {
-    return API.post(`${URL_API_KYC}/move-system`, body);
   }
 };
 

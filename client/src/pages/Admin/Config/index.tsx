@@ -78,7 +78,7 @@ const ConfigPage = () => {
             >
               <div className="bg-black rounded-2xl p-4 space-y-6">
                 <div className="flex justify-between items-center gap-6">
-                  <p className="text-NoExcuseChallenge text-sm font-bold uppercase">
+                  <p className="text-DreamChain text-sm font-bold uppercase">
                     {ele.label}
                   </p>
                   {userInfo?.permissions

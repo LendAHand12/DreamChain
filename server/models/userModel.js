@@ -202,6 +202,10 @@ const userSchema = mongoose.Schema(
     timeToTry: {
       type: Date,
     },
+    isOld: {
+      type: Boolean,
+      default: false
+    }
   },
   {
     timestamps: true,

@@ -173,7 +173,7 @@ const ContactPage: React.FC = () => {
 
               <button
                 type="submit"
-                className="flex w-36 text-[16px] justify-center rounded-xl border-black bg-black p-3 font-medium text-NoExcuseChallenge hover:bg-opacity-90"
+                className="flex w-36 text-[16px] justify-center rounded-xl border-black bg-black p-3 font-medium text-DreamChain hover:bg-opacity-90"
               >
                 Advise Me
                 {loading && <Loading />}

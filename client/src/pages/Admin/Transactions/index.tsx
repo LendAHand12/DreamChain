@@ -142,7 +142,7 @@ const AdminTransactionsPage = () => {
               onClick={() => handleChangeTier(i + 1)}
               className={`flex justify-center items-center hover:underline font-medium ${
                 parseInt(objectFilter.tier) === i + 1
-                  ? 'bg-black text-NoExcuseChallenge'
+                  ? 'bg-black text-DreamChain'
                   : ''
               } rounded-full py-4 px-8 border focus:outline-none focus:shadow-outline transform transition hover:scale-105 duration-300 ease-in-out`}
             >

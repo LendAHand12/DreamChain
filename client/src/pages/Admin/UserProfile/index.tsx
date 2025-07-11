@@ -433,7 +433,7 @@ const UserProfile = () => {
             >
               <span className="block sm:inline">
                 {t(
-                  'To enhance security, facial recognition verification and a 2 USDT/year fee will be applied. The fee will be auto-deducted annually. Thank you for your support!',
+                  'To enhance security, facial recognition verification and a 5 USDT/year fee will be applied. The fee will be auto-deducted annually. Thank you for your support!',
                 )}
               </span>
             </div>
@@ -1275,7 +1275,7 @@ const UserProfile = () => {
                     <button
                       onClick={() => setEditting(true)}
                       disabled={loading}
-                      className="w-full flex justify-center items-center hover:underline bg-black text-NoExcuseChallenge font-semibold rounded-full my-2 py-2 px-6 shadow-lg focus:outline-none focus:shadow-outline transform transition hover:scale-105 duration-300 ease-in-out"
+                      className="w-full flex justify-center items-center hover:underline bg-black text-DreamChain font-semibold rounded-full my-2 py-2 px-6 shadow-lg focus:outline-none focus:shadow-outline transform transition hover:scale-105 duration-300 ease-in-out"
                     >
                       {loading && <Loading />}
                       {t('update')}
@@ -1295,7 +1295,7 @@ const UserProfile = () => {
                   data.status !== 'DELETED' && (
                     <button
                       onClick={() => setEditting(true)}
-                      className="w-full flex justify-center items-center hover:underline text-NoExcuseChallenge bg-black font-bold rounded-full my-2 py-2 px-6 shadow-lg focus:outline-none focus:shadow-outline transform transition hover:scale-105 duration-300 ease-in-out"
+                      className="w-full flex justify-center items-center hover:underline text-DreamChain bg-black font-bold rounded-full my-2 py-2 px-6 shadow-lg focus:outline-none focus:shadow-outline transform transition hover:scale-105 duration-300 ease-in-out"
                     >
                       {t('edit')}
                     </button>

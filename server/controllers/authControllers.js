@@ -278,6 +278,7 @@ const authUser = asyncHandler(async (req, res) => {
         facetecTid: user.facetecTid,
         kycFee: user.kycFee,
         errLahCode: user.errLahCode,
+        isOld: user.isOld
       },
       accessToken,
       refreshToken,

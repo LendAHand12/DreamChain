@@ -123,12 +123,12 @@ export const sendActiveLink = async (senderName, email) => {
   const mailOptions = {
     from: process.env.EMAIL, // sender address
     to: email,
-    subject: "Welcome to No Excuse Challenge – Your Journey Begins!",
+    subject: "Welcome to DreamChain – Your Journey Begins!",
     html: `
     <div>
     Dear <b>${senderName}</b>,
     <br></br>
-    Welcome to <b>No Excuse Challenge</b>, powered by <b>DreamChain</b>! 🎉
+    Welcome to <b>DreamChain</b>! 🎉
     <br></br>
     You’ve just taken the first step toward a transformative journey where <b>innovation meets opportunity</b>. At <b>No Excuse Challenge</b>, we believe in pushing limits, breaking barriers, and empowering individuals to <b>achieve financial freedom and success</b> through blockchain and AI-driven solutions.
     <br></br>
@@ -286,14 +286,14 @@ export const sendMailReceiveCommission = async (mailInfo) => {
   const mailOptions = {
     from: process.env.EMAIL,
     to: email,
-    subject: "Direct Commission from No Excuse Challenge",
+    subject: "Direct Commission from DreamChain",
     html: `
     <div>
     Congratulations! You have received <b>$15</b> commission from user <b>${senderName}</b>.
     <br></br>
-    Thank you for participating in our NoExcuseChallenge referral program. 
+    Thank you for participating in our DreamChain referral program. 
     <br></br>
-    No Excuse Challenge believes you will continue to make significant contributions to the No Excuse Challenge community as we work together toward even greater success.
+    DreamChain believes you will continue to make significant contributions to the DreamChain community as we work together toward even greater success.
     <br></br>
     ________________________________________
     <br></br>
@@ -324,13 +324,13 @@ export const sendMailRefDc = async (mailInfo) => {
   const mailOptions = {
     from: process.env.EMAIL,
     to: email,
-    subject: "No Excuse Challenge Fund",
+    subject: "DreamChain Fund",
     html: `
-      Congratulations! You have received <b>$5</b> No Excuse Challenge Contribution Fund from user <b>${senderName}</b>.
+      Congratulations! You have received <b>$5</b> DreamChain Contribution Fund from user <b>${senderName}</b>.
       <br></br>
-      Thank you for participating in our No Excuse Challenge referral program. 
+      Thank you for participating in our DreamChain referral program. 
       <br></br>
-      No Excuse Challenge believes you will continue to make significant contributions to the NoExcuseChallenge community as we work together toward even greater success.
+      DreamChain believes you will continue to make significant contributions to the DreamChain community as we work together toward even greater success.
       <br></br>
       ________________________________________
       <br></br>
@@ -375,7 +375,7 @@ export const sendMailReject = async (mailInfo) => {
       <br></br>
       ✔️ The document is valid and not expired.
       <br></br>
-      If you have any questions or need further assistance, please feel free to contact our support team at support@noexcuse.live
+      If you have any questions or need further assistance, please feel free to contact our support team at support@dreamchain.live
       We appreciate your cooperation and look forward to verifying your account successfully.
       <br></br>
       Best regards,

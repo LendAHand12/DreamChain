@@ -65,7 +65,6 @@ const Profile = () => {
   const [showFaceId, setShowFaceId] = useState(
     facetecTid === '' ? true : false,
   );
-  const [showMoveSystem, setShowMoveSystem] = useState(false);
   const [errAgrre, setErrAgrre] = useState(false);
   const [valueCheckAgrree, setValueCheckAgrree] = useState('');
 
@@ -412,90 +411,6 @@ const Profile = () => {
           </div>
         </div>
       </Modal>
-      <Modal
-        isOpen={showMoveSystem}
-        onRequestClose={() => setShowMoveSystem(false)}
-        style={{
-          content: {
-            top: '50%',
-            left: '50%',
-            right: 'auto',
-            bottom: 'auto',
-            marginRight: '-50%',
-            transform: 'translate(-50%, -50%)',
-          },
-        }}
-      >
-        <div className="overflow-y-auto overflow-x-hidden justify-center items-center w-full md:inset-0 h-modal md:h-full">
-          <div className="relative w-full max-w-md h-full md:h-auto">
-            <div className="relative text-center bg-white rounded-lg sm:p-5">
-              <button
-                onClick={() => setShowMoveSystem(false)}
-                className="text-gray-400 absolute top-2.5 right-2.5 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center dark:hover:bg-gray-600 dark:hover:text-white"
-              >
-                <svg
-                  aria-hidden="true"
-                  className="w-5 h-5"
-                  fill="currentColor"
-                  viewBox="0 0 20 20"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    fillRule="evenodd"
-                    d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
-                    clipRule="evenodd"
-                  ></path>
-                </svg>
-                <span className="sr-only">Close modal</span>
-              </button>
-              <div className="pr-6 flex flex-col items-center">
-                <div
-                  className="text-left text-gray-900 rounded relative mb-5"
-                  role="alert"
-                >
-                  Members agree to transfer ID at <b>No Excuse Challenge</b>{' '}
-                  through
-                  <b> DreamChain</b>.
-                  <ul className="list-disc">
-                    <li className="ml-4">
-                      Participate in activities at <b>DreamChain</b> (completely
-                      voluntary participation without being forced or influenced
-                      by outside forces.)
-                    </li>
-                    <li className="ml-4">
-                      {' '}
-                      When participating in <b>DreamChain</b>, members
-                      voluntarily give up all rights and claims related to{' '}
-                      <b>No Excuse Challenge</b>.
-                    </li>
-                  </ul>
-                  <div className="my-4 flex items-center justify-center gap-2">
-                    <input
-                      type="checkbox"
-                      id="agree"
-                      onChange={handleChangeTickAgrree}
-                    />
-                    <label htmlFor="agree">I have read and agree</label>
-                  </div>
-                  {errAgrre && (
-                    <div className="text-center text-red-500 italic">
-                      Please read and confirm{' '}
-                    </div>
-                  )}
-                </div>
-                <div>
-                  <button
-                    onClick={handleMoveSystem}
-                    className="flex items-center gap-2 px-6 py-2 bg-blue-600 text-white rounded-md hover:opacity-70"
-                  >
-                    Confirm
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </Modal>
 
       <div className="px-2 lg:px-24 py-24 space-y-6 lg:space-y-8">
         {bonusRef && (
@@ -527,7 +442,7 @@ const Profile = () => {
           >
             <span className="block sm:inline">
               {t(
-                'To enhance security, facial recognition verification and a 2 USDT/year fee will be applied. The fee will be auto-deducted annually. Thank you for your support!',
+                'To enhance security, facial recognition verification and a 5 USDT/year fee will be applied. The fee will be auto-deducted annually. Thank you for your support!',
               )}
             </span>
           </div>
@@ -558,7 +473,7 @@ const Profile = () => {
           <div className="w-full flex gap-4 items-center justify-between lg:justify-center">
             <p className="font-medium">Available HEWE</p>
             <input
-              className="bg-black rounded-xl text-NoExcuseChallenge p-2 flex-1"
+              className="bg-black rounded-xl text-DreamChain p-2 flex-1"
               readOnly
               value={availableHewe}
             />
@@ -566,7 +481,7 @@ const Profile = () => {
           <div className="w-full flex gap-4 items-center justify-between lg:justify-center">
             <p className="font-medium">Reward HEWE</p>
             <input
-              className="bg-black rounded-xl text-NoExcuseChallenge p-2 flex-1"
+              className="bg-black rounded-xl text-DreamChain p-2 flex-1"
               readOnly
               value={
                 tier > 1
@@ -596,7 +511,7 @@ const Profile = () => {
           <div className="w-full flex gap-4 items-center justify-between lg:justify-center">
             <p className="font-medium">Available USDT</p>
             <input
-              className="bg-black rounded-xl text-NoExcuseChallenge p-2 flex-1"
+              className="bg-black rounded-xl text-DreamChain p-2 flex-1"
               readOnly
               value={availableUsdt}
             />
@@ -604,7 +519,7 @@ const Profile = () => {
           <div className="w-full flex gap-4 items-center justify-between lg:justify-center">
             <p className="font-medium">Processing USDT</p>
             <input
-              className="bg-black rounded-xl text-NoExcuseChallenge p-2 flex-1"
+              className="bg-black rounded-xl text-DreamChain p-2 flex-1"
               readOnly
               value={withdrawPending}
             />
@@ -787,12 +702,6 @@ const Profile = () => {
           </div>
         </div>
         <div className="flex justify-between">
-          <button
-            className="bg-blue-900 text-white px-6 py-2 rounded-lg"
-            onClick={() => setShowMoveSystem(true)}
-          >
-            Migrate ID to dreamchain
-          </button>
           {errLahCode !== 'OVER45' && !isEdit && status === 'APPROVED' && (
             <button
               onClick={() => setIsEdit(true)}

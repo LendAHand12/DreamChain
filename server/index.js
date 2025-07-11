@@ -32,7 +32,6 @@ import cronjobRoutes from "./routes/cronjobRoutes.js";
 import kycRoutes from "./routes/kycRoutes.js";
 import configRoutes from "./routes/configRoutes.js";
 import userHistoryRoutes from "./routes/userHistoryRoutes.js";
-import moveSystemRoutes from "./routes/moveSystemRoutes.js";
 
 import {
   countChildToData,
@@ -46,6 +45,7 @@ import {
   checkUserTryToTier2,
 } from "./cronJob/index.js";
 import { sendTelegramMessage } from "./utils/sendTelegram.js";
+import {convertOldData} from './common.js';
 
 const app = express();
 
@@ -91,12 +91,13 @@ app.use("/api/cronjob", cronjobRoutes);
 app.use("/api/kyc", kycRoutes);
 app.use("/api/config", configRoutes);
 app.use("/api/user-history", userHistoryRoutes);
-app.use("/api/move-system", moveSystemRoutes);
 
 app.use(notFound);
 
 // configure a custome error handler middleware
 app.use(errorHandler);
+
+// await convertOldData();
 
 const cron0 = new CronJob("00 00 * * *", async () => {
   // 0h

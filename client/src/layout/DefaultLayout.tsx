@@ -33,7 +33,7 @@ const DefaultLayout: React.FC<{ children: ReactNode }> = ({ children }) => {
         });
       } else {
         routes =
-          userInfo.errLahCode === 'OVER45'
+          userInfo.errLahCode === 'OVER45' || userInfo.isOld
             ? UserRoutes.filter((route) => route.link === '/user/profile')
             : userInfo.tier === 1
             ? UserRoutes.filter((route) => route.link !== '/user/tier2')
@@ -68,7 +68,7 @@ const DefaultLayout: React.FC<{ children: ReactNode }> = ({ children }) => {
         </div>
         {/* <!-- ===== Content Area End ===== --> */}
       </div>
-      <div className="lg:hidden bg-black text-NoExcuseChallenge text-center py-3">
+      <div className="lg:hidden bg-black text-DreamChain text-center py-3">
         © 2024, made with by{' '}
         <span className="font-bold">NoExcuseChallenge.</span>
       </div>

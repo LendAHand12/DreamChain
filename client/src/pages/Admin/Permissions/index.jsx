@@ -52,7 +52,7 @@ const PermissionsPage = () => {
             .find((p) => p.page.pageName === 'admin-permissions-create')
             ?.actions.includes('read') && <button
             onClick={() => navigate("/admin/permissions/create")}
-            className="px-8 py-4 text-sm flex justify-center items-center hover:underline bg-black text-NoExcuseChallenge font-bold rounded-full shadow-lg focus:outline-none focus:shadow-outline transform transition hover:scale-105 duration-300 ease-in-out"
+            className="px-8 py-4 text-sm flex justify-center items-center hover:underline bg-black text-DreamChain font-bold rounded-full shadow-lg focus:outline-none focus:shadow-outline transform transition hover:scale-105 duration-300 ease-in-out"
           >
             {t("addNewPermissions")}
           </button>
@@ -99,7 +99,7 @@ const PermissionsPage = () => {
                       {
                         <button
                           onClick={() => handleDetail(ele._id)}
-                          className="font-medium text-gray-500 hover:text-NoExcuseChallenge"
+                          className="font-medium text-gray-500 hover:text-DreamChain"
                         >
                           <svg
                             fill="currentColor"

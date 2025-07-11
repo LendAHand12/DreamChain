@@ -116,7 +116,7 @@ const AdminDoubleKycPage = () => {
                   <button
                     onClick={handleSearch}
                     disabled={loading}
-                    className="h-8 flex text-xs justify-center items-center hover:underline bg-black text-NoExcuseChallenge font-bold rounded-full py-1 px-4 shadow-lg focus:outline-none focus:shadow-outline transform transition hover:scale-105 duration-300 ease-in-out"
+                    className="h-8 flex text-xs justify-center items-center hover:underline bg-black text-DreamChain font-bold rounded-full py-1 px-4 shadow-lg focus:outline-none focus:shadow-outline transform transition hover:scale-105 duration-300 ease-in-out"
                   >
                     {t('search')}
                   </button>

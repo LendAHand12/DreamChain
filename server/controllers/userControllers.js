@@ -250,6 +250,7 @@ const getUserById = asyncHandler(async (req, res) => {
       notEnoughtChild,
       countdown,
       tryToTier2: user.tryToTier2,
+      isOld: user.isOld
     });
   } else {
     res.status(404);
@@ -406,6 +407,7 @@ const getUserInfo = asyncHandler(async (req, res) => {
       notEnoughtChild,
       countdown,
       tryToTier2: user.tryToTier2,
+      isOld: user.isOld
     });
   } else {
     res.status(404);

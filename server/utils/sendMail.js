@@ -17,7 +17,7 @@ const sendMail = async (id, email, option) => {
     const mailOptions = {
       from: process.env.EMAIL, // sender address
       to: email,
-      subject: "Activate Your No Excuse Challenge Account Power By DreamChain",
+      subject: "Activate Account Power By DreamChain",
       html: `
         <div>
             <h2 style="text-align: center">
@@ -29,12 +29,12 @@ const sendMail = async (id, email, option) => {
             <br><br>
             Dear Member,
             <br><br>
-            •	Your No Excuse Challenge account is pending activation.
+            •	Your DreamChain account is pending activation.
             <br>
             •	To activate your account, please click the link below:
             Activation Link: <a href="${url}">[Activate now]</a>
             <br>
-            •	After successfully activating your account, you are now able log in to your account on the website <a href="https://noexcuse.live">https://noexcuse.live</a> to start your journey.
+            •	After successfully activating your account, you are now able log in to your account on the website <a href="https://dreamchain.live">https://dreamchain.live</a> to start your journey.
             <br><br>
             <b>Withdraw Assets</b> 
             <br><br>
@@ -69,16 +69,16 @@ const sendMail = async (id, email, option) => {
     const mailOptions = {
       from: process.env.EMAIL, // sender address
       to: email,
-      subject: "Reset Your No Excuse Challenge Password", // Subject line
+      subject: "Reset Your DreamChain Password", // Subject line
       html: `
         <div>
           <h2 style="text-align: center">
-          Welcome to No Excuse Challenge!
+          Welcome to DreamChain!
           </h2> 
           <br>
           Thank you for becoming a valued member of our community.
           <br></br>
-          <b>Subject</b>:Reset Your NoExcuseChallenge Password
+          <b>Subject</b>:Reset Your DreamChain Password
           <br><br>
           Forgot your password? No worries! Simply click the link below to reset it:
           <br>
@@ -104,7 +104,7 @@ const sendMail = async (id, email, option) => {
     const mailOptions = {
       from: process.env.EMAIL, // sender address
       to: email,
-      subject: "Please payment for NoExcuseChallenge", // Subject line
+      subject: "Please payment for DreamChain", // Subject line
       html: `<div>
 					<h2>Please pay before being penalized</h2>
 				</div>
@@ -129,11 +129,11 @@ const sendMail = async (id, email, option) => {
     const mailOptions = {
       from: process.env.EMAIL, // sender address
       to: email,
-      subject: "Change your wallet address for NoExcuseChallenge", // Subject line
+      subject: "Change your wallet address for DreamChain", // Subject line
       html: `
         <div>
           <h2 style="text-align: center">
-          Welcome to NoExcuseChallenge!
+          Welcome to DreamChain!
           </h2> 
           <br>
           Thank you for becoming a valued member of our community.

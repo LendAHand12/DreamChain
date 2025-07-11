@@ -32,7 +32,7 @@ export default [
   },
   {
     title: 'Seamless Accessibility',
-    desc: 'Access NoExcuseChallenge services anytime, anywhere with our intuitive mobile and web applications designed for a seamless and user-friendly experience.',
+    desc: 'Access DreamChain services anytime, anywhere with our intuitive mobile and web applications designed for a seamless and user-friendly experience.',
     icon: Feature5Icon,
     link: '/',
   },
