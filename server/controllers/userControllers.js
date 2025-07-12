@@ -133,7 +133,8 @@ const getUserById = asyncHandler(async (req, res) => {
               ? true
               : false,
           isYellow: refedUser.errLahCode === "OVER35",
-          isBlue: refedUser.errLahCode === "OVER45",
+          // isBlue: refedUser.errLahCode === "OVER45",
+          isBlue: false,
           isPink: refedUser.countPay === 13 && listRefOfRefUser.length < 2,
         });
       }
@@ -285,7 +286,8 @@ const getUserInfo = asyncHandler(async (req, res) => {
               ? true
               : false,
           isYellow: refedUser.errLahCode === "OVER35",
-          isBlue: refedUser.errLahCode === "OVER45",
+          // isBlue: refedUser.errLahCode === "OVER45",
+          isBlue: false,
           isPink: refedUser.countPay === 13 && listRefOfRefUser.length < 2,
         });
       }
