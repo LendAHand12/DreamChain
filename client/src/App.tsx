@@ -599,7 +599,7 @@ function App() {
             </>
           }
         />
-        {userInfo?.errLahCode !== 'OVER45' && userInfo?.isOld === false && (
+        {userInfo?.isOld === false && (
           <>
             <Route
               path="/user/payment"

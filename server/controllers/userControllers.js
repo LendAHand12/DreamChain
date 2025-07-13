@@ -132,7 +132,7 @@ const getUserById = asyncHandler(async (req, res) => {
               : refedUser.tier === 1 && refedUser.buyPackage === "A" && refedUser.countPay < 13
               ? true
               : false,
-          isYellow: refedUser.errLahCode === "OVER35",
+          // isYellow: refedUser.errLahCode === "OVER35",
           // isBlue: refedUser.errLahCode === "OVER45",
           isBlue: false,
           isPink: refedUser.countPay === 13 && listRefOfRefUser.length < 2,
@@ -285,7 +285,7 @@ const getUserInfo = asyncHandler(async (req, res) => {
               : refedUser.tier === 1 && refedUser.countPay < 13
               ? true
               : false,
-          isYellow: refedUser.errLahCode === "OVER35",
+          // isYellow: refedUser.errLahCode === "OVER35",
           // isBlue: refedUser.errLahCode === "OVER45",
           isBlue: false,
           isPink: refedUser.countPay === 13 && listRefOfRefUser.length < 2,
@@ -490,7 +490,7 @@ const updateUser = asyncHandler(async (req, res) => {
             userId: refedUser.userId,
             isGray: refedUser.status === "LOCKED" ? (req.user.isAdmin ? true : false) : false,
             isRed: refedUser.tier === 1 && refedUser.countPay === 0 ? true : false,
-            isYellow: refedUser.errLahCode === "OVER30",
+            // isYellow: refedUser.errLahCode === "OVER30",
             countChild: refedUser.countChild[0] + 1,
           });
         }
@@ -880,8 +880,8 @@ const getChildsOfUserForTree = asyncHandler(async (req, res) => {
               : false
             : false,
         isRed: child.tier === 1 && child.countPay === 0 ? true : false,
-        isYellow: child.errLahCode === "OVER35",
-        isBlue: child.errLahCode === "OVER45",
+        // isYellow: child.errLahCode === "OVER35",
+        // isBlue: child.errLahCode === "OVER45",
         indexOnLevel: childTree.indexOnLevel,
         isSubId: childTree.isSubId,
         isPink: child.countPay === 13 && listRefOfChild.length < 2,
@@ -980,7 +980,7 @@ const getUserProfile = asyncHandler(async (req, res) => {
               : refedUser.tier === 1 && refedUser.buyPackage === "A" && refedUser.countPay < 13
               ? true
               : false,
-          isYellow: refedUser.errLahCode === "OVER30",
+          // isYellow: refedUser.errLahCode === "OVER30",
         });
       }
     }
