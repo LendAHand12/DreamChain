@@ -848,7 +848,6 @@ const getChildsOfUserForTree = asyncHandler(async (req, res) => {
       tier: currentTier,
       isSubId: false,
     }).select("userId tier userName children countChild createdAt income");
-    console.log({treeOfUser});
   } else {
     user = await User.findOne({ _id: treeOfUser.userId }).select("userId createdAt");
   }

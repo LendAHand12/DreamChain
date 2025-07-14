@@ -51,8 +51,6 @@ const Profile = () => {
     errLahCode,
     pendingUpdateInfo,
     notEnoughtChild,
-    tryToTier2,
-    countdown,
   } = userInfo;
 
   const [phoneNumber, setPhoneNumber] = useState(phone);
@@ -454,18 +452,6 @@ const Profile = () => {
             role="alert"
           >
             <span className="block sm:inline">{t('infoAccountAlert')}</span>
-          </div>
-        )}
-
-        {tier === 2 && tryToTier2 === 'YES' && (
-          <div
-            className="w-full text-lg bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-5"
-            role="alert"
-          >
-            <span className="block sm:inline">
-              You have only <b>{countdown}</b> days left to complete the 126
-              required IDs to be eligible for Tier 2 benefits.
-            </span>
           </div>
         )}
 
