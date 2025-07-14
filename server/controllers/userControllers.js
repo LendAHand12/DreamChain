@@ -251,7 +251,7 @@ const getUserById = asyncHandler(async (req, res) => {
       notEnoughtChild,
       countdown,
       tryToTier2: user.tryToTier2,
-      isOld: user.isOld
+      isOld: user.isOld,
     });
   } else {
     res.status(404);
@@ -409,7 +409,7 @@ const getUserInfo = asyncHandler(async (req, res) => {
       notEnoughtChild,
       countdown,
       tryToTier2: user.tryToTier2,
-      isOld: user.isOld
+      isOld: user.isOld,
     });
   } else {
     res.status(404);
@@ -885,7 +885,7 @@ const getChildsOfUserForTree = asyncHandler(async (req, res) => {
         indexOnLevel: childTree.indexOnLevel,
         isSubId: childTree.isSubId,
         isPink: child.countPay === 13 && listRefOfChild.length < 2,
-        isBrown: childTree.disable,
+        // isBrown: childTree.disable,
       });
     }
     res.status(200).json(tree);

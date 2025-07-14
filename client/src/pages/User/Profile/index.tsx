@@ -442,7 +442,7 @@ const Profile = () => {
           >
             <span className="block sm:inline">
               {t(
-                'To enhance security, facial recognition verification and a 5 USDT/year fee will be applied. The fee will be auto-deducted annually. Thank you for your support!',
+                'To enhance security, facial recognition verification and a 2 USDT/year fee will be applied. The fee will be auto-deducted annually. Thank you for your support!',
               )}
             </span>
           </div>

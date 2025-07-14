@@ -97,7 +97,11 @@ const registerUser = asyncHandler(async (req, res) => {
   } else {
     const treeReceiveUser = await Tree.findById(receiveId);
 
-    if (treeReceiveUser.userName === "NoExcuse 9" || treeReceiveUser.children.length < 2) {
+    if (
+      treeReceiveUser.userName === "Admin2" ||
+      treeReceiveUser.userName === "NoExcuse 9" ||
+      treeReceiveUser.children.length < 2
+    ) {
       const user = await User.create({
         userId,
         email: email.toLowerCase(),
@@ -278,7 +282,7 @@ const authUser = asyncHandler(async (req, res) => {
         facetecTid: user.facetecTid,
         kycFee: user.kycFee,
         errLahCode: user.errLahCode,
-        isOld: user.isOld
+        isOld: user.isOld,
       },
       accessToken,
       refreshToken,
