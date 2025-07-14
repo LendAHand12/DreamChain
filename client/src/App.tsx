@@ -207,7 +207,7 @@ function App() {
           />
         )}
 
-{userInfo?.permissions
+        {userInfo?.permissions
           ?.find((p) => p.page.path === '/admin/move-system-list')
           ?.actions.includes('read') && (
           <Route
@@ -263,7 +263,7 @@ function App() {
           />
         )}
 
-{userInfo?.permissions
+        {userInfo?.permissions
           ?.find((p) => p.page.path === '/admin/move-system/:id')
           ?.actions.includes('read') && (
           <Route
@@ -276,7 +276,7 @@ function App() {
             }
           />
         )}
-        
+
         {userInfo?.permissions
           ?.find((p) => p.page.path === '/admin/wallets')
           ?.actions.includes('read') && (
