@@ -72,6 +72,8 @@ import AdminConfigPage from './pages/Admin/Config';
 import UserHistoryPage from './pages/Admin/UserHistory';
 import UserUpdateInfoKYCPage from './pages/User/UpdateInfoKYC';
 import UsersTier2 from './pages/User/UsersTier2';
+import MoveSystem from './pages/Admin/MoveSystem';
+import MoveSystemList from './pages/Admin/MoveSystemList';
 
 function App() {
   const { pathname } = useLocation();
@@ -205,6 +207,20 @@ function App() {
           />
         )}
 
+{userInfo?.permissions
+          ?.find((p) => p.page.path === '/admin/move-system-list')
+          ?.actions.includes('read') && (
+          <Route
+            path="/admin/move-system-list"
+            element={
+              <>
+                <PageTitle title="Move System List | NoExcuseChallenge" />
+                <MoveSystemList />
+              </>
+            }
+          />
+        )}
+
         {userInfo?.permissions
           ?.find((p) => p.page.path === '/admin/users/:id')
           ?.actions.includes('read') && (
@@ -246,6 +262,21 @@ function App() {
             }
           />
         )}
+
+{userInfo?.permissions
+          ?.find((p) => p.page.path === '/admin/move-system/:id')
+          ?.actions.includes('read') && (
+          <Route
+            path="/admin/move-system/:id"
+            element={
+              <>
+                <PageTitle title="Move System | NoExcuseChallenge" />
+                <MoveSystem />
+              </>
+            }
+          />
+        )}
+        
         {userInfo?.permissions
           ?.find((p) => p.page.path === '/admin/wallets')
           ?.actions.includes('read') && (
