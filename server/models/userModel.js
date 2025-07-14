@@ -204,8 +204,11 @@ const userSchema = mongoose.Schema(
     },
     isOld: {
       type: Boolean,
-      default: false
-    }
+      default: false,
+    },
+    changeCreatedAt: {
+      type: Date,
+    },
   },
   {
     timestamps: true,
