@@ -9,16 +9,15 @@ export const loadWeb3 = async () => {
   if (provider) {
     web3 = new Web3(provider);
     const netId = await web3.eth.getChainId();
+    console.log({ netId });
     if (parseInt(netId) !== 56) {
-      toast.error(
-        'Your Wallet network is not supported yet, please select BSC',
-      );
+      toast.error('Please switch your wallet to BSC network manually.');
       return false;
     }
   } else {
     // no ethereum provider
     console.log('no ethereum wallet detected');
-    toast.error('Please install or enable MetaMask.', { delay: 1000 });
+    toast.error('Please install EVM wallet.', { delay: 1000 });
     return false;
   }
   return web3;
@@ -38,11 +37,21 @@ export const getAccount = async () => {
   if (!web3) {
     return false;
   }
+
+  // yêu cầu ví cấp quyền truy cập account
+  try {
+    await window.ethereum.request({ method: 'eth_requestAccounts' });
+  } catch (err) {
+    console.error('User denied account access');
+    throw new Error('User denied account access');
+  }
+
   const accounts = await web3.eth.getAccounts();
+
   if (accounts.length > 0) {
     return accounts[0];
   } else {
-    throw new Error('Please connect metamask wallet');
+    throw new Error('Please connect your wallet');
   }
 };
 
