@@ -21,6 +21,7 @@ const MoveSystem = () => {
   const [refId, setRefId] = useState('');
   const [errParentId, setErrParentId] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
+  const [withChild, setWithChild] = useState('');
 
   useEffect(() => {
     (async () => {
@@ -65,7 +66,7 @@ const MoveSystem = () => {
       setErrParentId(true);
       return;
     } else {
-      await User.changeSystem({ moveId: id, parentId, refId })
+      await User.changeSystem({ moveId: id, parentId, refId, withChild })
         .then((response) => {
           const { success, message } = response.data;
           if (!success) {
@@ -87,7 +88,7 @@ const MoveSystem = () => {
           setLoading(false);
         });
     }
-  }, [refId, parentId, id]);
+  }, [refId, parentId, id, withChild]);
 
   return (
     <DefaultLayout>
@@ -143,6 +144,19 @@ const MoveSystem = () => {
                   Admin2.
                 </p>
               </div>
+              <div className="space-y-2">
+                <div className="text flex items-center gap-2">
+                  <input
+                    onChange={(e) => setWithChild(e.target.value)}
+                    type="checkbox"
+                    id="withChild"
+                    checked={withChild}
+                  />
+                  <label className="" htmlFor="withChild">
+                    Include children
+                  </label>
+                </div>
+              </div>
               {errorMessage && (
                 <div className="bg-red-100 border border-red-400 text-red-700 text-center w-full py-2 rounded-md">
                   {errorMessage}
@@ -150,7 +164,7 @@ const MoveSystem = () => {
               )}
               <button
                 onClick={handleSubmit}
-                className="w-full flex justify-center items-center hover:underline text-NoExcuseChallenge bg-black font-bold rounded-full my-2 py-2 px-6 shadow-lg focus:outline-none focus:shadow-outline transform transition hover:scale-105 duration-300 ease-in-out"
+                className="w-full flex justify-center items-center hover:underline text-DreamChain bg-black font-bold rounded-full my-2 py-2 px-6 shadow-lg focus:outline-none focus:shadow-outline transform transition hover:scale-105 duration-300 ease-in-out"
               >
                 {loading && <Loading />}
                 {t('Confirm')}
