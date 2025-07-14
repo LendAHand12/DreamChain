@@ -681,7 +681,9 @@ const adminUpdateUser = asyncHandler(async (req, res) => {
     user.walletAddress = walletAddress || user.walletAddress;
     user.hewePerDay = hewePerDay || user.hewePerDay;
     user.totalHewe = rewardHewe || user.totalHewe;
-    user.changeCreatedAt = new Date(changeCreatedAt).toISOString() || user.changeCreatedAt;
+    if (changeCreatedAt) {
+      user.changeCreatedAt = new Date(changeCreatedAt).toISOString() || user.changeCreatedAt;
+    }
     if (level) {
       const newLevel = user.currentLayer.length > 0 ? [...user.currentLayer] : [0];
       updateValueAtIndex(newLevel, user.tier - 1, level);
