@@ -1172,7 +1172,7 @@ const UserProfile = () => {
                       <div className="px-4 py-2 font-semibold">Total Hold</div>
                       <div className="px-4 py-2">{data.totalHold} USDT</div>
                     </div>
-                    <div className="grid lg:grid-cols-2 grid-cols-1">
+                    {/* <div className="grid lg:grid-cols-2 grid-cols-1">
                       <div className="px-4 py-2 font-semibold">
                         Overdue referral
                       </div>
@@ -1188,7 +1188,7 @@ const UserProfile = () => {
                         )}
                         {!isEditting && data.errLahCode}
                       </div>
-                    </div>
+                    </div> */}
                     <div className="grid lg:grid-cols-2 grid-cols-1">
                       <div className="px-4 py-2 font-semibold">{t('fine')}</div>
                       {isEditting ? (
