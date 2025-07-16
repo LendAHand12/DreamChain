@@ -285,6 +285,7 @@ const authUser = asyncHandler(async (req, res) => {
         errLahCode: user.errLahCode,
         isOld: user.isOld,
         changeCreatedAt: user.changeCreatedAt,
+        lockKyc: user.lockKyc,
       },
       accessToken,
       refreshToken,

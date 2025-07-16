@@ -209,6 +209,10 @@ const userSchema = mongoose.Schema(
     changeCreatedAt: {
       type: Date,
     },
+    lockKyc: {
+      type: Boolean,
+      default: false,
+    },
   },
   {
     timestamps: true,

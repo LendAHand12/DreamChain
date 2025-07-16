@@ -252,6 +252,7 @@ const getUserById = asyncHandler(async (req, res) => {
       tryToTier2: user.tryToTier2,
       isOld: user.isOld,
       changeCreatedAt: user.changeCreatedAt,
+      lockKyc: user.lockKyc,
     });
   } else {
     res.status(404);
@@ -410,6 +411,7 @@ const getUserInfo = asyncHandler(async (req, res) => {
       tryToTier2: user.tryToTier2,
       isOld: user.isOld,
       changeCreatedAt: user.changeCreatedAt,
+      lockKyc: user.lockKyc,
     });
   } else {
     res.status(404);
@@ -598,6 +600,7 @@ const adminUpdateUser = asyncHandler(async (req, res) => {
     level,
     removeErrLahCode,
     changeCreatedAt,
+    lockKyc,
   } = req.body;
 
   if (userId) {
@@ -700,6 +703,7 @@ const adminUpdateUser = asyncHandler(async (req, res) => {
     user.note = note || user.note;
     user.openLah = openLah;
     user.closeLah = closeLah;
+    user.lockKyc = lockKyc;
 
     if (req.files && req.files.imgFront && req.files.imgFront[0]) {
       user.imgFront = req.files.imgFront[0].filename || user.imgFront;
@@ -1037,6 +1041,7 @@ const getUserProfile = asyncHandler(async (req, res) => {
       bonusRef: user.bonusRef,
       errLahCode: user.errLahCode,
       changeCreatedAt: user.changeCreatedAt,
+      lockKyc: user.lockKyc,
     });
   } else {
     res.status(400);
