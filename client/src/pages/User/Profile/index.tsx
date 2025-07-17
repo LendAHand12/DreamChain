@@ -578,18 +578,12 @@ const Profile = () => {
           </div>
           <button
             className={`w-full border border-black rounded-2xl px-12 py-2 flex justify-center hover:bg-black hover:text-white ${
-              errLahCode === 'OVER45' ||
-              availableUsdt === 0 ||
-              status !== 'APPROVED' ||
-              facetecTid === ''
+              availableUsdt === 0 || status !== 'APPROVED' || facetecTid === ''
                 ? 'opacity-30'
                 : ''
             }`}
             disabled={
-              errLahCode === 'OVER45' ||
-              availableUsdt === 0 ||
-              status !== 'APPROVED' ||
-              facetecTid === ''
+              availableUsdt === 0 || status !== 'APPROVED' || facetecTid === ''
             }
             onClick={() => setShowModal(true)}
           >
