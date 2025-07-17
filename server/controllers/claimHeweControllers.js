@@ -92,9 +92,6 @@ const claimUsdt = asyncHandler(async (req, res) => {
         if (user.status !== "APPROVED" || user.facetecTid === "") {
           throw new Error("Please verify your account");
         }
-        if (user.errLahCode === "OVER45") {
-          throw new Error("Request denied");
-        }
         if (user.availableUsdt > 0) {
           if (user.availableUsdt < 200) {
             const receipt = await sendUsdt({
