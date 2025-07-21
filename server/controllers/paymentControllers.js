@@ -1167,11 +1167,6 @@ const checkCanRefund = async ({
           userReceive.countPay - 1
         } time but user pay = ${userCountPay} time`;
   } else if (
-    trans.type === "REFERRALHOLD" &&
-    userReceive.errLahCode === "OVER45"
-  ) {
-    return `User has not had 2 child within 45 days`;
-  } else if (
     listRefOfReceiver.length === 0 ||
     (treeOfReceiveUser.children.length === 2 && listRefOfReceiver.length < 2)
   ) {
