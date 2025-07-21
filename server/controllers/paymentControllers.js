@@ -187,8 +187,7 @@ const getPaymentInfo = asyncHandler(async (req, res) => {
           if (
             refUser.status === "LOCKED" ||
             refUser.tier < user.tier ||
-            (refUser.tier === user.tier && refUser.countPay < 13) ||
-            refUser.errLahCode === "OVER45"
+            (refUser.tier === user.tier && refUser.countPay < 13)
           ) {
             haveRefNotPayEnough = true;
           } else {
@@ -253,7 +252,6 @@ const getPaymentInfo = asyncHandler(async (req, res) => {
           } else {
             if (
               receiveUser.status === "LOCKED" ||
-              (receiveUser.errLahCode === "OVER45" && indexFor > 6) ||
               receiveUser.tier < user.tier ||
               (receiveUser.tier === user.tier &&
                 receiveUser.countPay < user.countPay + 1)
