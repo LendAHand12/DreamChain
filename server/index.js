@@ -39,10 +39,10 @@ import {
   deleteUser24hUnPay,
   distributionHewe,
   rankingCalc,
-  checkRefWithTime,
+  // checkRefWithTime,
   blockUserNotKYC,
   updateHewePrice,
-  checkUserTryToTier2,
+  // checkUserTryToTier2,
 } from "./cronJob/index.js";
 import { sendTelegramMessage } from "./utils/sendTelegram.js";
 import {convertOldData} from './common.js';
@@ -120,12 +120,12 @@ const cron12 = new CronJob("30 01 * * *", async () => {
   console.log("Block user not KYC done");
 });
 
-const cron13 = new CronJob("45 01 * * *", async () => {
-  // 1h30
-  console.log("Check User try to Tier2 start");
-  await checkUserTryToTier2();
-  console.log("Check User try to Tier2 done");
-});
+// const cron13 = new CronJob("45 01 * * *", async () => {
+//   // 1h30
+//   console.log("Check User try to Tier2 start");
+//   await checkUserTryToTier2();
+//   console.log("Check User try to Tier2 done");
+// });
 
 const cron2 = new CronJob("00 02 * * *", async () => {
   // 2h
@@ -148,12 +148,12 @@ const cron4 = new CronJob("00 04 * * *", async () => {
   console.log("Ranking calc done");
 });
 
-const cron5 = new CronJob("00 05 * * *", async () => {
-  // 5h
-  console.log("Check ref with time start");
-  await checkRefWithTime();
-  console.log("Check ref with time done");
-});
+// const cron5 = new CronJob("00 05 * * *", async () => {
+//   // 5h
+//   console.log("Check ref with time start");
+//   await checkRefWithTime();
+//   console.log("Check ref with time done");
+// });
 
 const cron6 = new CronJob("0 * * * *", async () => {
   // evry hour
@@ -165,11 +165,11 @@ const cron6 = new CronJob("0 * * * *", async () => {
 cron0.start();
 cron1.start();
 cron12.start();
-cron13.start();
+// cron13.start();
 cron2.start();
 cron3.start();
 cron4.start();
-cron5.start();
+// cron5.start();
 cron6.start();
 
 const PORT = process.env.PORT || 5000;
