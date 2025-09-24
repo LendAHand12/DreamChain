@@ -159,11 +159,19 @@ const userSchema = mongoose.Schema(
       type: Number,
       default: 0,
     },
+    availableAmc: {
+      type: Number,
+      default: 0,
+    },
     claimedUsdt: {
       type: Number,
       default: 0,
     },
     claimedHewe: {
+      type: Number,
+      default: 0,
+    },
+    claimedAmc: {
       type: Number,
       default: 0,
     },
@@ -202,14 +210,54 @@ const userSchema = mongoose.Schema(
     timeToTry: {
       type: Date,
     },
-    isOld: {
-      type: Boolean,
-      default: false,
-    },
     changeCreatedAt: {
       type: Date,
     },
     lockKyc: {
+      type: Boolean,
+      default: false,
+    },
+    paymentMethod: {
+      type: String,
+      default: "",
+    },
+    city: {
+      type: String,
+      default: "VN",
+      enum: ["", "VN", "US", "IN"],
+    },
+    paymentProcessed: {
+      type: Boolean,
+    },
+    paymentUUID: {
+      type: Array,
+    },
+    accountName: {
+      type: String,
+    },
+    accountNumber: {
+      type: String,
+    },
+    timeRetryOver45: {
+      type: Date,
+    },
+    doneChangeToDie: {
+      type: Boolean,
+      default: false,
+    },
+    preTier2Status: {
+      type: String,
+      enum: ["", "ACHIEVED", "PENDING", "APPROVED", "PASSED"],
+      default: "",
+    },
+    timeOkPreTier2: {
+      type: Date,
+    },
+    shortfallAmount: {
+      type: Number,
+      default: 0,
+    },
+    isClaiming: {
       type: Boolean,
       default: false,
     },

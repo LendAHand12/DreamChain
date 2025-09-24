@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react';
-
 import { useTranslation } from 'react-i18next';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { ToastContainer, toast } from 'react-toastify';
@@ -12,51 +11,55 @@ const ClaimKYCPage = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const parsed = queryString.parse(location.search);
+
   const [loadingClaim, setLoadingClaim] = useState(true);
-  let { token, user_id, coin, status } = parsed;
-  if (status !== 'success' || !token || !user_id || !coin) {
-    toast.error(t('invalidUrl'));
-  }
+  const [claimSuccess, setClaimSuccess] = useState(false);
+
+  let { token, user_id, coin, status, amount } = parsed;
 
   useEffect(() => {
     (async () => {
-      if (status === 'success' && token && user_id && coin) {
+      if (status !== 'success' || !token || !user_id || !coin) {
+        toast.error(t('invalidUrl'));
+        setLoadingClaim(false);
+        return;
+      }
+
+      try {
+        let response;
         if (coin === 'hewe') {
-          await Claim.hewe({ user_id, token })
-            .then((response) => {
-              toast.success(t(response.data.message));
-              setLoadingClaim(false);
-              navigate('/user/profile');
-            })
-            .catch((error) => {
-              let message =
-                error.response && error.response.data.message
-                  ? error.response.data.message
-                  : error.response.data.error
-                  ? error.response.data.error
-                  : error.message;
-              toast.error(t(message));
-            });
+          response = await Claim.hewe({ user_id, token });
         } else if (coin === 'usdt') {
-          await Claim.usdt({ user_id, token })
-            .then((response) => {
-              toast.success(t(response.data.message));
-              setLoadingClaim(false);
-              navigate('/user/profile');
-            })
-            .catch((error) => {
-              let message =
-                error.response && error.response.data.message
-                  ? error.response.data.message
-                  : error.response.data.error
-                  ? error.response.data.error
-                  : error.message;
-              toast.error(t(message));
-            });
+          response = await Claim.usdt({ user_id, token, amount });
+        } else if (coin === 'amc') {
+          response = await Claim.amc({ user_id, token });
         }
+
+        if (response) {
+          toast.success(t(response.data.message));
+          setClaimSuccess(true);
+        }
+      } catch (error) {
+        let message =
+          error.response?.data?.message ||
+          error.response?.data?.error ||
+          error.message;
+        toast.error(t(message));
+      } finally {
+        setLoadingClaim(false);
       }
     })();
-  }, [token]);
+  }, [token, user_id, coin, amount, status, t]);
+
+  // Tự động redirect sau 3 giây
+  useEffect(() => {
+    if (!loadingClaim) {
+      const timer = setTimeout(() => {
+        navigate('/user/profile', { replace: true });
+      }, 3000);
+      return () => clearTimeout(timer);
+    }
+  }, [loadingClaim, navigate]);
 
   return (
     <>
@@ -64,7 +67,7 @@ const ClaimKYCPage = () => {
       <div className="min-h-screen bg-white text-gray-900 flex flex-col justify-center items-center">
         {loadingClaim ? (
           <h1>Processing...</h1>
-        ) : (
+        ) : claimSuccess ? (
           <div className="flex flex-col items-center gap-10">
             <svg
               width="78"
@@ -89,14 +92,29 @@ const ClaimKYCPage = () => {
             <p className="text-2xl font-bold">
               {`Claim ${coin.toUpperCase()} successful`}
             </p>
+            <p className="text-gray-600">{t('Redirecting to profile...')}</p>
+
+            <Link
+              to="/user/profile"
+              className="border border-black max-w-xl w-full text-center rounded-3xl py-2 mt-4"
+            >
+              {t('Back to Profile')}
+            </Link>
+          </div>
+        ) : (
+          <div className="flex flex-col items-center gap-4">
+            <p className="text-xl font-semibold text-red-600">
+              {t('Claim failed')}
+            </p>
+            <p className="text-gray-600">{t('Redirecting to profile...')}</p>
+            <Link
+              to="/user/profile"
+              className="border border-black max-w-xl w-full text-center rounded-3xl py-2 mt-4"
+            >
+              {t('Back to Profile')}
+            </Link>
           </div>
         )}
-        <Link
-          to="/user/profile"
-          className="border border-black max-w-xl w-full text-center rounded-3xl py-2 mt-4"
-        >
-          {t('Back to Profile')}
-        </Link>
       </div>
     </>
   );
