@@ -261,6 +261,10 @@ const userSchema = mongoose.Schema(
       type: Boolean,
       default: false,
     },
+    isOld: {
+      type: Boolean,
+      default: false,
+    },
   },
   {
     timestamps: true,
