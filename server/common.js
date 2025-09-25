@@ -331,7 +331,7 @@ export const recheckHewe = async () => {
         });
       }
       user.hewePerDay = newHewePerDate;
-      // await user.save()
+      await user.save();
     }
   }
 
