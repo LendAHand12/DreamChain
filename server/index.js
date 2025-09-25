@@ -44,8 +44,7 @@ import {
   updateHewePrice,
   // checkUserTryToTier2,
 } from "./cronJob/index.js";
-import { sendTelegramMessage } from "./utils/sendTelegram.js";
-import {convertOldData} from './common.js';
+import { recheckHewe } from "./common.js";
 
 const app = express();
 
@@ -160,7 +159,7 @@ const cron6 = new CronJob("0 * * * *", async () => {
   await updateHewePrice();
 });
 
-// await test1();
+// await recheckHewe();
 
 cron0.start();
 cron1.start();

@@ -31,6 +31,7 @@ import Config from "../models/configModel.js";
 import UserHistory from "../models/userHistoryModel.js";
 import { Types } from "mongoose";
 import moment from "moment";
+import { getTotalHeweClaimed } from "../common.js";
 
 dotenv.config();
 
@@ -232,7 +233,7 @@ const getUserById = asyncHandler(async (req, res) => {
       hewePerDay: user.hewePerDay,
       availableHewe: user.availableHewe,
       availableUsdt: user.availableUsdt,
-      claimedHewe: user.claimedHewe,
+      claimedHewe: await getTotalHeweClaimed(user),
       claimedUsdt: user.claimedUsdt,
       heweWallet: user.heweWallet,
       ranking: user.ranking,
@@ -390,7 +391,7 @@ const getUserInfo = asyncHandler(async (req, res) => {
       hewePerDay: user.hewePerDay,
       availableHewe: user.availableHewe,
       availableUsdt: user.availableUsdt,
-      claimedHewe: user.claimedHewe,
+      claimedHewe: await getTotalHeweClaimed(user),
       claimedUsdt: user.claimedUsdt,
       heweWallet: user.heweWallet,
       ranking: user.ranking,

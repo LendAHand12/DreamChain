@@ -1,6 +1,7 @@
 import Transaction from "./models/transactionModel.js";
 import Tree from "./models/treeModel.js";
 import User from "./models/userModel.js";
+import Claim from "./models/claimModel.js";
 import { getParentWithCountPay } from "./utils/getParentWithCountPay.js";
 import {
   findNextUser,
@@ -8,6 +9,8 @@ import {
   findUsersAtLevel,
   findNextUserByIndex,
 } from "./utils/methods.js";
+import mongoose from "mongoose";
+import moment from "moment";
 
 export const transferUserToTree = async () => {
   const listUser = await User.find({ isAdmin: false });
@@ -296,4 +299,69 @@ export const convertOldData = async () => {
   }
 
   console.log("convertOldData done");
+};
+
+export const recheckHewe = async () => {
+  const listUser = await User.find({
+    isAdmin: false,
+    status: { $ne: "DELETED" },
+    countPay: 13,
+    totalHewe: { $gt: 0 },
+  });
+
+  for (let user of listUser) {
+    const { totalHewe, hewePerDay } = user;
+    const totalClaimedHewe = await getTotalHeweClaimed(user._id);
+    if (totalClaimedHewe > totalHewe) {
+      console.log({ userName: user.userId, totalClaimedHewe, totalHewe });
+    } else {
+      const heweConlai = totalHewe - totalClaimedHewe;
+      const diffDay = await getDaysSinceCreated(user);
+      const ngaylayheweconlai = 540 - diffDay;
+      const newHewePerDate = Math.floor(heweConlai / ngaylayheweconlai);
+      if (user.userId === "THANH6688") {
+        console.log({
+          userName: user.userId,
+          diffDay,
+          newHewePerDate,
+          hewePerDay,
+          totalHewe,
+          totalClaimedHewe,
+          heweConlai,
+        });
+      }
+      user.hewePerDay = newHewePerDate;
+      // await user.save()
+    }
+  }
+
+  console.log("recheckHewe done");
+};
+
+export const getTotalHeweClaimed = async (userId) => {
+  const result = await Claim.aggregate([
+    {
+      $match: {
+        userId: new mongoose.Types.ObjectId(userId),
+        coin: "HEWE",
+      },
+    },
+    {
+      $group: {
+        _id: null,
+        totalAmount: { $sum: "$amount" },
+      },
+    },
+  ]);
+
+  return result.length > 0 ? result[0].totalAmount : 0;
+};
+
+export const getDaysSinceCreated = (user) => {
+  if (!user?.createdAt) return 0;
+
+  const now = moment();
+  const created = moment(user.createdAt);
+
+  return now.diff(created, "days"); // trả về số ngày
 };

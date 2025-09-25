@@ -12,6 +12,7 @@ import { checkSerepayWallet, findNextReferrer, mergeIntoThreeGroups } from "../u
 import axios from "axios";
 import Honor from "../models/honorModel.js";
 import mongoose from "mongoose";
+import { getTotalHeweClaimed } from "../common.js";
 
 const checkLinkRef = asyncHandler(async (req, res) => {
   const { ref, receiveId } = req.body;
@@ -271,7 +272,7 @@ const authUser = asyncHandler(async (req, res) => {
         hewePerDay: user.hewePerDay,
         availableHewe: user.availableHewe,
         availableUsdt: user.availableUsdt,
-        claimedHewe: user.claimedHewe,
+        claimedHewe: await getTotalHeweClaimed(user),
         claimedUsdt: user.claimedUsdt,
         heweWallet: user.heweWallet,
         ranking: user.ranking,
