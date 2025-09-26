@@ -4,6 +4,7 @@ import { useState } from 'react';
 import ClickOutside from '../ClickOutside';
 import { Link } from 'react-router-dom';
 import { toast } from 'react-toastify';
+import UserHistory from '@/api/UserHistory';
 
 const WalletUser = () => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
@@ -19,13 +20,17 @@ const WalletUser = () => {
 
       if (result?.accounts.length > 0) {
         // ✅ Sau khi connect, cố gắng switch sang BSC (chainId: 56)
-        // try {
-        //   // await switchChain({ chainId: 56 }); // 56 = BSC Mainnet
-        // } catch (switchError) {
-        //   console.error('Switch network failed', switchError);
-        //   toast.error('Please switch your wallet to BSC network manually.');
-        //   return;
-        // }
+        try {
+          await UserHistory.connectWallet({
+            walletAddress: result.accounts[0],
+            desc: 'connect on header',
+          });
+          // await switchChain({ chainId: 56 }); // 56 = BSC Mainnet
+        } catch (switchError) {
+          console.error('Switch network failed', switchError);
+          toast.error('Please switch your wallet to BSC network manually.');
+          return;
+        }
 
         toast.success('Connected to wallet successfully!');
         setDropdownOpen(!dropdownOpen);

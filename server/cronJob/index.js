@@ -3,14 +3,8 @@ import moment from "moment";
 
 import User from "../models/userModel.js";
 import sendMail from "../utils/sendMail.js";
-import {
-  sendMailGetHewePrice,
-  sendMailUpdateLayerForAdmin,
-} from "../utils/sendMailCustom.js";
-import {
-  getCountAllChildren,
-  getCountIncome,
-} from "../controllers/userControllers.js";
+import { sendMailGetHewePrice, sendMailUpdateLayerForAdmin } from "../utils/sendMailCustom.js";
+import { getCountAllChildren, getCountIncome } from "../controllers/userControllers.js";
 import {
   findRootLayer,
   getTotalLevel6ToLevel10OfUser,
@@ -21,15 +15,11 @@ import Transaction from "../models/transactionModel.js";
 import Honor from "../models/honorModel.js";
 import { getPriceHewe } from "../utils/getPriceHewe.js";
 import Config from "../models/configModel.js";
+import Income from "../models/incomeModel.js";
 
 export const deleteUser24hUnPay = asyncHandler(async () => {
   const listUser = await User.find({
-    $and: [
-      { tier: 1 },
-      { countPay: 0 },
-      { isAdmin: false },
-      { status: { $ne: "DELETED" } },
-    ],
+    $and: [{ tier: 1 }, { countPay: 0 }, { isAdmin: false }, { status: { $ne: "DELETED" } }],
   });
   for (let u of listUser) {
     console.log({ name: u.userId });
@@ -47,44 +37,29 @@ export const deleteUser24hUnPay = asyncHandler(async () => {
         parent.children = [...newChilds];
         const updatedParent = await parent.save();
 
-        if (
-          treeOfUser.children.length === 1 &&
-          updatedParent.children.length < 2
-        ) {
+        if (treeOfUser.children.length === 1 && updatedParent.children.length < 2) {
           console.log({ TH1111111: u.userId });
           const firstChild = await Tree.findById(treeOfUser.children[0]);
           firstChild.parentId = updatedParent._id;
           firstChild.refId =
-            firstChild.refId === treeOfUser._id
-              ? "64cd449ec75ae7bc7ebbab03"
-              : firstChild.refId;
+            firstChild.refId === treeOfUser._id ? "64cd449ec75ae7bc7ebbab03" : firstChild.refId;
           await firstChild.save();
 
-          const newUpdatedParentChildren = [
-            ...updatedParent.children,
-            firstChild._id,
-          ];
+          const newUpdatedParentChildren = [...updatedParent.children, firstChild._id];
           updatedParent.children = newUpdatedParentChildren;
           await updatedParent.save();
         }
 
-        if (
-          treeOfUser.children.length === 2 &&
-          updatedParent.children.length === 0
-        ) {
+        if (treeOfUser.children.length === 2 && updatedParent.children.length === 0) {
           console.log({ TH22222222: u.userId });
           const firstChild = await Tree.findById(treeOfUser.children[0]);
           firstChild.parentId = updatedParent._id;
-          firstChild.refId === treeOfUser._id
-            ? "64cd449ec75ae7bc7ebbab03"
-            : firstChild.refId;
+          firstChild.refId === treeOfUser._id ? "64cd449ec75ae7bc7ebbab03" : firstChild.refId;
           await firstChild.save();
 
           const secondChild = await Tree.findById(treeOfUser.children[1]);
           secondChild.parentId = updatedParent._id;
-          secondChild.refId === treeOfUser._id
-            ? "64cd449ec75ae7bc7ebbab03"
-            : secondChild.refId;
+          secondChild.refId === treeOfUser._id ? "64cd449ec75ae7bc7ebbab03" : secondChild.refId;
           await secondChild.save();
 
           const newUpdatedParentChildren = [firstChild._id, secondChild._id];
@@ -92,10 +67,7 @@ export const deleteUser24hUnPay = asyncHandler(async () => {
           await updatedParent.save();
         }
 
-        if (
-          treeOfUser.children.length === 2 &&
-          updatedParent.children.length === 1
-        ) {
+        if (treeOfUser.children.length === 2 && updatedParent.children.length === 1) {
           console.log({ TH333333: u.userId });
           const firstChild = await Tree.findById(treeOfUser.children[0]);
           const secondChild = await Tree.findById(treeOfUser.children[1]);
@@ -207,17 +179,33 @@ export const areArraysEqual = (arr1, arr2) => {
 export const distributionHewe = asyncHandler(async () => {
   const listUser = await User.find({
     $and: [{ isAdmin: false }, { userId: { $ne: "Admin2" } }, { countPay: 13 }],
-  }).select(
-    "userId totalHewe availableHewe hewePerDay claimedHewe currentLayer"
-  );
+  }).select("userId totalHewe availableHewe hewePerDay claimedHewe currentLayer");
 
   for (let u of listUser) {
     try {
       if (u.currentLayer[0] >= 4 && u.totalHewe > 0) {
         u.availableHewe = u.availableHewe + u.totalHewe;
         u.totalHewe = 0;
+        const newIncome = new Income({
+          userId: u._id,
+          amount: u.totalHewe,
+          coin: "HEWE",
+          from: "Daily HEWE all",
+          type: "",
+        });
+
+        await newIncome.save();
       } else if (u.totalHewe > u.claimedHewe) {
         u.availableHewe = u.availableHewe + u.hewePerDay;
+        const newIncome = new Income({
+          userId: u._id,
+          amount: u.hewePerDay,
+          coin: "HEWE",
+          from: "Daily HEWE",
+          type: "",
+        });
+
+        await newIncome.save();
       }
       await u.save();
     } catch (error) {
@@ -358,9 +346,7 @@ export const checkUserTryToTier2 = asyncHandler(async () => {
         tier: 1,
         isSubId: false,
       });
-      const { countChild1, countChild2 } = await getTotalLevel6ToLevel10OfUser(
-        treeOfUser
-      );
+      const { countChild1, countChild2 } = await getTotalLevel6ToLevel10OfUser(treeOfUser);
       if (countChild1 >= 62 && countChild2 >= 62) {
         u.tryToTier2 = "DONE";
         u.timeToTry = null;

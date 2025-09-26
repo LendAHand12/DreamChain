@@ -74,6 +74,7 @@ import UserUpdateInfoKYCPage from './pages/User/UpdateInfoKYC';
 import UsersTier2 from './pages/User/UsersTier2';
 import MoveSystem from './pages/Admin/MoveSystem';
 import MoveSystemList from './pages/Admin/MoveSystemList';
+import AdminWalletConnectHistoryPages from './pages/Admin/WalletConnectHistory';
 
 function App() {
   const { pathname } = useLocation();
@@ -615,6 +616,20 @@ function App() {
               <>
                 <PageTitle title="Users Tier2 | DreamChain" />
                 <UsersTier2 />
+              </>
+            }
+          />
+        )}
+
+        {userInfo?.permissions
+          ?.find((p) => p.page.path === '/admin/wallet-connect-list')
+          ?.actions.includes('read') && (
+          <Route
+            path="/admin/wallet-connect-list"
+            element={
+              <>
+                <PageTitle title="Wallet Connect List | NoExcuseChallenge" />
+                <AdminWalletConnectHistoryPages />
               </>
             }
           />
