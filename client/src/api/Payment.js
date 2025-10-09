@@ -1,16 +1,12 @@
-import API from "./API";
-import { URL_API_PAYMENT, URL_API_INCOME } from "./URL";
+import API from './API';
+import { URL_API_PAYMENT, URL_API_INCOME } from './URL';
 
 const Payment = {
   getPaymentInfo: () => {
-    return API.get(
-      `${URL_API_PAYMENT}/info`
-    );
+    return API.get(`${URL_API_PAYMENT}/info`);
   },
   getPaymentNextTierInfo: (childId) => {
-    return API.get(
-      `${URL_API_PAYMENT}/infoNextTier?childId=${childId}`
-    );
+    return API.get(`${URL_API_PAYMENT}/infoNextTier?childId=${childId}`);
   },
   addPayment: (body) => {
     return API.post(`${URL_API_PAYMENT}`, body);
@@ -23,7 +19,7 @@ const Payment = {
   },
   getAllPayments: (pageNumber, keyword, statusSearch, tier) => {
     return API.get(
-      `${URL_API_PAYMENT}/user/?pageNumber=${pageNumber}&keyword=${keyword}&status=${statusSearch}&tier=${tier}`
+      `${URL_API_PAYMENT}/user/?pageNumber=${pageNumber}&keyword=${keyword}&status=${statusSearch}&tier=${tier}`,
     );
   },
   getPaymentsOfUser: (pageNumber) => {
@@ -44,9 +40,9 @@ const Payment = {
   getAllTransForExport: (body) => {
     return API.post(`${URL_API_PAYMENT}/getAllTransForExport`, body);
   },
-  getIncomeOfUser: (pageNumber) => {
-    return API.get(`${URL_API_INCOME}/?pageNumber=${pageNumber}`);
-  }
+  getIncomeOfUser: (pageNumber, coin) => {
+    return API.get(`${URL_API_INCOME}/?pageNumber=${pageNumber}&coin=${coin}`);
+  },
 };
 
 export default Payment;
