@@ -5,11 +5,7 @@ import User from "../models/userModel.js";
 import sendMail from "../utils/sendMail.js";
 import { sendMailGetHewePrice, sendMailUpdateLayerForAdmin } from "../utils/sendMailCustom.js";
 import { getCountAllChildren, getCountIncome } from "../controllers/userControllers.js";
-import {
-  findRootLayer,
-  getTotalLevel6ToLevel10OfUser,
-  getUserClosestToNow,
-} from "../utils/methods.js";
+import { findRootLayer, getTotalLevel1ToLevel10OfUser } from "../utils/methods.js";
 import Tree from "../models/treeModel.js";
 import Transaction from "../models/transactionModel.js";
 import Honor from "../models/honorModel.js";
@@ -346,7 +342,7 @@ export const checkUserTryToTier2 = asyncHandler(async () => {
         tier: 1,
         isSubId: false,
       });
-      const { countChild1, countChild2 } = await getTotalLevel6ToLevel10OfUser(treeOfUser);
+      const { countChild1, countChild2 } = await getTotalLevel1ToLevel10OfUser(treeOfUser);
       if (countChild1 >= 62 && countChild2 >= 62) {
         u.tryToTier2 = "DONE";
         u.timeToTry = null;

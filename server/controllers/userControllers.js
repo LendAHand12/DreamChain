@@ -17,7 +17,7 @@ import {
   findHighestIndexOfLevel,
   mergeIntoThreeGroups,
   updateValueAtIndex,
-  getTotalLevel6ToLevel10OfUser,
+  getTotalLevel1ToLevel10OfUser,
 } from "../utils/methods.js";
 import { areArraysEqual } from "../cronJob/index.js";
 import {
@@ -176,7 +176,7 @@ const getUserById = asyncHandler(async (req, res) => {
 
     let notEnoughtChild = { countChild1: 0, countChild2: 0 };
     if (user.tryToTier2 === "YES" || user.currentLayer.slice(-1)[0] === 5 || user.tier > 1) {
-      notEnoughtChild = await getTotalLevel6ToLevel10OfUser(tree);
+      notEnoughtChild = await getTotalLevel1ToLevel10OfUser(tree);
     }
 
     let countdown = 0;
@@ -335,7 +335,7 @@ const getUserInfo = asyncHandler(async (req, res) => {
 
     let notEnoughtChild = { countChild1: 0, countChild2: 0 };
     if (user.tryToTier2 === "YES" || user.currentLayer.slice(-1)[0] === 5 || user.tier > 1) {
-      notEnoughtChild = await getTotalLevel6ToLevel10OfUser(tree);
+      notEnoughtChild = await getTotalLevel1ToLevel10OfUser(tree);
     }
     let countdown = 0;
     if (user.tryToTier2 === "YES") {

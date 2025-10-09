@@ -265,6 +265,9 @@ const userSchema = mongoose.Schema(
       type: Boolean,
       default: false,
     },
+    countHoldTier2: {
+      type: Number,
+    },
   },
   {
     timestamps: true,

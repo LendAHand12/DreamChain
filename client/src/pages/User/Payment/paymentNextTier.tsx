@@ -56,7 +56,7 @@ const PaymentNextTierPage = () => {
             (accumulator, currentValue) => accumulator + currentValue.amount,
             0,
           );
-          setTotal(totalPayment + 0.2);
+          setTotal(totalPayment);
           setPaymentIdsList(paymentIds);
           setPaymentsList(payments);
           setStep(userStepPayment);
@@ -98,22 +98,22 @@ const PaymentNextTierPage = () => {
   const paymentMetamask = useCallback(async () => {
     setLoadingPayment(true);
     try {
-      const referralTransaction = await transfer(
-        import.meta.env.VITE_MAIN_WALLET_ADDRESS,
-        total,
-      );
-      if (referralTransaction) {
-        const { transactionHash } = referralTransaction;
-        await doneNextTierPayment({
-          transactionHash: 'transactionHash',
-          childId,
-        });
-        setLoadingPayment(false);
-        setStep(step + 1);
-      } else {
-        setLoadingPayment(false);
-        throw new Error(t('payment error'));
-      }
+      // const referralTransaction = await transfer(
+      //   import.meta.env.VITE_MAIN_WALLET_ADDRESS,
+      //   total,
+      // );
+      // if (referralTransaction) {
+      //   const { transactionHash } = referralTransaction;
+      await doneNextTierPayment({
+        transactionHash: 'transactionHash',
+        childId,
+      });
+      setLoadingPayment(false);
+      setStep(step + 1);
+      // } else {
+      //   setLoadingPayment(false);
+      //   throw new Error(t('payment error'));
+      // }
     } catch (error) {
       toast.error(t(error.message));
       setLoadingPayment(false);
@@ -215,64 +215,66 @@ const PaymentNextTierPage = () => {
                               </p>
                             </div>
                           </div>
-                          {paymentIdsList.map((payment, i) => (
-                            <div
-                              key={payment.id}
-                              className={`flex items-center p-4 mb-4 text-sm rounded-lg ${
-                                payment.type === 'REGISTER'
-                                  ? 'bg-green-50 text-green-800'
-                                  : payment.type === 'DIRECT'
-                                  ? 'bg-yellow-50 text-yellow-800'
-                                  : payment.type === 'FINE'
-                                  ? 'bg-red-50 text-red-800'
-                                  : payment.type === 'PIG'
-                                  ? 'bg-pink-100'
-                                  : payment.type === 'COMPANY'
-                                  ? 'bg-purple-100'
-                                  : 'bg-blue-50 text-blue-800'
-                              }`}
-                              role="alert"
-                            >
-                              <svg
-                                className="flex-shrink-0 inline w-4 h-4 me-3"
-                                viewBox="0 0 24 24"
-                                fill="none"
-                                xmlns="http://www.w3.org/2000/svg"
+                          {paymentIdsList
+                            .filter((ele) => ele.amount > 0)
+                            .map((payment, i) => (
+                              <div
+                                key={payment.id}
+                                className={`flex items-center p-4 mb-4 text-sm rounded-lg ${
+                                  payment.type === 'REGISTER'
+                                    ? 'bg-green-50 text-green-800'
+                                    : payment.type === 'DIRECT'
+                                    ? 'bg-yellow-50 text-yellow-800'
+                                    : payment.type === 'FINE'
+                                    ? 'bg-red-50 text-red-800'
+                                    : payment.type === 'PIG'
+                                    ? 'bg-pink-100'
+                                    : payment.type === 'COMPANY'
+                                    ? 'bg-purple-100'
+                                    : 'bg-blue-50 text-blue-800'
+                                }`}
+                                role="alert"
                               >
-                                <path
-                                  d="M6 2h12v2H6V2zM4 6V4h2v2H4zm0 12V6H2v12h2zm2 2v-2H4v2h2zm12 0v2H6v-2h12zm2-2v2h-2v-2h2zm0-12h2v12h-2V6zm0 0V4h-2v2h2zm-9-1h2v2h3v2h-6v2h6v6h-3v2h-2v-2H8v-2h6v-2H8V7h3V5z"
-                                  fill="currentColor"
-                                />
-                              </svg>
-                              <div className="w-full flex flex-col sm:flex-row justify-between gap-2">
-                                <div className="">
-                                  <span className="font-medium">
-                                    {payment.type === 'REGISTER'
-                                      ? t('Membership')
-                                      : payment.type === 'DIRECT'
-                                      ? t('commissionFee')
-                                      : payment.type === 'FINE'
-                                      ? t('fine')
-                                      : payment.type === 'PIG'
-                                      ? 'Dream Pool'
-                                      : payment.type === 'COMPANY'
-                                      ? 'HEWE'
-                                      : t('Foundation Contribution')}
-                                    <span> : </span>
-                                  </span>
-                                  <span>{payment.amount} USDT</span>
-                                </div>
-                                <div className="">
-                                  <span className="mx-2 text-black">
-                                    <span className="font-medium mr-2">
-                                      To :{' '}
+                                <svg
+                                  className="flex-shrink-0 inline w-4 h-4 me-3"
+                                  viewBox="0 0 24 24"
+                                  fill="none"
+                                  xmlns="http://www.w3.org/2000/svg"
+                                >
+                                  <path
+                                    d="M6 2h12v2H6V2zM4 6V4h2v2H4zm0 12V6H2v12h2zm2 2v-2H4v2h2zm12 0v2H6v-2h12zm2-2v2h-2v-2h2zm0-12h2v12h-2V6zm0 0V4h-2v2h2zm-9-1h2v2h3v2h-6v2h6v6h-3v2h-2v-2H8v-2h6v-2H8V7h3V5z"
+                                    fill="currentColor"
+                                  />
+                                </svg>
+                                <div className="w-full flex flex-col sm:flex-row justify-between gap-2">
+                                  <div className="">
+                                    <span className="font-medium">
+                                      {payment.type === 'REGISTER'
+                                        ? t('Membership')
+                                        : payment.type === 'DIRECT'
+                                        ? t('commissionFee')
+                                        : payment.type === 'FINE'
+                                        ? t('fine')
+                                        : payment.type === 'PIG'
+                                        ? 'Dream Pool'
+                                        : payment.type === 'COMPANY'
+                                        ? 'HEWE'
+                                        : t('Foundation Contribution')}
+                                      <span> : </span>
                                     </span>
-                                    <span className="">{payment.to}</span>
-                                  </span>
+                                    <span>{payment.amount} USDT</span>
+                                  </div>
+                                  <div className="">
+                                    <span className="mx-2 text-black">
+                                      <span className="font-medium mr-2">
+                                        To :{' '}
+                                      </span>
+                                      <span className="">{payment.to}</span>
+                                    </span>
+                                  </div>
                                 </div>
                               </div>
-                            </div>
-                          ))}
+                            ))}
                           <button
                             type="submit"
                             onClick={paymentMetamask}
