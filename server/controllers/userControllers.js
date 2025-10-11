@@ -36,49 +36,40 @@ import { getTotalHeweClaimed } from "../common.js";
 dotenv.config();
 
 const getAllUsers = asyncHandler(async (req, res) => {
-  const { pageNumber, keyword, status } = req.query;
+  const { pageNumber, keyword, status, coin } = req.query;
   const page = Number(pageNumber) || 1;
   const searchStatus = status === "all" ? "" : status;
 
   const pageSize = 20;
 
-  const count = await User.countDocuments({
+  const query = {
     $and: [
       {
         $or: [
-          { userId: { $regex: keyword, $options: "i" } }, // Tìm theo userId
-          { email: { $regex: keyword, $options: "i" } }, // Tìm theo email
-          { walletAddress: { $regex: keyword, $options: "i" } }, // Tìm theo email
+          { userId: { $regex: keyword, $options: "i" } },
+          { email: { $regex: keyword, $options: "i" } },
+          { walletAddress: { $regex: keyword, $options: "i" } },
         ],
       },
-      {
-        role: "user",
-      },
-      {
-        status: { $regex: searchStatus, $options: "i" },
-      },
+      { role: "user" },
+      { status: { $regex: searchStatus, $options: "i" } },
     ],
-  });
-  const allUsers = await User.find({
-    $and: [
-      {
-        $or: [
-          { userId: { $regex: keyword, $options: "i" } }, // Tìm theo userId
-          { email: { $regex: keyword, $options: "i" } }, // Tìm theo email
-          { walletAddress: { $regex: keyword, $options: "i" } }, // Tìm theo email
-        ],
-      },
-      {
-        role: "user",
-      },
-      {
-        status: { $regex: searchStatus, $options: "i" },
-      },
-    ],
-  })
+  };
+
+  const count = await User.countDocuments(query);
+
+  // Xác định kiểu sort
+  let sortOption = { createdAt: -1 }; // mặc định mới nhất -> cũ nhất
+  if (coin === "usdt") {
+    sortOption = { availableUsdt: -1 };
+  } else if (coin === "hewe") {
+    sortOption = { availableHewe: -1 };
+  }
+
+  const allUsers = await User.find(query)
     .limit(pageSize)
     .skip(pageSize * (page - 1))
-    .sort("-createdAt")
+    .sort(sortOption)
     .select("-password");
 
   res.json({
