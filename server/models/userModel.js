@@ -267,6 +267,7 @@ const userSchema = mongoose.Schema(
     },
     countHoldTier2: {
       type: Number,
+      default: 0
     },
   },
   {

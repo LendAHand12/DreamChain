@@ -815,17 +815,25 @@ const onDoneNextTierPayment = asyncHandler(async (req, res) => {
       user.fine = 0;
     } else {
       for (let transId of transIdsList) {
+        const trans = await Transaction.findById(transId.id);
+        let userReceive = await User.findOne({ _id: trans.userId_to });
+
         if (transId.type !== "DUE" && transId.type !== "DREAMPOOL") {
-          const trans = await Transaction.findOneAndUpdate(
-            { _id: transId.id, userId: user.id },
-            { status: "SUCCESS", hash: transactionHash }
-          );
+          trans.status = "SUCCESS";
+          trans.hash = transactionHash;
+          await trans.save();
 
           if (!trans.type.includes("HOLD")) {
-            let userReceive = await User.findOne({ _id: trans.userId_to });
             userReceive.availableUsdt = userReceive.availableUsdt + trans.amount;
             await userReceive.save();
           }
+        }
+
+        if(transId.type === "DUE" && userReceive.countHoldTier2 > 0) {
+          if(userReceive.countHoldTier2 === 7) {
+            
+          }
+
         }
       }
 
