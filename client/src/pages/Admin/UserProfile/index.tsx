@@ -835,6 +835,50 @@ const UserProfile = () => {
                   </div>
                 )}
               </div>
+              {data.tier === 2 && (
+                <div className="bg-[#FAFBFC] p-4 rounded-2xl">
+                  <div className="py-2 px-4">
+                    <div className="lg:py-2">
+                      <ul className="flex flex-col list-disc gap-2">
+                        <li className="ml-4">
+                          Direct Commissions :{' '}
+                          {data.countHoldTier2 > 3 ? (
+                            `${7 - data.countHoldTier2} / 4`
+                          ) : (
+                            <span className="p-1 bg-green-500 text-white rounded-md text-xs">
+                              DONE
+                            </span>
+                          )}
+                        </li>
+                        <li className="ml-4">
+                          DreamPool :{' '}
+                          {data.countHoldTier2 > 3 ? (
+                            <span className="p-1 bg-yellow-500 text-white rounded-md text-xs">
+                              PENDING
+                            </span>
+                          ) : (
+                            <span className="p-1 bg-green-500 text-white rounded-md text-xs">
+                              DONE
+                            </span>
+                          )}
+                        </li>
+                        <li className="ml-4">
+                          Hewe :{' '}
+                          {data.countHoldTier2 > 2 ? (
+                            <span className="p-1 bg-yellow-500 text-white rounded-md text-xs">
+                              PENDING
+                            </span>
+                          ) : (
+                            <span className="p-1 bg-green-500 text-white rounded-md text-xs">
+                              DONE
+                            </span>
+                          )}
+                        </li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+              )}
               {/* <div className="py-10">
                 <div className="max-w-sm">
                   <Doughnut
