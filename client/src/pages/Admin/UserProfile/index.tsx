@@ -836,7 +836,7 @@ const UserProfile = () => {
                 )}
               </div>
               {data.tier === 2 && (
-                <div className="bg-[#FAFBFC] p-4 rounded-2xl">
+                <div className="mt-10 bg-white shadow-md p-3 border-t-4 border-NoExcuseChallenge">
                   <div className="py-2 px-4">
                     <div className="lg:py-2">
                       <ul className="flex flex-col list-disc gap-2">
