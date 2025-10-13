@@ -53,6 +53,7 @@ const Profile = () => {
     pendingUpdateInfo,
     notEnoughtChild,
     lockKyc,
+    countHoldTier2,
   } = userInfo;
 
   const [phoneNumber, setPhoneNumber] = useState(phone);
@@ -641,6 +642,27 @@ const Profile = () => {
                           : 0 || 0}{' '}
                         IDs
                       </li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {tier === 2 && (
+              <div className="bg-[#FAFBFC] p-4 rounded-2xl">
+                <div className="py-2 px-4">
+                  <div className="lg:py-2">
+                    <ul className="flex flex-col list-disc gap-2">
+                      <li className="ml-4">
+                        Direct Commissions :{' '}
+                        {countHoldTier2 > 3
+                          ? `${7 - countHoldTier2} / 4`
+                          : <span className='p-1 bg-green-500 text-white rounded-md text-xs'>DONE</span>}
+                      </li>
+                      <li className="ml-4">
+                        DreamPool : {countHoldTier2 > 3 ? <span className='p-1 bg-yellow-500 text-white rounded-md text-xs'>PENDING</span> : <span className='p-1 bg-green-500 text-white rounded-md text-xs'>DONE</span>}
+                      </li>
+                      <li className="ml-4">Hewe : {countHoldTier2 > 2 ? <span className='p-1 bg-yellow-500 text-white rounded-md text-xs'>PENDING</span> : <span className='p-1 bg-green-500 text-white rounded-md text-xs'>DONE</span>}</li>
                     </ul>
                   </div>
                 </div>
