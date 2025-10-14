@@ -42,6 +42,7 @@ const UserProfile = () => {
   const [walletChange, setWalletChange] = useState('');
   const [loadingChangeWallet, setLoadingChangeWallet] = useState(false);
   const [currentLockKyc, setCurrentLockKyc] = useState(null);
+  const [currentTermDie, setCurrentTermDie] = useState(null);
 
   const {
     register,
@@ -71,6 +72,7 @@ const UserProfile = () => {
             kycFee,
             changeCreatedAt,
             lockKyc,
+            errLahCode,
           } = response.data;
           setValue('userId', userId);
           setValue('email', email);
@@ -83,6 +85,7 @@ const UserProfile = () => {
           setCurrentCloseLah(closeLah);
           setCurrentLockKyc(lockKyc);
           setIsBonusRef(bonusRef);
+          setCurrentTermDie(errLahCode === 'OVER45' ? true : false);
           setKycFee(kycFee);
         })
         .catch((error) => {
@@ -152,6 +155,10 @@ const UserProfile = () => {
         formData.append('hold', values.hold);
       }
 
+      if (currentTermDie) {
+        formData.append('termDie', currentTermDie);
+      }
+
       if (values.changeCreatedAt !== data.changeCreatedAt) {
         formData.append('changeCreatedAt', values.changeCreatedAt);
       }
@@ -194,7 +201,19 @@ const UserProfile = () => {
           setEditting(false);
         });
     },
-    [data, currentCloseLah, currentOpenLah, phone, currentLockKyc],
+    [
+      data,
+      currentCloseLah,
+      currentOpenLah,
+      phone,
+      currentLockKyc,
+      currentTermDie,
+    ],
+  );
+
+  const handleChangeTermDie = useCallback(
+    () => setCurrentTermDie(!currentTermDie),
+    [currentTermDie],
   );
 
   const handleDeleteUser = async (onClose) => {
@@ -610,6 +629,21 @@ const UserProfile = () => {
                           onChange={handleChangeLockKyc}
                         />
                       ) : currentLockKyc ? (
+                        'True'
+                      ) : (
+                        'False'
+                      )}
+                    </span>
+                  </li>
+                  <li className="flex items-center py-3">
+                    <span>Temporary Die</span>
+                    <span className="ml-auto">
+                      {isEditting ? (
+                        <Switch
+                          checked={currentTermDie}
+                          onChange={handleChangeTermDie}
+                        />
+                      ) : currentTermDie ? (
                         'True'
                       ) : (
                         'False'

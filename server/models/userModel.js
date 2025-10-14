@@ -267,7 +267,10 @@ const userSchema = mongoose.Schema(
     },
     countHoldTier2: {
       type: Number,
-      default: 0
+      default: 0,
+    },
+    dieTime: {
+      type: Date,
     },
   },
   {

@@ -19,7 +19,6 @@ const MoveSystem = () => {
   const [loadingInfoUser, setLoadingInfoUser] = useState(true);
   const [parentId, setParentId] = useState('');
   const [refId, setRefId] = useState('');
-  const [errParentId, setErrParentId] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
   const [withChild, setWithChild] = useState('');
 
@@ -62,8 +61,8 @@ const MoveSystem = () => {
   }, 1000);
 
   const handleSubmit = useCallback(async () => {
-    if (!parentId) {
-      setErrParentId(true);
+    if (!parentId && !refId) {
+      toast.error('Please select at least 1 parent or referral value');
       return;
     } else {
       await User.changeSystem({ moveId: id, parentId, refId, withChild })
@@ -112,9 +111,15 @@ const MoveSystem = () => {
                 <p className="text-lg font-semibold">{data?.userId}</p>
               </div>
               <div className="space-y-2">
-                <p className="text-sm">
-                  Move To Parent Name <span className="text-red-500">*</span> :{' '}
-                </p>
+                <p className="text-sm">Current Parent Name : </p>
+                <p className="text-lg font-semibold">{data?.currentParent}</p>
+              </div>
+              <div className="space-y-2">
+                <p className="text-sm">Current Referral Name : </p>
+                <p className="text-lg font-semibold">{data?.refUserName}</p>
+              </div>
+              <div className="space-y-2">
+                <p className="text-sm">Move To Parent Name :</p>
                 <AsyncSelect
                   cacheOptions
                   defaultOptions
@@ -123,11 +128,6 @@ const MoveSystem = () => {
                   placeholder="Search user name…"
                   className="w-full mb-1 border text-black border-black rounded-md focus:outline-none focus:border-indigo-500 transition-colors cursor-pointer"
                 />
-                {errParentId && (
-                  <p className="text-red-500 text-sm italic">
-                    * Please chooose parent
-                  </p>
-                )}
               </div>
               <div className="space-y-2">
                 <p className="text-sm">Referral Name : </p>
@@ -164,7 +164,7 @@ const MoveSystem = () => {
               )}
               <button
                 onClick={handleSubmit}
-                className="w-full flex justify-center items-center hover:underline text-DreamChain bg-black font-bold rounded-full my-2 py-2 px-6 shadow-lg focus:outline-none focus:shadow-outline transform transition hover:scale-105 duration-300 ease-in-out"
+                className="w-full flex justify-center items-center hover:underline text-NoExcuseChallenge bg-black font-bold rounded-full my-2 py-2 px-6 shadow-lg focus:outline-none focus:shadow-outline transform transition hover:scale-105 duration-300 ease-in-out"
               >
                 {loading && <Loading />}
                 {t('Confirm')}

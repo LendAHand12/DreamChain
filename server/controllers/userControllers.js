@@ -177,6 +177,11 @@ const getUserById = asyncHandler(async (req, res) => {
       countdown = tier2Deadline.diff(currentDay, "days"); // số ngày còn lại
     }
 
+    let parentTree;
+    if (tree.parentId) {
+      parentTree = await Tree.findById(tree.parentId);
+    }
+
     res.json({
       id: user._id,
       email: user.email,
@@ -246,6 +251,7 @@ const getUserById = asyncHandler(async (req, res) => {
       changeCreatedAt: user.changeCreatedAt,
       lockKyc: user.lockKyc,
       countHoldTier2: user.countHoldTier2,
+      currentParent: parentTree ? parentTree.userName : null,
     });
   } else {
     res.status(404);
@@ -595,6 +601,7 @@ const adminUpdateUser = asyncHandler(async (req, res) => {
     removeErrLahCode,
     changeCreatedAt,
     lockKyc,
+    termDie,
   } = req.body;
 
   if (userId) {
@@ -692,6 +699,13 @@ const adminUpdateUser = asyncHandler(async (req, res) => {
     user.status = newStatus || user.status;
     if (newStatus === "LOCKED") {
       user.lockedTime = new Date();
+    }
+    if (termDie) {
+      user.errLahCode = "OVER45";
+      user.dieTime = new Date();
+    } else {
+      user.errLahCode = "";
+      user.dieTime = null;
     }
     user.fine = newFine || user.fine;
     user.note = note || user.note;
