@@ -755,45 +755,54 @@ const UserProfile = () => {
               </div>
               {data.tier === 2 && (
                 <div className="mt-10 bg-white shadow-md p-3 border-t-4 border-NoExcuseChallenge">
-                  <p className="uppercase mt-2 font-bold">
-                    {t('Sales are working')}
-                  </p>
+                  <p className="uppercase mt-2 font-bold">{t('ACTIVE ID')}</p>
                   <div className="lg:py-2">
                     <ul className="flex flex-col list-disc">
                       <li className="ml-4">
-                        Branch 1 : {data.notEnoughtChild?.countChild1 + 1} IDs
+                        Branch 1 : {data.notEnoughtChild?.countChild1} IDs
                       </li>
                       <li className="ml-4">
-                        Branch 2 : {data.notEnoughtChild?.countChild2 + 1} IDs
+                        Branch 2 : {data.notEnoughtChild?.countChild2} IDs
                       </li>
                     </ul>
                   </div>
                   <div className="py-2">
                     <p className="uppercase mt-2 font-bold">
-                      {t('Sales must be compensated')}
+                      {t('NUMBERS OF ID REQUIRE')}
                     </p>
                     <div className="lg:py-2">
                       <ul className="flex flex-col list-disc">
-                        <li className="ml-4">
-                          Branch 1 :{' '}
-                          {import.meta.env.VITE_MAX_IDS_OF_BRANCH -
-                            data.notEnoughtChild?.countChild1 >
-                          0
-                            ? import.meta.env.VITE_MAX_IDS_OF_BRANCH -
-                              data.notEnoughtChild?.countChild1
-                            : 0 || 0}{' '}
-                          IDs
-                        </li>
-                        <li className="ml-4">
-                          Branch 2 :{' '}
-                          {import.meta.env.VITE_MAX_IDS_OF_BRANCH -
-                            data.notEnoughtChild?.countChild2 >
-                          0
-                            ? import.meta.env.VITE_MAX_IDS_OF_BRANCH -
-                              data.notEnoughtChild?.countChild2
-                            : 0 || 0}{' '}
-                          IDs
-                        </li>
+                        {(() => {
+                          const c1 = data?.notEnoughtChild?.countChild1 ?? 0;
+                          const c2 = data?.notEnoughtChild?.countChild2 ?? 0;
+
+                          let b1 = 0;
+                          let b2 = 0;
+
+                          if (c1 >= 44 && c2 >= 44 && c1 + c2 >= 126) {
+                            // ✅ Đủ điều kiện, không cần bù
+                            b1 = 0;
+                            b2 = 0;
+                          } else {
+                            // ✅ Xác định nhánh mạnh và nhánh yếu
+                            if (c1 >= c2) {
+                              // Nhánh 1 mạnh (quota 42), nhánh 2 yếu (quota 20)
+                              b1 = Math.max(82 - c1, 0);
+                              b2 = Math.max(44 - c2, 0);
+                            } else {
+                              // Nhánh 2 mạnh (quota 42), nhánh 1 yếu (quota 20)
+                              b1 = Math.max(44 - c1, 0);
+                              b2 = Math.max(82 - c2, 0);
+                            }
+                          }
+
+                          return (
+                            <>
+                              <li className="ml-4">Branch 1 : {b1} IDs</li>
+                              <li className="ml-4">Branch 2 : {b2} IDs</li>
+                            </>
+                          );
+                        })()}
                       </ul>
                     </div>
                   </div>

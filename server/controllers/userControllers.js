@@ -245,7 +245,7 @@ const getUserById = asyncHandler(async (req, res) => {
       isOld: user.isOld,
       changeCreatedAt: user.changeCreatedAt,
       lockKyc: user.lockKyc,
-      countHoldTier2: user.countHoldTier2
+      countHoldTier2: user.countHoldTier2,
     });
   } else {
     res.status(404);
@@ -405,7 +405,7 @@ const getUserInfo = asyncHandler(async (req, res) => {
       isOld: user.isOld,
       changeCreatedAt: user.changeCreatedAt,
       lockKyc: user.lockKyc,
-      countHoldTier2: user.countHoldTier2
+      countHoldTier2: user.countHoldTier2,
     });
   } else {
     res.status(404);

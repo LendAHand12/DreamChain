@@ -602,46 +602,55 @@ const Profile = () => {
             {tier === 2 && (
               <div className="bg-[#FAFBFC] p-4 rounded-2xl">
                 <div className="py-2 px-4">
-                  <p className="uppercase mt-2 font-bold">
-                    {t('Sales are working')}
-                  </p>
+                  <p className="uppercase mt-2 font-bold">{t('ACTIVE ID')}</p>
                   <div className="lg:py-2">
                     <ul className="flex flex-col list-disc">
                       <li className="ml-4">
-                        Branch 1 : {notEnoughtChild?.countChild1 + 1} IDs
+                        Branch 1 : {notEnoughtChild?.countChild1} IDs
                       </li>
                       <li className="ml-4">
-                        Branch 2 : {notEnoughtChild?.countChild2 + 1} IDs
+                        Branch 2 : {notEnoughtChild?.countChild2} IDs
                       </li>
                     </ul>
                   </div>
                 </div>
                 <div className="py-2 px-4">
                   <p className="uppercase mt-2 font-bold">
-                    {t('Sales must be compensated')}
+                    {t('NUMBERS OF ID REQUIRE')}
                   </p>
                   <div className="lg:py-2">
                     <ul className="flex flex-col list-disc">
-                      <li className="ml-4">
-                        Branch 1 :{' '}
-                        {import.meta.env.VITE_MAX_IDS_OF_BRANCH -
-                          notEnoughtChild?.countChild1 >
-                        0
-                          ? import.meta.env.VITE_MAX_IDS_OF_BRANCH -
-                            notEnoughtChild?.countChild1
-                          : 0 || 0}{' '}
-                        IDs
-                      </li>
-                      <li className="ml-4">
-                        Branch 2 :{' '}
-                        {import.meta.env.VITE_MAX_IDS_OF_BRANCH -
-                          notEnoughtChild?.countChild2 >
-                        0
-                          ? import.meta.env.VITE_MAX_IDS_OF_BRANCH -
-                            notEnoughtChild?.countChild2
-                          : 0 || 0}{' '}
-                        IDs
-                      </li>
+                      {(() => {
+                        const c1 = notEnoughtChild?.countChild1 ?? 0;
+                        const c2 = notEnoughtChild?.countChild2 ?? 0;
+
+                        let b1 = 0;
+                        let b2 = 0;
+
+                        if (c1 >= 44 && c2 >= 44 && c1 + c2 >= 126) {
+                          // ✅ Đủ điều kiện, không cần bù
+                          b1 = 0;
+                          b2 = 0;
+                        } else {
+                          // ✅ Xác định nhánh mạnh và nhánh yếu
+                          if (c1 >= c2) {
+                            // Nhánh 1 mạnh (quota 42), nhánh 2 yếu (quota 20)
+                            b1 = Math.max(82 - c1, 0);
+                            b2 = Math.max(44 - c2, 0);
+                          } else {
+                            // Nhánh 2 mạnh (quota 42), nhánh 1 yếu (quota 20)
+                            b1 = Math.max(44 - c1, 0);
+                            b2 = Math.max(82 - c2, 0);
+                          }
+                        }
+
+                        return (
+                          <>
+                            <li className="ml-4">Branch 1 : {b1} IDs</li>
+                            <li className="ml-4">Branch 2 : {b2} IDs</li>
+                          </>
+                        );
+                      })()}
                     </ul>
                   </div>
                 </div>
@@ -655,14 +664,38 @@ const Profile = () => {
                     <ul className="flex flex-col list-disc gap-2">
                       <li className="ml-4">
                         Direct Commissions :{' '}
-                        {countHoldTier2 > 3
-                          ? `${7 - countHoldTier2} / 4`
-                          : <span className='p-1 bg-green-500 text-white rounded-md text-xs'>DONE</span>}
+                        {countHoldTier2 > 3 ? (
+                          `${7 - countHoldTier2} / 4`
+                        ) : (
+                          <span className="p-1 bg-green-500 text-white rounded-md text-xs">
+                            DONE
+                          </span>
+                        )}
                       </li>
                       <li className="ml-4">
-                        DreamPool : {countHoldTier2 > 3 ? <span className='p-1 bg-yellow-500 text-white rounded-md text-xs'>PENDING</span> : <span className='p-1 bg-green-500 text-white rounded-md text-xs'>DONE</span>}
+                        DreamPool :{' '}
+                        {countHoldTier2 > 3 ? (
+                          <span className="p-1 bg-yellow-500 text-white rounded-md text-xs">
+                            PENDING
+                          </span>
+                        ) : (
+                          <span className="p-1 bg-green-500 text-white rounded-md text-xs">
+                            DONE
+                          </span>
+                        )}
                       </li>
-                      <li className="ml-4">Hewe : {countHoldTier2 > 2 ? <span className='p-1 bg-yellow-500 text-white rounded-md text-xs'>PENDING</span> : <span className='p-1 bg-green-500 text-white rounded-md text-xs'>DONE</span>}</li>
+                      <li className="ml-4">
+                        Hewe :{' '}
+                        {countHoldTier2 > 2 ? (
+                          <span className="p-1 bg-yellow-500 text-white rounded-md text-xs">
+                            PENDING
+                          </span>
+                        ) : (
+                          <span className="p-1 bg-green-500 text-white rounded-md text-xs">
+                            DONE
+                          </span>
+                        )}
+                      </li>
                     </ul>
                   </div>
                 </div>
