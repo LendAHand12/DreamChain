@@ -66,6 +66,8 @@ const getAllUsers = asyncHandler(async (req, res) => {
     sortOption = { availableHewe: -1 };
   }
 
+  console.log({ sortOption });
+
   const allUsers = await User.find(query)
     .limit(pageSize)
     .skip(pageSize * (page - 1))

@@ -62,14 +62,14 @@ const AdminUserPages = () => {
   useEffect(() => {
     (async () => {
       setLoading(true);
-      const { pageNumber, keyword, status } = objectFilter;
-      await User.getAllUsers(pageNumber, keyword, status)
+      const { pageNumber, keyword, status, coin } = objectFilter;
+      await User.getAllUsers(pageNumber, keyword, status, coin)
         .then((response) => {
           const { users, pages } = response.data;
           setData(users);
           setTotalPage(pages);
           setLoading(false);
-          pushParamsToUrl(pageNumber, keyword, status);
+          pushParamsToUrl(pageNumber, keyword, status, coin);
         })
         .catch((error) => {
           let message =
@@ -96,7 +96,7 @@ const AdminUserPages = () => {
     setKeyword(e.target.value);
   };
 
-  const pushParamsToUrl = (pageNumber, searchKey, searchStatus) => {
+  const pushParamsToUrl = (pageNumber, searchKey, searchStatus, coin) => {
     const searchParams = new URLSearchParams();
     if (searchKey) {
       searchParams.set('keyword', searchKey);
@@ -106,6 +106,9 @@ const AdminUserPages = () => {
     }
     if (searchStatus) {
       searchParams.set('status', searchStatus);
+    }
+    if (coin) {
+      searchParams.set('coin', coin);
     }
     const queryString = searchParams.toString();
     const url = queryString ? `/admin/users?${queryString}` : '/admin/users';
