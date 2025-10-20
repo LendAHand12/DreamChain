@@ -44,7 +44,7 @@ import {
   updateHewePrice,
   // checkUserTryToTier2,
 } from "./cronJob/index.js";
-import { recheckHewe } from "./common.js";
+import { fixParentChildLinks, recheckHewe } from "./common.js";
 
 const app = express();
 
@@ -160,6 +160,7 @@ const cron6 = new CronJob("0 * * * *", async () => {
 });
 
 // await recheckHewe();
+await fixParentChildLinks();
 
 cron0.start();
 cron1.start();
