@@ -215,7 +215,7 @@ function App() {
             path="/admin/move-system-list"
             element={
               <>
-                <PageTitle title="Move System List | NoExcuseChallenge" />
+                <PageTitle title="Move System List | DreamChain" />
                 <MoveSystemList />
               </>
             }

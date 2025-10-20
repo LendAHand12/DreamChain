@@ -902,13 +902,14 @@ const onDoneNextTierPayment = asyncHandler(async (req, res) => {
         }
 
         const newChildParent = await Tree.findById(childId);
+        const mainTree = await Tree.findOne({ tier: 1, userId: user._id, isSubId: false });
         let childsOfChild = [...newChildParent.children];
 
         const newTreeTier1 = await Tree.create({
           userName: user.userId + "1-1",
           userId: user._id,
           parentId: childId,
-          refId: childId,
+          refId: mainTree.refId,
           tier: user.tier,
           buyPackage: "A",
           children: [],
