@@ -43,6 +43,12 @@ const Payment = {
   getIncomeOfUser: (pageNumber, coin) => {
     return API.get(`${URL_API_INCOME}/?pageNumber=${pageNumber}&coin=${coin}`);
   },
+  getDebt175PaymentInfo: () => {
+    return API.get(`${URL_API_PAYMENT}/debt175/info`);
+  },
+  onDoneDebt175Payment: (body) => {
+    return API.post(`${URL_API_PAYMENT}/debt175/done`, body);
+  },
 };
 
 export default Payment;

@@ -12,7 +12,9 @@ import {
   getAllTransForExport,
   onDonePayment,
   getPaymentNextTierInfo,
-  onDoneNextTierPayment
+  onDoneNextTierPayment,
+  getDebt175PaymentInfo,
+  onDoneDebt175Payment
 } from "../controllers/paymentControllers.js";
 import { protectRoute, isAdmin } from "../middleware/authMiddleware.js";
 
@@ -33,6 +35,8 @@ router
 
 router.route("/done").post(protectRoute, onDonePayment);
 router.route("/doneNextTier").post(protectRoute, onDoneNextTierPayment);
+router.route("/debt175/info").get(protectRoute, getDebt175PaymentInfo);
+router.route("/debt175/done").post(protectRoute, onDoneDebt175Payment);
 
 router.route("/:id").get(protectRoute, isAdmin, getPaymentDetail);
 router

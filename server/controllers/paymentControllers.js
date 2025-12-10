@@ -1390,6 +1390,215 @@ const getAllTransForExport = asyncHandler(async (req, res) => {
   res.json({ totalCount, result });
 });
 
+const getDebt175PaymentInfo = asyncHandler(async (req, res) => {
+  const { user } = req;
+
+  if (user) {
+    if (user.countHoldTier2 !== 7) {
+      res.status(400).json({
+        message: "You don't have a debt of 175 USDT to pay",
+      });
+      return;
+    }
+
+    await Transaction.deleteMany({
+      $and: [
+        {
+          status: "PENDING",
+        },
+        { userId: user.id },
+        { tier: user.tier },
+      ],
+    });
+
+    const admin = await User.findOne({ email: "admin2@gmail.com" });
+    const payments = [];
+    const paymentIds = [];
+    if (user.fine > 0) {
+      const transactionFine = await Transaction.create({
+        userId: user.id,
+        amount: user.fine,
+        userCountPay: user.countPay,
+        userId_to: admin._id,
+        username_to: "Fine Fee",
+        tier: user.tier,
+        buyPackage: user.buyPackage,
+        hash: "",
+        type: "FINE",
+        status: "PENDING",
+      });
+      payments.push({
+        userName: "Fine Fee",
+        amount: user.fine,
+      });
+      paymentIds.push({
+        type: "FINE",
+        id: transactionFine._id,
+        amount: user.fine,
+        to: "Admin",
+      });
+    } else {
+      let haveRefNotPayEnough = false;
+      let pigFee = 25;
+      let companyFee = 50;
+      let directCommissionFee = 100;
+
+      // giao dich con heo
+      payments.push({
+        userName: "DreamPool",
+        amount: pigFee,
+      });
+      const transactionPig = await Transaction.create({
+        userId: user.id,
+        amount: pigFee,
+        userCountPay: user.countPay,
+        userId_to: admin._id,
+        username_to: "DreamPool",
+        tier: user.tier,
+        buyPackage: user.buyPackage,
+        hash: "",
+        type: "PIG",
+        status: "PENDING",
+      });
+      paymentIds.push({
+        type: "PIG",
+        id: transactionPig._id,
+        amount: pigFee,
+        to: "DreamPool",
+      });
+      // giao dich hewe cho cong ty
+      if (companyFee > 0) {
+        payments.push({
+          userName: "Purchased HEWE",
+          amount: companyFee,
+        });
+        const transactionCompany = await Transaction.create({
+          userId: user.id,
+          amount: companyFee,
+          userCountPay: user.countPay,
+          userId_to: admin._id,
+          username_to: "Purchased HEWE",
+          tier: user.tier,
+          buyPackage: user.buyPackage,
+          hash: "",
+          type: "COMPANY",
+          status: "PENDING",
+        });
+        paymentIds.push({
+          type: "COMPANY",
+          id: transactionCompany._id,
+          amount: companyFee,
+          to: "Purchased HEWE",
+        });
+      }
+
+      let directCommissionUser;
+      const treeOfUser = await Tree.findOne({ userId: user.id, tier: 2 });
+      const treeOfParentUser = await Tree.findById(treeOfUser.parentId);
+      directCommissionUser = await User.findById(treeOfParentUser.userId);
+
+      // giao dich hoa hong truc tiep
+      if (directCommissionUser.closeLah) {
+        haveRefNotPayEnough = true;
+      } else if (
+        directCommissionUser.openLah ||
+        directCommissionUser.adminChangeTier ||
+        directCommissionUser.createBy === "ADMIN"
+      ) {
+        haveRefNotPayEnough = false;
+      } else {
+        if (
+          directCommissionUser.status === "LOCKED" ||
+          directCommissionUser.tier < user.tier ||
+          directCommissionUser.errLahCode === "OVER45" ||
+          (directCommissionUser.tier === user.tier && directCommissionUser.countPay < 13)
+        ) {
+          haveRefNotPayEnough = true;
+        } else {
+          haveRefNotPayEnough = false;
+        }
+      }
+
+      const transactionDirect = await Transaction.create({
+        userId: user.id,
+        amount: directCommissionFee,
+        userCountPay: user.countPay,
+        userId_to: directCommissionUser._id,
+        username_to: treeOfParentUser.userName,
+        tier: user.tier,
+        buyPackage: user.buyPackage,
+        hash: "",
+        type: haveRefNotPayEnough ? "DIRECTHOLD" : "DIRECT",
+        status: "PENDING",
+        refBuyPackage: directCommissionUser.buyPackage,
+      });
+      paymentIds.push({
+        type: haveRefNotPayEnough ? "DIRECTHOLD" : "DIRECT",
+        id: transactionDirect._id,
+        amount: directCommissionFee,
+        to: directCommissionUser.userId,
+      });
+      payments.push({
+        userName: directCommissionUser.userId,
+        amount: directCommissionFee,
+      });
+    }
+    res.json({
+      status: "OK",
+      message: ``,
+      payments,
+      paymentIds,
+    });
+  } else {
+    res.status(404);
+    throw new Error("User does not exist");
+  }
+});
+
+const onDoneDebt175Payment = asyncHandler(async (req, res) => {
+  const { user } = req;
+  const { transIds, transactionHash } = req.body;
+  const transIdsList = Object.values(transIds);
+
+  if (transIdsList.length > 0) {
+    if (transIdsList.length === 1 && transIdsList[0].type === "FINE") {
+      user.fine = 0;
+    } else {
+      for (let transId of transIdsList) {
+        const trans = await Transaction.findOneAndUpdate(
+          { _id: transId.id, userId: user.id, tier: user.tier },
+          { status: "SUCCESS", hash: transactionHash }
+        );
+
+        if (!trans.type.includes("HOLD")) {
+          let userReceive = await User.findById(trans.userId_to);
+          userReceive.availableUsdt = userReceive.availableUsdt + trans.amount;
+          await userReceive.save();
+        }
+      }
+
+      let responseHewe = await getPriceHewe();
+      if (responseHewe.data.result === "false") {
+        await sendMailGetHewePrice();
+      }
+      const hewePriceConfig = await Config.findOne({ label: "HEWE_PRICE" });
+      const hewePrice = responseHewe?.data?.ticker?.latest || hewePriceConfig.value;
+      const totalHewe = Math.round(50 / hewePrice);
+
+      user.availableHewe = user.availableHewe + totalHewe;
+      user.countHoldTier2 = 0;
+    }
+
+    const updatedUser = await user.save();
+
+    if (updatedUser) {
+      res.json({ message: "system update successful" });
+    }
+  } else {
+    throw new Error("No transaction found");
+  }
+});
+
 export {
   getPaymentInfo,
   addPayment,
@@ -1405,4 +1614,6 @@ export {
   onDonePayment,
   getPaymentNextTierInfo,
   onDoneNextTierPayment,
+  getDebt175PaymentInfo,
+  onDoneDebt175Payment,
 };

@@ -657,7 +657,7 @@ const Profile = () => {
               </div>
             )}
 
-            {tier === 2 && (
+            {tier === 2 && countHoldTier2 === 7 && (
               <div className="bg-[#FAFBFC] p-4 rounded-2xl">
                 <div className="py-2 px-4">
                   <div className="lg:py-2">
@@ -697,6 +697,14 @@ const Profile = () => {
                         )}
                       </li>
                     </ul>
+                    <button
+                      onClick={() => {
+                        window.location.href = '/user/payment-debt-175';
+                      }}
+                      className="w-full mt-2 border border-black rounded-2xl px-12 py-2 flex justify-center hover:bg-black hover:text-white font-medium"
+                    >
+                      {t('Pay')} 175 USDT
+                    </button>
                   </div>
                 </div>
               </div>

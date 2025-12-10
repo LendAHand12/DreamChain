@@ -22,6 +22,7 @@ import DashboardPage from './pages/Admin/Dashboard';
 import SignUpPage from './pages/SignUp';
 import ConfirmPage from './pages/ConfirmPage';
 import Payment from './pages/User/Payment';
+import PaymentDebt175Page from './pages/User/Payment/paymentDebt175';
 import ReferralPage from './pages/User/Referral';
 import Transactions from './pages/User/Transactions';
 import NotFoundPage from './pages/NotFound';
@@ -653,6 +654,15 @@ function App() {
                 <>
                   <PageTitle title="Payment | DreamChain" />
                   <Payment />
+                </>
+              }
+            />
+            <Route
+              path="/user/payment-debt-175"
+              element={
+                <>
+                  <PageTitle title="Payment Debt 175 | DreamChain" />
+                  <PaymentDebt175Page />
                 </>
               }
             />

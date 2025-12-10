@@ -381,5 +381,6 @@
   "addNewPermissions": "Create new permission",
   "permissions": "Permissions",
   "createAdmin": "Create new Admin",
-  "admin-admin-detail": "Admin Detail"
+  "admin-admin-detail": "Admin Detail",
+  "Pay": "Pay"
 }
