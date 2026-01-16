@@ -86,7 +86,7 @@ const NewsPage: React.FC = () => {
                   <p className="text-DreamChain">{ele.views}</p>
                 </div>
               </div>
-              <div className="w-full flex justify-center py-1.5 border rounded-md border-NoExcuseChallenge">
+              <div className="w-full flex justify-center py-1.5 border rounded-md border-DreamChain">
                 <Link to={`/news/${ele._id}`} className="w-full text-center">
                   See more
                 </Link>
@@ -112,9 +112,8 @@ const NewsPage: React.FC = () => {
                 <button
                   disabled={pageNumber === 1}
                   onClick={handlePrevPage}
-                  className={`block px-3 py-2 ml-0 leading-tight text-gray-500 ${
-                    pageNumber === 1 ? 'bg-gray-100' : 'bg-white'
-                  } border border-gray-300 rounded-l-lg hover:bg-gray-100 hover:text-gray-700`}
+                  className={`block px-3 py-2 ml-0 leading-tight text-gray-500 ${pageNumber === 1 ? 'bg-gray-100' : 'bg-white'
+                    } border border-gray-300 rounded-l-lg hover:bg-gray-100 hover:text-gray-700`}
                 >
                   <span className="sr-only">Previous</span>
                   <svg
@@ -136,9 +135,8 @@ const NewsPage: React.FC = () => {
                 <button
                   disabled={pageNumber === totalPage}
                   onClick={handleNextPage}
-                  className={`block px-3 py-2 leading-tight text-gray-500 ${
-                    pageNumber === totalPage ? 'bg-gray-100' : 'bg-white'
-                  } border border-gray-300 rounded-r-lg hover:bg-gray-100 hover:text-gray-700`}
+                  className={`block px-3 py-2 leading-tight text-gray-500 ${pageNumber === totalPage ? 'bg-gray-100' : 'bg-white'
+                    } border border-gray-300 rounded-r-lg hover:bg-gray-100 hover:text-gray-700`}
                 >
                   <span className="sr-only">Next</span>
                   <svg

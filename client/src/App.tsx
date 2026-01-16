@@ -17,6 +17,7 @@ import PolicyPage from './pages/Policy';
 import ContactPage from './pages/Contact';
 import { PrivateRoute, PublicRoute } from './helpers/router';
 import SignInPage from './pages/SignIn';
+import AdminSignInPage from './pages/Admin/Login';
 import Profile from './pages/User/Profile';
 import DashboardPage from './pages/Admin/Dashboard';
 import SignUpPage from './pages/SignUp';
@@ -174,12 +175,13 @@ function App() {
           path="/guide"
           element={
             <>
-              <PageTitle title="Member’s Guidelines | DreamChain" />
+              <PageTitle title="Member's Guidelines | DreamChain" />
               <GuidePage />
             </>
           }
         />
         <Route path="/signin" element={<SignInPage />} />
+        <Route path="/admin/login" element={<AdminSignInPage />} />
         <Route path="/signup" element={<SignUpPage />} />
         <Route path="/confirm" element={<ConfirmPage />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />
@@ -198,443 +200,443 @@ function App() {
         {userInfo?.permissions
           ?.find((p) => p.page.path === '/admin/transactions')
           ?.actions.includes('read') && (
-          <Route
-            path="/admin/transactions"
-            element={
-              <>
-                <PageTitle title="Transactions | DreamChain" />
-                <AdminTransactionsPage />
-              </>
-            }
-          />
-        )}
+            <Route
+              path="/admin/transactions"
+              element={
+                <>
+                  <PageTitle title="Transactions | DreamChain" />
+                  <AdminTransactionsPage />
+                </>
+              }
+            />
+          )}
 
         {userInfo?.permissions
           ?.find((p) => p.page.path === '/admin/move-system-list')
           ?.actions.includes('read') && (
-          <Route
-            path="/admin/move-system-list"
-            element={
-              <>
-                <PageTitle title="Move System List | DreamChain" />
-                <MoveSystemList />
-              </>
-            }
-          />
-        )}
+            <Route
+              path="/admin/move-system-list"
+              element={
+                <>
+                  <PageTitle title="Move System List | DreamChain" />
+                  <MoveSystemList />
+                </>
+              }
+            />
+          )}
 
         {userInfo?.permissions
           ?.find((p) => p.page.path === '/admin/users/:id')
           ?.actions.includes('read') && (
-          <Route
-            path="/admin/users/:id"
-            element={
-              <>
-                <PageTitle title="User Profile | DreamChain" />
-                <AdminUserProfile />
-              </>
-            }
-          />
-        )}
+            <Route
+              path="/admin/users/:id"
+              element={
+                <>
+                  <PageTitle title="User Profile | DreamChain" />
+                  <AdminUserProfile />
+                </>
+              }
+            />
+          )}
 
         {userInfo?.permissions
           ?.find((p) => p.page.path === '/admin/transactions')
           ?.actions.includes('export') && (
-          <Route
-            path="/admin/transaction/export"
-            element={
-              <>
-                <PageTitle title="Admin Export Transaction | DreamChain" />
-                <ExportPaymentsPage />
-              </>
-            }
-          />
-        )}
+            <Route
+              path="/admin/transaction/export"
+              element={
+                <>
+                  <PageTitle title="Admin Export Transaction | DreamChain" />
+                  <ExportPaymentsPage />
+                </>
+              }
+            />
+          )}
 
         {userInfo?.permissions
           ?.find((p) => p.page.path === '/admin/transactions/:id')
           ?.actions.includes('read') && (
-          <Route
-            path="/admin/transactions/:id"
-            element={
-              <>
-                <PageTitle title="Transaction Detail | DreamChain" />
-                <AdminTransactionDetail />
-              </>
-            }
-          />
-        )}
+            <Route
+              path="/admin/transactions/:id"
+              element={
+                <>
+                  <PageTitle title="Transaction Detail | DreamChain" />
+                  <AdminTransactionDetail />
+                </>
+              }
+            />
+          )}
 
         {userInfo?.permissions
           ?.find((p) => p.page.path === '/admin/move-system/:id')
           ?.actions.includes('read') && (
-          <Route
-            path="/admin/move-system/:id"
-            element={
-              <>
-                <PageTitle title="Move System | NoExcuseChallenge" />
-                <MoveSystem />
-              </>
-            }
-          />
-        )}
+            <Route
+              path="/admin/move-system/:id"
+              element={
+                <>
+                  <PageTitle title="Move System | NoExcuseChallenge" />
+                  <MoveSystem />
+                </>
+              }
+            />
+          )}
 
         {userInfo?.permissions
           ?.find((p) => p.page.path === '/admin/wallets')
           ?.actions.includes('read') && (
-          <Route
-            path="/admin/wallets"
-            element={
-              <>
-                <PageTitle title="Setting Wallets | DreamChain" />
-                <SettingWallets />
-              </>
-            }
-          />
-        )}
+            <Route
+              path="/admin/wallets"
+              element={
+                <>
+                  <PageTitle title="Setting Wallets | DreamChain" />
+                  <SettingWallets />
+                </>
+              }
+            />
+          )}
         {userInfo?.permissions
           ?.find((p) => p.page.path === '/admin/users')
           ?.actions.includes('read') && (
-          <Route
-            path="/admin/users"
-            element={
-              <>
-                <PageTitle title="Users | DreamChain" />
-                <AdminUserPages />
-              </>
-            }
-          />
-        )}
+            <Route
+              path="/admin/users"
+              element={
+                <>
+                  <PageTitle title="Users | DreamChain" />
+                  <AdminUserPages />
+                </>
+              }
+            />
+          )}
 
         {userInfo?.permissions
           ?.find((p) => p.page.path === '/admin/system/:id')
           ?.actions.includes('read') && (
-          <Route
-            path="/admin/system/:id"
-            element={
-              <>
-                <PageTitle title="System | DreamChain" />
-                <AdminSystemPage />
-              </>
-            }
-          />
-        )}
+            <Route
+              path="/admin/system/:id"
+              element={
+                <>
+                  <PageTitle title="System | DreamChain" />
+                  <AdminSystemPage />
+                </>
+              }
+            />
+          )}
         {userInfo?.permissions
           ?.find((p) => p.page.path === '/admin/linkVerify')
           ?.actions.includes('read') && (
-          <Route
-            path="/admin/linkVerify"
-            element={
-              <>
-                <PageTitle title="Link verify | DreamChain" />
-                <GetVerifyLinkPage />
-              </>
-            }
-          />
-        )}
+            <Route
+              path="/admin/linkVerify"
+              element={
+                <>
+                  <PageTitle title="Link verify | DreamChain" />
+                  <GetVerifyLinkPage />
+                </>
+              }
+            />
+          )}
         {userInfo?.permissions
           ?.find((p) => p.page.path === '/admin/withdraw')
           ?.actions.includes('read') && (
-          <Route
-            path="/admin/withdraw"
-            element={
-              <>
-                <PageTitle title="Withdraw request | DreamChain" />
-                <AdminWithdrawPages />
-              </>
-            }
-          />
-        )}
+            <Route
+              path="/admin/withdraw"
+              element={
+                <>
+                  <PageTitle title="Withdraw request | DreamChain" />
+                  <AdminWithdrawPages />
+                </>
+              }
+            />
+          )}
         {userInfo?.permissions
           ?.find((p) => p.page.path === '/admin/withdraw')
           ?.actions.includes('export') && (
-          <Route
-            path="/admin/withdraw/export"
-            element={
-              <>
-                <PageTitle title="Admin Export Withdraw | DreamChain" />
-                <ExportWithdrawPage />
-              </>
-            }
-          />
-        )}
+            <Route
+              path="/admin/withdraw/export"
+              element={
+                <>
+                  <PageTitle title="Admin Export Withdraw | DreamChain" />
+                  <ExportWithdrawPage />
+                </>
+              }
+            />
+          )}
         {userInfo?.permissions
           ?.find((p) => p.page.path === '/admin/news')
           ?.actions.includes('read') && (
-          <Route
-            path="/admin/news"
-            element={
-              <>
-                <PageTitle title="News | DreamChain" />
-                <AdminNewsPage />
-              </>
-            }
-          />
-        )}
+            <Route
+              path="/admin/news"
+              element={
+                <>
+                  <PageTitle title="News | DreamChain" />
+                  <AdminNewsPage />
+                </>
+              }
+            />
+          )}
         {userInfo?.permissions
           ?.find((p) => p.page.path === '/admin/claims')
           ?.actions.includes('read') && (
-          <Route
-            path="/admin/claims"
-            element={
-              <>
-                <PageTitle title="Claims | DreamChain" />
-                <AdminClaimsPage />
-              </>
-            }
-          />
-        )}
+            <Route
+              path="/admin/claims"
+              element={
+                <>
+                  <PageTitle title="Claims | DreamChain" />
+                  <AdminClaimsPage />
+                </>
+              }
+            />
+          )}
         {userInfo?.permissions
           ?.find((p) => p.page.path === '/admin/claims')
           ?.actions.includes('export') && (
-          <Route
-            path="/admin/claims/export"
-            element={
-              <>
-                <PageTitle title="Export Claims | DreamChain" />
-                <AdminExportClaimsPage />
-              </>
-            }
-          />
-        )}
+            <Route
+              path="/admin/claims/export"
+              element={
+                <>
+                  <PageTitle title="Export Claims | DreamChain" />
+                  <AdminExportClaimsPage />
+                </>
+              }
+            />
+          )}
         {userInfo?.permissions
           ?.find((p) => p.page.path === '/admin/news/create')
           ?.actions.includes('read') && (
-          <Route
-            path="/admin/news/create"
-            element={
-              <>
-                <PageTitle title="Create News | DreamChain" />
-                <AdminCreateNewsPage />
-              </>
-            }
-          />
-        )}
+            <Route
+              path="/admin/news/create"
+              element={
+                <>
+                  <PageTitle title="Create News | DreamChain" />
+                  <AdminCreateNewsPage />
+                </>
+              }
+            />
+          )}
 
         {userInfo?.permissions
           ?.find((p) => p.page.path === '/admin/news/edit')
           ?.actions.includes('read') && (
-          <Route
-            path="/admin/news/edit"
-            element={
-              <>
-                <PageTitle title="Edit News | DreamChain" />
-                <AdminEditNewsPage />
-              </>
-            }
-          />
-        )}
+            <Route
+              path="/admin/news/edit"
+              element={
+                <>
+                  <PageTitle title="Edit News | DreamChain" />
+                  <AdminEditNewsPage />
+                </>
+              }
+            />
+          )}
 
         {userInfo?.permissions
           ?.find((p) => p.page.path === '/admin/dreampool')
           ?.actions.includes('read') && (
-          <Route
-            path="/admin/dreampool"
-            element={
-              <>
-                <PageTitle title="DreamPool | DreamChain" />
-                <DreamPoolPage />
-              </>
-            }
-          />
-        )}
+            <Route
+              path="/admin/dreampool"
+              element={
+                <>
+                  <PageTitle title="DreamPool | DreamChain" />
+                  <DreamPoolPage />
+                </>
+              }
+            />
+          )}
         {userInfo?.permissions
           ?.find((p) => p.page.path === '/admin/dreampool')
           ?.actions.includes('export') && (
-          <Route
-            path="/admin/dreampool/export"
-            element={
-              <>
-                <PageTitle title="Export DreamPool | DreamChain" />
-                <ExportDreampoolPage />
-              </>
-            }
-          />
-        )}
+            <Route
+              path="/admin/dreampool/export"
+              element={
+                <>
+                  <PageTitle title="Export DreamPool | DreamChain" />
+                  <ExportDreampoolPage />
+                </>
+              }
+            />
+          )}
         {userInfo?.permissions
           ?.find((p) => p.page.path === '/admin/permissions')
           ?.actions.includes('read') && (
-          <Route
-            path="/admin/permissions"
-            element={
-              <>
-                <PageTitle title="Permissions | DreamChain" />
-                <PermissionsPage />
-              </>
-            }
-          />
-        )}
+            <Route
+              path="/admin/permissions"
+              element={
+                <>
+                  <PageTitle title="Permissions | DreamChain" />
+                  <PermissionsPage />
+                </>
+              }
+            />
+          )}
         {userInfo?.permissions
           ?.find((p) => p.page.path === '/admin/permissions/:id')
           ?.actions.includes('read') && (
-          <Route
-            path="/admin/permissions/:id"
-            element={
-              <>
-                <PageTitle title="Permissions Details | DreamChain" />
-                <PermissionsDetailsPage />
-              </>
-            }
-          />
-        )}
+            <Route
+              path="/admin/permissions/:id"
+              element={
+                <>
+                  <PageTitle title="Permissions Details | DreamChain" />
+                  <PermissionsDetailsPage />
+                </>
+              }
+            />
+          )}
         {userInfo?.permissions
           ?.find((p) => p.page.path === '/admin/permissions/create')
           ?.actions.includes('read') && (
-          <Route
-            path="/admin/permissions/create"
-            element={
-              <>
-                <PageTitle title="Create New Permissions | DreamChain" />
-                <PermissionsCreatePage />
-              </>
-            }
-          />
-        )}
+            <Route
+              path="/admin/permissions/create"
+              element={
+                <>
+                  <PageTitle title="Create New Permissions | DreamChain" />
+                  <PermissionsCreatePage />
+                </>
+              }
+            />
+          )}
         {userInfo?.permissions
           ?.find((p) => p.page.path === '/admin/admin')
           ?.actions.includes('read') && (
-          <Route
-            path="/admin/admin"
-            element={
-              <>
-                <PageTitle title="Admin | DreamChain" />
-                <AdminPage />
-              </>
-            }
-          />
-        )}
+            <Route
+              path="/admin/admin"
+              element={
+                <>
+                  <PageTitle title="Admin | DreamChain" />
+                  <AdminPage />
+                </>
+              }
+            />
+          )}
         {userInfo?.permissions
           ?.find((p) => p.page.path === '/admin/create-admin')
           ?.actions.includes('read') && (
-          <Route
-            path="/admin/create-admin"
-            element={
-              <>
-                <PageTitle title="Create new Admin | DreamChain" />
-                <AdminCreatePage />
-              </>
-            }
-          />
-        )}
+            <Route
+              path="/admin/create-admin"
+              element={
+                <>
+                  <PageTitle title="Create new Admin | DreamChain" />
+                  <AdminCreatePage />
+                </>
+              }
+            />
+          )}
         {userInfo?.permissions
           ?.find((p) => p.page.path === '/admin/admin/:id')
           ?.actions.includes('read') && (
-          <Route
-            path="/admin/admin/:id"
-            element={
-              <>
-                <PageTitle title="Admin Detail | DreamChain" />
-                <AdminDetailPage />
-              </>
-            }
-          />
-        )}
+            <Route
+              path="/admin/admin/:id"
+              element={
+                <>
+                  <PageTitle title="Admin Detail | DreamChain" />
+                  <AdminDetailPage />
+                </>
+              }
+            />
+          )}
         {userInfo?.permissions
           ?.find((p) => p.page.path === '/admin/users')
           ?.actions.includes('export') && (
-          <Route
-            path="/admin/user/export"
-            element={
-              <>
-                <PageTitle title="Admin Export User | DreamChain" />
-                <ExportUsersPage />
-              </>
-            }
-          />
-        )}
+            <Route
+              path="/admin/user/export"
+              element={
+                <>
+                  <PageTitle title="Admin Export User | DreamChain" />
+                  <ExportUsersPage />
+                </>
+              }
+            />
+          )}
         {userInfo?.permissions
           ?.find((p) => p.page.path === '/admin/users')
           ?.actions.includes('create') && (
-          <Route
-            path="/admin/users/create"
-            element={
-              <>
-                <PageTitle title="Admin Create User | DreamChain" />
-                <CreateUserPage />
-              </>
-            }
-          />
-        )}
+            <Route
+              path="/admin/users/create"
+              element={
+                <>
+                  <PageTitle title="Admin Create User | DreamChain" />
+                  <CreateUserPage />
+                </>
+              }
+            />
+          )}
         {userInfo?.permissions
           ?.find((p) => p.page.path === '/admin/cronjob')
           ?.actions.includes('read') && (
-          <Route
-            path="/admin/cronjob"
-            element={
-              <>
-                <PageTitle title="Cronjob | DreamChain" />
-                <AdminCronjobPage />
-              </>
-            }
-          />
-        )}
+            <Route
+              path="/admin/cronjob"
+              element={
+                <>
+                  <PageTitle title="Cronjob | DreamChain" />
+                  <AdminCronjobPage />
+                </>
+              }
+            />
+          )}
         {userInfo?.permissions
           ?.find((p) => p.page.path === '/admin/double-kyc')
           ?.actions.includes('read') && (
-          <Route
-            path="/admin/double-kyc"
-            element={
-              <>
-                <PageTitle title="Double KYC | DreamChain" />
-                <AdminDoubleKycPage />
-              </>
-            }
-          />
-        )}
+            <Route
+              path="/admin/double-kyc"
+              element={
+                <>
+                  <PageTitle title="Double KYC | DreamChain" />
+                  <AdminDoubleKycPage />
+                </>
+              }
+            />
+          )}
         {userInfo?.permissions
           ?.find((p) => p.page.path === '/admin/config')
           ?.actions.includes('read') && (
-          <Route
-            path="/admin/config"
-            element={
-              <>
-                <PageTitle title="Config | DreamChain" />
-                <AdminConfigPage />
-              </>
-            }
-          />
-        )}
+            <Route
+              path="/admin/config"
+              element={
+                <>
+                  <PageTitle title="Config | DreamChain" />
+                  <AdminConfigPage />
+                </>
+              }
+            />
+          )}
         {userInfo?.permissions
           ?.find((p) => p.page.path === '/admin/user-history')
           ?.actions.includes('read') && (
-          <Route
-            path="/admin/user-history"
-            element={
-              <>
-                <PageTitle title="User History | DreamChain" />
-                <UserHistoryPage />
-              </>
-            }
-          />
-        )}
+            <Route
+              path="/admin/user-history"
+              element={
+                <>
+                  <PageTitle title="User History | DreamChain" />
+                  <UserHistoryPage />
+                </>
+              }
+            />
+          )}
 
         {userInfo?.permissions
           ?.find((p) => p.page.path === '/admin/user/tier2')
           ?.actions.includes('read') && (
-          <Route
-            path="/admin/user/tier2"
-            element={
-              <>
-                <PageTitle title="Users Tier2 | DreamChain" />
-                <UsersTier2 />
-              </>
-            }
-          />
-        )}
+            <Route
+              path="/admin/user/tier2"
+              element={
+                <>
+                  <PageTitle title="Users Tier2 | DreamChain" />
+                  <UsersTier2 />
+                </>
+              }
+            />
+          )}
 
         {userInfo?.permissions
           ?.find((p) => p.page.path === '/admin/wallet-connect-list')
           ?.actions.includes('read') && (
-          <Route
-            path="/admin/wallet-connect-list"
-            element={
-              <>
-                <PageTitle title="Wallet Connect List | NoExcuseChallenge" />
-                <AdminWalletConnectHistoryPages />
-              </>
-            }
-          />
-        )}
+            <Route
+              path="/admin/wallet-connect-list"
+              element={
+                <>
+                  <PageTitle title="Wallet Connect List | NoExcuseChallenge" />
+                  <AdminWalletConnectHistoryPages />
+                </>
+              }
+            />
+          )}
       </Route>
       <Route element={<PrivateRoute />}>
         <Route

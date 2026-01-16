@@ -1,6 +1,7 @@
 import API from "./API";
 import {
   URL_API_AUTH_LOGIN,
+  URL_API_AUTH_ADMIN_LOGIN,
   URL_API_AUTH_REGISTER,
   URL_API_AUTH_REF,
   URL_API_AUTH_CONFIRM,
@@ -16,6 +17,9 @@ const Auth = {
   },
   login: (body) => {
     return API.post(URL_API_AUTH_LOGIN, body);
+  },
+  adminLogin: (body) => {
+    return API.post(URL_API_AUTH_ADMIN_LOGIN, body);
   },
   register: (body) => {
     return API.post(URL_API_AUTH_REGISTER, body);

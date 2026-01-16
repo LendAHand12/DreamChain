@@ -21,13 +21,32 @@ const protectRoute = asyncHandler(async (req, res, next) => {
         process.env.JWT_ACCESS_TOKEN_SECRET
       );
 
-      // fetch that user from db, but not get the user's password and set this fetched user to the req.user
+      // Try to find as User first, then as Admin
       req.user = await User.findById(decodedToken.id).select("-password");
+      if (!req.user) {
+        // If not found as User, try Admin
+        req.admin = await Admin.findById(decodedToken.id).select("-password -googleAuthenticatorSecret");
+        if (!req.admin || !req.admin.isActive) {
+          res.status(401);
+          throw new Error("Not authorised. User/Admin not found or inactive");
+        }
+        // Set user object for compatibility with existing code
+        req.user = {
+          _id: req.admin._id,
+          email: req.admin.email,
+          isAdmin: true,
+          role: req.admin.role || "admin", // Use actual role from Admin model
+          isRootAdmin: req.admin.isRootAdmin,
+        };
+      }
       next();
     } catch (error) {
       res.status(401);
       throw new Error("Not authorised. Token failed");
     }
+  } else {
+    res.status(401);
+    throw new Error("Not authorised. No token provided");
   }
 });
 

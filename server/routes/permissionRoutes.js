@@ -10,17 +10,18 @@ import {
   isAdmin,
   protectRoute,
 } from "../middleware/authMiddleware.js";
+import { protectAdminRoute } from "../controllers/adminControllers.js";
 
 const router = express.Router();
 
 router
   .route("/")
-  .get(protectRoute, getAllPermissions)
-  .post(protectRoute, createPermission);
+  .get(protectAdminRoute, getAllPermissions)
+  .post(protectAdminRoute, createPermission);
 
 router
   .route("/:id")
-  .get(protectRoute, getPermissionsById)
-  .put(protectRoute, updatePermission);
+  .get(protectAdminRoute, getPermissionsById)
+  .put(protectAdminRoute, updatePermission);
 
 export default router;

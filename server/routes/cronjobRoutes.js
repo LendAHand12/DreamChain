@@ -3,9 +3,10 @@ import {
   runCronjob
 } from "../controllers/cronjobControllers.js";
 import { isAdmin, protectRoute } from "../middleware/authMiddleware.js";
+import { protectAdminRoute } from "../controllers/adminControllers.js";
 
 const router = express.Router();
 
-router.route("/run").post(protectRoute, isAdmin, runCronjob);
+router.route("/run").post(protectAdminRoute, isAdmin, runCronjob);
 
 export default router;

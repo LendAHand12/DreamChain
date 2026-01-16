@@ -494,7 +494,7 @@ const UserProfile = () => {
 
           <form onSubmit={handleSubmit(onSubmit)} className="md:flex no-wrap">
             <div className="w-full lg:w-3/12 lg:mx-2 mb-4 lg:mb-0">
-              <div className="bg-white shadow-md p-3 border-t-4 border-NoExcuseChallenge">
+              <div className="bg-white shadow-md p-3 border-t-4 border-DreamChain">
                 <ul className=" text-gray-600 py-2 px-3 mt-3 divide-y rounded">
                   <li className="flex items-center py-3">
                     <span>{t('status')}</span>
@@ -512,21 +512,20 @@ const UserProfile = () => {
                         </select>
                       ) : (
                         <span
-                          className={`${
-                            data.status === 'UNVERIFY'
-                              ? 'bg-red-600'
-                              : data.status === 'PENDING'
+                          className={`${data.status === 'UNVERIFY'
+                            ? 'bg-red-600'
+                            : data.status === 'PENDING'
                               ? 'bg-yellow-600'
                               : data.status === 'APPROVED'
-                              ? 'bg-green-600'
-                              : data.status === 'REJECTED'
-                              ? 'bg-red-600'
-                              : data.status === 'LOCKED'
-                              ? 'bg-red-600'
-                              : data.status === 'DELETED'
-                              ? 'bg-red-600'
-                              : ''
-                          }  py-1 px-2 rounded text-white text-sm`}
+                                ? 'bg-green-600'
+                                : data.status === 'REJECTED'
+                                  ? 'bg-red-600'
+                                  : data.status === 'LOCKED'
+                                    ? 'bg-red-600'
+                                    : data.status === 'DELETED'
+                                      ? 'bg-red-600'
+                                      : ''
+                            }  py-1 px-2 rounded text-white text-sm`}
                         >
                           {t(data.status)}
                         </span>
@@ -754,7 +753,7 @@ const UserProfile = () => {
                   )}
                 </ul>
               </div>
-              <div className="mt-10 bg-white shadow-md p-3 border-t-4 border-NoExcuseChallenge">
+              <div className="mt-10 bg-white shadow-md p-3 border-t-4 border-DreamChain">
                 <p className="uppercase mt-2 font-bold">{t('children')}</p>
                 <div className="py-2">
                   <ul>
@@ -766,17 +765,16 @@ const UserProfile = () => {
                         <div className="py-2">
                           <div className="text-base">
                             <span
-                              className={`${
-                                ele.isRed
-                                  ? 'bg-[#b91c1c]'
-                                  : ele.isBlue
+                              className={`${ele.isRed
+                                ? 'bg-[#b91c1c]'
+                                : ele.isBlue
                                   ? 'bg-[#0000ff]'
                                   : ele.isYellow
-                                  ? 'bg-[#F4B400]'
-                                  : ele.isPink
-                                  ? 'bg-[#e600769c]'
-                                  : 'bg-[#16a34a]'
-                              } py-1 px-2 rounded text-white text-sm`}
+                                    ? 'bg-[#F4B400]'
+                                    : ele.isPink
+                                      ? 'bg-[#e600769c]'
+                                      : 'bg-[#16a34a]'
+                                } py-1 px-2 rounded text-white text-sm`}
                             >
                               {ele.userId}
                             </span>
@@ -788,7 +786,7 @@ const UserProfile = () => {
                 </div>
               </div>
               {data.tier === 2 && (
-                <div className="mt-10 bg-white shadow-md p-3 border-t-4 border-NoExcuseChallenge">
+                <div className="mt-10 bg-white shadow-md p-3 border-t-4 border-DreamChain">
                   <p className="uppercase mt-2 font-bold">{t('ACTIVE ID')}</p>
                   <div className="lg:py-2">
                     <ul className="flex flex-col list-disc">
@@ -842,7 +840,7 @@ const UserProfile = () => {
                   </div>
                 </div>
               )}
-              <div className="mt-10 bg-white shadow-md p-3 border-t-4 border-NoExcuseChallenge">
+              <div className="mt-10 bg-white shadow-md p-3 border-t-4 border-DreamChain">
                 <p className="uppercase mt-2 font-bold">{t('refUserName')}</p>
                 <div className="py-2">
                   <ul>
@@ -860,7 +858,7 @@ const UserProfile = () => {
                   </ul>
                 </div>
               </div>
-              <div className="mt-10 bg-white shadow-md p-3 border-t-4 border-NoExcuseChallenge">
+              <div className="mt-10 bg-white shadow-md p-3 border-t-4 border-DreamChain">
                 <p className="uppercase mt-2 font-bold">{t('oldParent')}</p>
                 {data.listOldParent.length > 0 && (
                   <div className="py-2">
@@ -879,7 +877,7 @@ const UserProfile = () => {
                 )}
               </div>
               {data.tier === 2 && (
-                <div className="mt-10 bg-white shadow-md p-3 border-t-4 border-NoExcuseChallenge">
+                <div className="mt-10 bg-white shadow-md p-3 border-t-4 border-DreamChain">
                   <div className="py-2 px-4">
                     <div className="lg:py-2">
                       <ul className="flex flex-col list-disc gap-2">
@@ -997,7 +995,7 @@ const UserProfile = () => {
               </div> */}
             </div>
             <div className="w-full lg:w-2/3 lg:mx-2">
-              <div className="bg-white p-6 shadow-md rounded-sm border-t-4 border-NoExcuseChallenge">
+              <div className="bg-white p-6 shadow-md rounded-sm border-t-4 border-DreamChain">
                 <div className="text-gray-700">
                   <div className="grid grid-cols-1 text-sm">
                     <div className="grid lg:grid-cols-2 grid-cols-1">
@@ -1362,9 +1360,8 @@ const UserProfile = () => {
                         <div className="flex flex-col items-center justify-center w-full">
                           {data.facetecTid !== '' && (
                             <img
-                              src={`${
-                                import.meta.env.VITE_FACETEC_URL
-                              }/api/liveness/image?tid=${data.facetecTid}`}
+                              src={`${import.meta.env.VITE_FACETEC_URL
+                                }/api/liveness/image?tid=${data.facetecTid}`}
                               className="w-full h-full rounded-md object-cover"
                               alt="FaceTec image"
                             />
@@ -1380,17 +1377,13 @@ const UserProfile = () => {
                             <a
                               target="_blank"
                               className="text-blue-500"
-                              href={`${
-                                import.meta.env.VITE_FACETEC_DASHBOARD_URL
-                              }/session-details?path=%2Fenrollment-3d&externalDatabaseRefID=ID_${
-                                data.id
-                              }`}
+                              href={`${import.meta.env.VITE_FACETEC_DASHBOARD_URL
+                                }/session-details?path=%2Fenrollment-3d&externalDatabaseRefID=ID_${data.id
+                                }`}
                             >
-                              {`${
-                                import.meta.env.VITE_FACETEC_DASHBOARD_URL
-                              }/session-details?path=%2Fenrollment-3d&externalDatabaseRefID=ID_${
-                                data.id
-                              }`}
+                              {`${import.meta.env.VITE_FACETEC_DASHBOARD_URL
+                                }/session-details?path=%2Fenrollment-3d&externalDatabaseRefID=ID_${data.id
+                                }`}
                             </a>
                           )}
                         </div>

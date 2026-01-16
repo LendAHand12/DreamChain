@@ -8,6 +8,7 @@ import {
 } from "../controllers/postControllers.js";
 import { isAdmin, protectRoute } from "../middleware/authMiddleware.js";
 import uploadLocal from "../middleware/uploadLocal.js";
+import { protectAdminRoute } from "../controllers/adminControllers.js";
 
 const router = express.Router();
 
@@ -20,7 +21,7 @@ router
       ,
       { name: "file_en", maxCount: 1 },
     ]),
-    protectRoute,
+    protectAdminRoute,
     isAdmin,
     createPosts
   );
@@ -34,10 +35,10 @@ router
       ,
       { name: "file_en", maxCount: 1 },
     ]),
-    protectRoute,
+    protectAdminRoute,
     isAdmin,
     updatePosts
   )
-  .delete(protectRoute, isAdmin, deletePostById);
+  .delete(protectAdminRoute, isAdmin, deletePostById);
 
 export default router;

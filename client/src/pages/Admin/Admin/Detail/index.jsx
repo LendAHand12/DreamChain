@@ -39,11 +39,10 @@ const AdminProfile = () => {
         .then((response) => {
           setLoading(false);
           setData(response.data.admin);
-          const { userId, email, role } =
-            response.data.admin;
-          setValue("userId", userId);
+          const { email, role, isRootAdmin } = response.data.admin;
           setValue("email", email);
           setValue("role", role);
+          setValue("isRootAdmin", isRootAdmin);
         })
         .catch((error) => {
           let message =
@@ -75,14 +74,14 @@ const AdminProfile = () => {
   const onSubmit = useCallback(
     async (values) => {
       const body = {};
-      if (values.userId !== data.userId) {
-        body.userId = values.userId;
-      }
       if (values.email !== data.email) {
         body.email = values.email;
       }
       if (values.role !== data.role) {
         body.role = values.role;
+      }
+      if (values.isRootAdmin !== data.isRootAdmin) {
+        body.isRootAdmin = values.isRootAdmin;
       }
       if (values.password) {
         body.password = values.password;
@@ -216,30 +215,9 @@ const AdminProfile = () => {
             className="md:flex no-wrap md:-mx-2 "
           >
             <div className="w-full">
-              <div className="bg-white py-6 border-t-4 border-NoExcuseChallenge">
+              <div className="bg-white py-6 border-t-4 border-DreamChain">
                 <div className="text-gray-700">
                   <div className="grid grid-cols-1 text-sm">
-                    <div className="grid lg:grid-cols-2 grid-cols-1">
-                      <div className="px-4 py-2 font-semibold">
-                        {t("user name")}
-                      </div>
-                      {isEditting ? (
-                        <div className="px-4">
-                          <input
-                            className="w-full px-4 py-1.5 rounded-md border border-gray-200 placeholder-gray-500 text-sm focus:outline-none focus:border-gray-400 focus:bg-white"
-                            {...register("userId", {
-                              required: t("User ID is required"),
-                            })}
-                            autoComplete="off"
-                          />
-                          <p className="error-message-text">
-                            {errors.userId?.message}
-                          </p>
-                        </div>
-                      ) : (
-                        <div className="px-4 py-2">{data.userId}</div>
-                      )}
-                    </div>
                     <div className="grid lg:grid-cols-2 grid-cols-1">
                       <div className="px-4 py-2 font-semibold">Email</div>
                       {isEditting ? (
@@ -281,7 +259,40 @@ const AdminProfile = () => {
                           </p>
                         </div>
                       ) : (
-                        <div className="px-4 py-2 break-words">{data.role}</div>
+                        <div className="px-4 py-2">
+                          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                            {data.role || "admin"}
+                          </span>
+                        </div>
+                      )}
+                    </div>
+                    <div className="grid lg:grid-cols-2 grid-cols-1">
+                      <div className="px-4 py-2 font-semibold">
+                        {t("Root Admin")}
+                      </div>
+                      {isEditting ? (
+                        <div className="px-4 flex items-center">
+                          <input
+                            type="checkbox"
+                            className="w-4 h-4 text-DreamChain bg-gray-100 border-gray-300 rounded focus:ring-DreamChain focus:ring-2"
+                            {...register("isRootAdmin")}
+                          />
+                          <span className="ml-2 text-sm text-gray-600">
+                            {t("Grant root admin privileges")}
+                          </span>
+                        </div>
+                      ) : (
+                        <div className="px-4 py-2">
+                          {data.isRootAdmin ? (
+                            <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800">
+                              {t("Yes")}
+                            </span>
+                          ) : (
+                            <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
+                              {t("No")}
+                            </span>
+                          )}
+                        </div>
                       )}
                     </div>
                     {isEditting && (
@@ -331,7 +342,7 @@ const AdminProfile = () => {
                   </>
                 )}
                 {userInfo?.permissions
-                  .find((p) => p.page.pageName === "admin-admin-detail")
+                  .find((p) => p.page.path === "/admin/admin/:id")
                   ?.actions.includes("update") &&
                   !isEditting &&
                   data.status !== "UNVERIFY" &&
@@ -345,7 +356,7 @@ const AdminProfile = () => {
                     </button>
                   )}
                 {userInfo?.permissions
-                  .find((p) => p.page.pageName === "admin-users-details")
+                  .find((p) => p.page.path === "/admin/users/:id")
                   ?.actions.includes("delete") &&
                   !isEditting &&
                   data.status !== "DELETED" && (

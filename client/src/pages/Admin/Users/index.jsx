@@ -627,7 +627,7 @@ const AdminUserPages = () => {
                         ele.status === 'PENDING' && (
                           <button
                             onClick={() => handleApprove(ele._id)}
-                            className="font-medium text-gray-500 hover:text-NoExcuseChallenge"
+                            className="font-medium text-gray-500 hover:text-DreamChain"
                           >
                             <svg
                               fill="currentColor"
@@ -660,7 +660,7 @@ const AdminUserPages = () => {
                           ?.actions.includes('read') && (
                           <button
                             onClick={() => handleDetail(ele._id)}
-                            className="font-medium text-gray-500 hover:text-NoExcuseChallenge"
+                            className="font-medium text-gray-500 hover:text-DreamChain"
                           >
                             <svg
                               fill="currentColor"
@@ -679,7 +679,7 @@ const AdminUserPages = () => {
                           ?.actions.includes('read') && (
                           <button
                             onClick={() => handleTree(ele._id)}
-                            className="font-medium text-gray-500 hover:text-NoExcuseChallenge"
+                            className="font-medium text-gray-500 hover:text-DreamChain"
                           >
                             <svg
                               className="w-6 h-auto"
@@ -731,7 +731,7 @@ const AdminUserPages = () => {
                           ?.actions.includes('read') && (
                           <button
                             onClick={() => handleMoveSystem(ele._id)}
-                            className="font-medium text-gray-500 hover:text-NoExcuseChallenge"
+                            className="font-medium text-gray-500 hover:text-DreamChain"
                           >
                             <svg
                               width="24"
@@ -785,7 +785,7 @@ const AdminUserPages = () => {
                         ele.status !== 'DELETED' && (
                           <button
                             onClick={() => handleDelete(ele._id)}
-                            className="font-medium text-gray-500 hover:text-NoExcuseChallenge"
+                            className="font-medium text-gray-500 hover:text-DreamChain"
                           >
                             <svg
                               fill="currentColor"

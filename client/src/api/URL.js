@@ -1,4 +1,5 @@
 export const URL_API_AUTH_LOGIN = '/api/auth/login';
+export const URL_API_AUTH_ADMIN_LOGIN = '/api/auth/admin-login';
 export const URL_API_AUTH_REGISTER = '/api/auth/register';
 export const URL_API_AUTH_REF = '/api/auth/ref';
 export const URL_API_AUTH_CONFIRM = '/api/auth/confirm';
@@ -28,3 +29,4 @@ export const URL_API_KYC = '/api/kyc';
 export const URL_API_CONFIG = '/api/config';
 export const URL_API_USER_HISTORY = '/api/user-history';
 export const URL_API_MOVE_SYSTEM = '/api/move-system';
+export const URL_API_ADMIN = '/api/admin';

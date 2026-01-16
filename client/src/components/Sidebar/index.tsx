@@ -70,9 +70,8 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen, routes }: SidebarProps) => {
   return (
     <aside
       ref={sidebar}
-      className={`absolute left-0 top-0 z-1 lg:z-0 flex h-full w-96 flex-col overflow-y-auto bg-black duration-300 ease-linear lg:static lg:translate-x-0 ${
-        sidebarOpen ? 'translate-x-0' : '-translate-x-full'
-      }`}
+      className={`absolute left-0 top-0 z-1 lg:z-0 flex h-full w-96 flex-col overflow-y-auto bg-black duration-300 ease-linear lg:static lg:translate-x-0 ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'
+        }`}
     >
       {/* <!-- SIDEBAR HEADER --> */}
       <div className="flex items-center justify-between gap-2 px-6 py-4 lg:py-6.5">
@@ -207,10 +206,9 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen, routes }: SidebarProps) => {
                 <li key={route.title} className="text-white">
                   <NavLink
                     to={route.link}
-                    className={`group relative flex items-center rounded-s-2xl gap-8 py-3 pl-6 font-medium duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 ${
-                      pathname.includes(route.link) &&
+                    className={`group relative flex items-center rounded-s-2xl gap-8 py-3 pl-6 font-medium duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 ${pathname.includes(route.link) &&
                       'bg-graydark text-DreamChain'
-                    }`}
+                      }`}
                   >
                     {route.icon}
                     {t(route.title)}
@@ -330,7 +328,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen, routes }: SidebarProps) => {
                 <li className="w-full lg:hidden py-3 px-6 lg:pr-16">
                   <Link
                     to="/signin"
-                    className="rounded-lg shadow-NoExcuseChallenge text-center bg-DreamChain px-4 py-3 shadow-1 font-medium text-sm block"
+                    className="rounded-lg shadow-DreamChain text-center bg-DreamChain px-4 py-3 shadow-1 font-medium text-sm block"
                   >
                     Sign in
                   </Link>
@@ -359,9 +357,8 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen, routes }: SidebarProps) => {
               </span> */}
               <span
                 onClick={() => onChangeLanguage('en')}
-                className={`${
-                  i18n.language === 'en' ? 'text-DreamChain' : ''
-                } cursor-pointer`}
+                className={`${i18n.language === 'en' ? 'text-DreamChain' : ''
+                  } cursor-pointer`}
               >
                 Eng
               </span>
