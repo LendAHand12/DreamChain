@@ -16,8 +16,8 @@ const createRootAdmin = async () => {
 
     // Create root admin
     const rootAdmin = await Admin.create({
-      email: "admin1@gmail.com",
-      password: "Pierre@@1968", // Will be hashed by pre-save hook
+      email: "ameritec@gmail.com",
+      password: "Ameritec@2026@@@@@", // Will be hashed by pre-save hook
       isRootAdmin: true,
       firstLoginCompleted: false,
       faceRegistered: false,
