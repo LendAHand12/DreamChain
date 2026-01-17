@@ -26,7 +26,7 @@ const DefaultLayout: React.FC<{ children: ReactNode }> = ({ children }) => {
       if (userInfo.role !== 'user') {
         routes = AdminRoutes.filter((route) => {
           let currentRoute = `${route.link}`;
-          let page = permissions.find((ele) => ele.page?.path === currentRoute);
+          let page = permissions?.find((ele) => ele.page?.path === currentRoute);
           if (page && page.actions.includes('read')) {
             return route;
           }
@@ -36,8 +36,8 @@ const DefaultLayout: React.FC<{ children: ReactNode }> = ({ children }) => {
           userInfo.isOld
             ? UserRoutes.filter((route) => route.link === '/user/profile')
             : userInfo.tier === 1
-            ? UserRoutes.filter((route) => route.link !== '/user/tier2')
-            : UserRoutes;
+              ? UserRoutes.filter((route) => route.link !== '/user/tier2')
+              : UserRoutes;
       }
     } catch (err) {
       // handleLogout();
