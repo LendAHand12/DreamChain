@@ -104,7 +104,7 @@ const AdminTransactionsPage = () => {
 
   const handleRowClick = (id) => {
     userInfo?.permissions
-      .find((p) => p.page.pageName === 'admin-transactions-details')
+      .find((p) => p.page.path === '/admin/transactions/:id')
       ?.actions.includes('read') && navigate(`/admin/transactions/${id}`);
   };
 
@@ -140,11 +140,10 @@ const AdminTransactionsPage = () => {
             <button
               key={i}
               onClick={() => handleChangeTier(i + 1)}
-              className={`flex justify-center items-center hover:underline font-medium ${
-                parseInt(objectFilter.tier) === i + 1
-                  ? 'bg-black text-DreamChain'
-                  : ''
-              } rounded-full py-4 px-8 border focus:outline-none focus:shadow-outline transform transition hover:scale-105 duration-300 ease-in-out`}
+              className={`flex justify-center items-center hover:underline font-medium ${parseInt(objectFilter.tier) === i + 1
+                ? 'bg-black text-DreamChain'
+                : ''
+                } rounded-full py-4 px-8 border focus:outline-none focus:shadow-outline transform transition hover:scale-105 duration-300 ease-in-out`}
             >
               {t('tier')} {i + 1}
             </button>
@@ -225,24 +224,24 @@ const AdminTransactionsPage = () => {
             {userInfo?.permissions
               ?.find((p) => p.page.path === '/admin/transactions')
               ?.actions.includes('export') && (
-              <div>
-                <button
-                  onClick={handleExportTrans}
-                  className="flex items-center gap-2 px-6 py-2 bg-green-600 text-white text-sm rounded-md hover:opacity-70"
-                >
-                  <svg
-                    fill="currentColor"
-                    width="16"
-                    height="16"
-                    viewBox="0 0 24 24"
-                    xmlns="http://www.w3.org/2000/svg"
+                <div>
+                  <button
+                    onClick={handleExportTrans}
+                    className="flex items-center gap-2 px-6 py-2 bg-green-600 text-white text-sm rounded-md hover:opacity-70"
                   >
-                    <path d="M8.71,7.71,11,5.41V15a1,1,0,0,0,2,0V5.41l2.29,2.3a1,1,0,0,0,1.42,0,1,1,0,0,0,0-1.42l-4-4a1,1,0,0,0-.33-.21,1,1,0,0,0-.76,0,1,1,0,0,0-.33.21l-4,4A1,1,0,1,0,8.71,7.71ZM21,14a1,1,0,0,0-1,1v4a1,1,0,0,1-1,1H5a1,1,0,0,1-1-1V15a1,1,0,0,0-2,0v4a3,3,0,0,0,3,3H19a3,3,0,0,0,3-3V15A1,1,0,0,0,21,14Z" />
-                  </svg>
-                  Export Data
-                </button>
-              </div>
-            )}
+                    <svg
+                      fill="currentColor"
+                      width="16"
+                      height="16"
+                      viewBox="0 0 24 24"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path d="M8.71,7.71,11,5.41V15a1,1,0,0,0,2,0V5.41l2.29,2.3a1,1,0,0,0,1.42,0,1,1,0,0,0,0-1.42l-4-4a1,1,0,0,0-.33-.21,1,1,0,0,0-.76,0,1,1,0,0,0-.33.21l-4,4A1,1,0,1,0,8.71,7.71ZM21,14a1,1,0,0,0-1,1v4a1,1,0,0,1-1,1H5a1,1,0,0,1-1-1V15a1,1,0,0,0-2,0v4a3,3,0,0,0,3,3H19a3,3,0,0,0,3-3V15A1,1,0,0,0,21,14Z" />
+                    </svg>
+                    Export Data
+                  </button>
+                </div>
+              )}
           </div>
           <table className="w-full text-sm text-left text-gray-500">
             <thead className="text-xs text-gray-700 uppercase bg-gray-50">
@@ -317,13 +316,12 @@ const AdminTransactionsPage = () => {
                                 <div className="text-base flex items-center gap-2 font-semibold">
                                   {ele.userReceiveId}{' '}
                                   <div
-                                    className={`w-4 h-4 rounded-full ${
-                                      ele.isOk && ele.isOk === true
-                                        ? 'bg-green-500'
-                                        : ele.isOk && ele.isOk === false
+                                    className={`w-4 h-4 rounded-full ${ele.isOk && ele.isOk === true
+                                      ? 'bg-green-500'
+                                      : ele.isOk && ele.isOk === false
                                         ? 'bg-red-500'
                                         : ''
-                                    }`}
+                                      }`}
                                   ></div>
                                 </div>
                                 <div className="font-normal text-gray-500">
@@ -351,10 +349,9 @@ const AdminTransactionsPage = () => {
                     <td className="px-6 py-4">{ele.amount} USDT</td>
                     <td className="px-6 py-4">
                       <div
-                        className={`max-w-fit text-white rounded-sm py-1 px-2 text-sm ${
-                          transStatus.find((item) => item.status === ele.type)
-                            .color
-                        } mr-2`}
+                        className={`max-w-fit text-white rounded-sm py-1 px-2 text-sm ${transStatus.find((item) => item.status === ele.type)
+                          .color
+                          } mr-2`}
                       >
                         {t(ele.type)}
                       </div>
@@ -363,9 +360,8 @@ const AdminTransactionsPage = () => {
                     {objectFilter.status === 'HOLD' && (
                       <td className="px-6 py-4">
                         <div
-                          className={`max-w-fit text-white rounded-sm py-1 px-2 text-sm ${
-                            ele.isHoldRefund ? 'bg-green-500' : 'bg-red-500'
-                          } mr-2`}
+                          className={`max-w-fit text-white rounded-sm py-1 px-2 text-sm ${ele.isHoldRefund ? 'bg-green-500' : 'bg-red-500'
+                            } mr-2`}
                         >
                           {ele.isHoldRefund ? t('refunded') : t('not refunded')}
                         </div>

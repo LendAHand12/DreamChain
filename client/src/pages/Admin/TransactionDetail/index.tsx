@@ -132,18 +132,17 @@ const AdminTransactionDetail = () => {
                       <span>{t('transType')}</span>
                       <span className="ml-auto">
                         <span
-                          className={`${
-                            trans.type === 'DIRECTHOLD' ||
+                          className={`${trans.type === 'DIRECTHOLD' ||
                             trans.type === 'REFERRALHOLD'
-                              ? 'bg-yellow-600'
-                              : 'bg-green-600'
-                          } py-1 px-2 rounded text-white text-sm`}
+                            ? 'bg-yellow-600'
+                            : 'bg-green-600'
+                            } py-1 px-2 rounded text-white text-sm`}
                         >
                           {trans.type === 'DIRECTHOLD'
                             ? t('DIRECTHOLD')
                             : trans.type === 'REFERRALHOLD'
-                            ? t('REFERRALHOLD')
-                            : t(trans.type)}
+                              ? t('REFERRALHOLD')
+                              : t(trans.type)}
                         </span>
                       </span>
                     </li>
@@ -152,9 +151,8 @@ const AdminTransactionDetail = () => {
                         <span>{t('refundStatus')}</span>
                         <span className="ml-auto">
                           <span
-                            className={`${
-                              trans.isHoldRefund ? 'bg-green-600' : 'bg-red-500'
-                            } py-1 px-2 rounded text-white text-sm`}
+                            className={`${trans.isHoldRefund ? 'bg-green-600' : 'bg-red-500'
+                              } py-1 px-2 rounded text-white text-sm`}
                           >
                             {trans.isHoldRefund
                               ? t('refunded')
@@ -278,9 +276,9 @@ const AdminTransactionDetail = () => {
                     )}
                   {userInfo?.permissions
                     .find(
-                      (p) => p.page.pageName === 'admin-transactions-details',
+                      (p) => p.page.path === '/admin/transactions/:id',
                     )
-                    ?.actions.includes('refund') &&
+                    ?.actions.includes('update') &&
                     !trans.isHoldRefund &&
                     trans.type.includes('HOLD') &&
                     trans.userReceiveId !== 'Unknow' &&
@@ -295,9 +293,9 @@ const AdminTransactionDetail = () => {
                     )}
                   {userInfo?.permissions
                     .find(
-                      (p) => p.page.pageName === 'admin-transactions-details',
+                      (p) => p.page.path === '/admin/transactions/:id',
                     )
-                    ?.actions.includes('refund') &&
+                    ?.actions.includes('update') &&
                     refunding && (
                       <button
                         onClick={handRefund}
@@ -309,9 +307,9 @@ const AdminTransactionDetail = () => {
                     )}
                   {userInfo?.permissions
                     .find(
-                      (p) => p.page.pageName === 'admin-transactions-details',
+                      (p) => p.page.path === '/admin/transactions/:id',
                     )
-                    ?.actions.includes('refund') &&
+                    ?.actions.includes('update') &&
                     !trans.isHoldRefund && (
                       <button
                         onClick={handRefund}

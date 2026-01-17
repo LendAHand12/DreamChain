@@ -12,6 +12,7 @@ import DefaultLayout from '@/layout/DefaultLayout';
 import Modal from 'react-modal';
 import { shortenWalletAddress } from '@/utils';
 import { useSelector } from 'react-redux';
+import { CheckCircle } from 'lucide-react';
 
 const AdminUserPages = () => {
   const { userInfo } = useSelector((state) => state.auth);
@@ -620,7 +621,7 @@ const AdminUserPages = () => {
                       {userInfo?.permissions
                         ?.find((p) => p.page.path === '/admin/users/:id')
                         ?.actions.includes('update') &&
-                        row.status === 'PENDING' && (
+                        ele.status === 'PENDING' && (
                           <button
                             onClick={() => onApprove(row._id)}
                             className="font-medium text-gray-500 hover:text-green-600 transition-colors"
@@ -705,8 +706,8 @@ const AdminUserPages = () => {
 
                       {ele.status !== 'DELETED' &&
                         userInfo?.permissions
-                          .find((p) => p.page.pageName === 'admin-move-system')
-                          ?.actions.includes('read') && (
+                          .find((p) => p.page.path === '/admin/users/:id')
+                          ?.actions.includes('update') && (
                           <button
                             onClick={() => handleMoveSystem(ele._id)}
                             className="font-medium text-gray-500 hover:text-DreamChain"
@@ -758,7 +759,7 @@ const AdminUserPages = () => {
 
                       {userInfo?.permissions
                         .find((p) => p.page.path === '/admin/users/:id')
-                        ?.actions.includes('delete') &&
+                        ?.actions.includes('update') &&
                         ele.countPay === 0 &&
                         ele.status !== 'DELETED' && (
                           <button
