@@ -358,9 +358,8 @@ const AdminUserPages = () => {
                   <a
                     target="_blank"
                     className="text-blue-500"
-                    href={`${
-                      import.meta.env.VITE_FACETEC_DASHBOARD_URL
-                    }/session-details?path=%2Fenrollment-3d&externalDatabaseRefID=ID_${currentKYCId}`}
+                    href={`${import.meta.env.VITE_FACETEC_DASHBOARD_URL
+                      }/session-details?path=%2Fenrollment-3d&externalDatabaseRefID=ID_${currentKYCId}`}
                   >
                     Link
                   </a>
@@ -456,50 +455,50 @@ const AdminUserPages = () => {
             {userInfo?.permissions
               ?.find((p) => p.page.path === '/admin/users')
               ?.actions.includes('export') && (
-              <div>
-                <button
-                  onClick={handleExportUsers}
-                  className="flex items-center gap-2 px-6 py-2 bg-green-600 text-white text-sm rounded-md hover:opacity-70"
-                >
-                  <svg
-                    fill="currentColor"
-                    width="16"
-                    height="16"
-                    viewBox="0 0 24 24"
-                    xmlns="http://www.w3.org/2000/svg"
+                <div>
+                  <button
+                    onClick={handleExportUsers}
+                    className="flex items-center gap-2 px-6 py-2 bg-green-600 text-white text-sm rounded-md hover:opacity-70"
                   >
-                    <path d="M8.71,7.71,11,5.41V15a1,1,0,0,0,2,0V5.41l2.29,2.3a1,1,0,0,0,1.42,0,1,1,0,0,0,0-1.42l-4-4a1,1,0,0,0-.33-.21,1,1,0,0,0-.76,0,1,1,0,0,0-.33.21l-4,4A1,1,0,1,0,8.71,7.71ZM21,14a1,1,0,0,0-1,1v4a1,1,0,0,1-1,1H5a1,1,0,0,1-1-1V15a1,1,0,0,0-2,0v4a3,3,0,0,0,3,3H19a3,3,0,0,0,3-3V15A1,1,0,0,0,21,14Z" />
-                  </svg>
-                  Export Data
-                </button>
-              </div>
-            )}
+                    <svg
+                      fill="currentColor"
+                      width="16"
+                      height="16"
+                      viewBox="0 0 24 24"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path d="M8.71,7.71,11,5.41V15a1,1,0,0,0,2,0V5.41l2.29,2.3a1,1,0,0,0,1.42,0,1,1,0,0,0,0-1.42l-4-4a1,1,0,0,0-.33-.21,1,1,0,0,0-.76,0,1,1,0,0,0-.33.21l-4,4A1,1,0,1,0,8.71,7.71ZM21,14a1,1,0,0,0-1,1v4a1,1,0,0,1-1,1H5a1,1,0,0,1-1-1V15a1,1,0,0,0-2,0v4a3,3,0,0,0,3,3H19a3,3,0,0,0,3-3V15A1,1,0,0,0,21,14Z" />
+                    </svg>
+                    Export Data
+                  </button>
+                </div>
+              )}
             {userInfo?.permissions
               ?.find((p) => p.page.path === '/admin/users')
               ?.actions.includes('create') && (
-              <div>
-                <button
-                  onClick={() => navigate('/admin/users/create')}
-                  className="flex items-center gap-2 px-6 py-2 bg-blue-500 text-white text-sm rounded-md hover:opacity-70"
-                >
-                  <svg
-                    fill="currentColor"
-                    width="20"
-                    height="20"
-                    viewBox="0 0 24 24"
-                    id="plus"
-                    data-name="Flat Color"
-                    xmlns="http://www.w3.org/2000/svg"
+                <div>
+                  <button
+                    onClick={() => navigate('/admin/users/create')}
+                    className="flex items-center gap-2 px-6 py-2 bg-blue-500 text-white text-sm rounded-md hover:opacity-70"
                   >
-                    <path
-                      id="primary"
-                      d="M12,20a1,1,0,0,1-1-1V13H5a1,1,0,0,1,0-2h6V5a1,1,0,0,1,2,0v6h6a1,1,0,0,1,0,2H13v6A1,1,0,0,1,12,20Z"
-                    ></path>
-                  </svg>
-                  Create user
-                </button>
-              </div>
-            )}
+                    <svg
+                      fill="currentColor"
+                      width="20"
+                      height="20"
+                      viewBox="0 0 24 24"
+                      id="plus"
+                      data-name="Flat Color"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        id="primary"
+                        d="M12,20a1,1,0,0,1-1-1V13H5a1,1,0,0,1,0-2h6V5a1,1,0,0,1,2,0v6h6a1,1,0,0,1,0,2H13v6A1,1,0,0,1,12,20Z"
+                      ></path>
+                    </svg>
+                    Create user
+                  </button>
+                </div>
+              )}
           </div>
         </div>
         <table className="w-full text-sm text-left text-gray-500">
@@ -512,8 +511,8 @@ const AdminUserPages = () => {
                 {objectFilter.coin === 'usdt'
                   ? 'usdt'
                   : objectFilter.coin === 'hewe'
-                  ? 'hewe'
-                  : 'Age'}
+                    ? 'hewe'
+                    : 'Age'}
               </th>
               <th scope="col" className="px-6 py-3">
                 Wallet Address
@@ -553,29 +552,28 @@ const AdminUserPages = () => {
                       objectFilter.coin !== 'hewe' &&
                       ele.ageEstimate && (
                         <a
-                          className={`hover:underline ${
-                            ele.ageEstimate && ele.ageEstimate < 5
-                              ? 'text-red-500'
-                              : 'text-blue-500'
-                          }`}
+                          className={`hover:underline ${ele.ageEstimate && ele.ageEstimate < 5
+                            ? 'text-red-500'
+                            : 'text-blue-500'
+                            }`}
                           href={`http://3.107.26.68:3002/session-details?path=%2Fenrollment-3d&externalDatabaseRefID=ID_${ele._id}`}
                           target="_blank"
                         >
                           {ele.ageEstimate === 2
                             ? '8+'
                             : ele.ageEstimate === 3
-                            ? '13+'
-                            : ele.ageEstimate === 4
-                            ? '16+'
-                            : ele.ageEstimate === 5
-                            ? '18+'
-                            : ele.ageEstimate === 6
-                            ? '21+'
-                            : ele.ageEstimate === 7
-                            ? '25+'
-                            : ele.ageEstimate === 8
-                            ? '30+'
-                            : ''}
+                              ? '13+'
+                              : ele.ageEstimate === 4
+                                ? '16+'
+                                : ele.ageEstimate === 5
+                                  ? '18+'
+                                  : ele.ageEstimate === 6
+                                    ? '21+'
+                                    : ele.ageEstimate === 7
+                                      ? '25+'
+                                      : ele.ageEstimate === 8
+                                        ? '30+'
+                                        : ''}
                         </a>
                       )}
                     {objectFilter.coin !== 'usdt' &&
@@ -595,11 +593,10 @@ const AdminUserPages = () => {
                             setShowApprovePayment(true);
                             setCurrentApprovePaymentId(ele._id);
                           }}
-                          className={`${
-                            ele.paymentProcessed
-                              ? 'bg-orange-400'
-                              : 'bg-green-500'
-                          } py-1 px-3 text-white text-lg max-w-fit rounded-lg`}
+                          className={`${ele.paymentProcessed
+                            ? 'bg-orange-400'
+                            : 'bg-green-500'
+                            } py-1 px-3 text-white text-lg max-w-fit rounded-lg`}
                           disabled={!ele.paymentProcessed}
                         >
                           {ele.paymentUUID[ele.tier - 1]}
@@ -611,10 +608,9 @@ const AdminUserPages = () => {
                   </td>
                   <td className="px-6 py-4">
                     <div
-                      className={`max-w-fit text-white rounded-sm py-1 px-2 text-sm ${
-                        userStatus.find((item) => item.status === ele.status)
-                          .color
-                      } mr-2`}
+                      className={`max-w-fit text-white rounded-sm py-1 px-2 text-sm ${userStatus.find((item) => item.status === ele.status)
+                        .color
+                        } mr-2`}
                     >
                       {t(ele.status)}
                     </div>
@@ -622,40 +618,22 @@ const AdminUserPages = () => {
                   <td className="px-6 py-4">
                     <div className="flex gap-6">
                       {userInfo?.permissions
-                        .find((p) => p.page.pageName === 'admin-users-details')
-                        ?.actions.includes('approve') &&
-                        ele.status === 'PENDING' && (
+                        ?.find((p: any) => p.page.path === '/admin/users/:id')
+                        ?.actions.includes('update') &&
+                        row.status === 'PENDING' && (
                           <button
-                            onClick={() => handleApprove(ele._id)}
-                            className="font-medium text-gray-500 hover:text-DreamChain"
+                            onClick={() => onApprove(row._id)}
+                            className="font-medium text-gray-500 hover:text-green-600 transition-colors"
+                            title={t('adminUsers.actions.approve')}
                           >
-                            <svg
-                              fill="currentColor"
-                              viewBox="0 0 24 24"
-                              id="check"
-                              data-name="Flat Line"
-                              xmlns="http://www.w3.org/2000/svg"
-                              className="w-6 h-auto"
-                            >
-                              <polyline
-                                id="primary"
-                                points="5 12 10 17 19 8"
-                                style={{
-                                  fill: 'none',
-                                  stroke: 'currentColor',
-                                  strokeLinecap: 'round',
-                                  strokeLinejoin: 'round',
-                                  strokeWidth: 2,
-                                }}
-                              ></polyline>
-                            </svg>
+                            <CheckCircle className="w-5 h-5" />
                           </button>
                         )}
 
                       {ele.status !== 'DELETED' &&
                         userInfo?.permissions
                           .find(
-                            (p) => p.page.pageName === 'admin-users-details',
+                            (p) => p.page.path === '/admin/users/:id',
                           )
                           ?.actions.includes('read') && (
                           <button
@@ -675,7 +653,7 @@ const AdminUserPages = () => {
 
                       {ele.status !== 'DELETED' &&
                         userInfo?.permissions
-                          .find((p) => p.page.pageName === 'admin-system')
+                          .find((p) => p.page.path === '/admin/users/:id')
                           ?.actions.includes('read') && (
                           <button
                             onClick={() => handleTree(ele._id)}
@@ -779,7 +757,7 @@ const AdminUserPages = () => {
                         )}
 
                       {userInfo?.permissions
-                        .find((p) => p.page.pageName === 'admin-users-details')
+                        .find((p) => p.page.path === '/admin/users/:id')
                         ?.actions.includes('delete') &&
                         ele.countPay === 0 &&
                         ele.status !== 'DELETED' && (
