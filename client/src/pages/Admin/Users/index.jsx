@@ -618,7 +618,7 @@ const AdminUserPages = () => {
                   <td className="px-6 py-4">
                     <div className="flex gap-6">
                       {userInfo?.permissions
-                        ?.find((p: any) => p.page.path === '/admin/users/:id')
+                        ?.find((p) => p.page.path === '/admin/users/:id')
                         ?.actions.includes('update') &&
                         row.status === 'PENDING' && (
                           <button
