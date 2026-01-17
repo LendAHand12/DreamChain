@@ -216,18 +216,34 @@ const verifyLogin = asyncHandler(async (req, res) => {
 
   // Get permissions for the admin's actual role
   const adminRole = admin.role || "admin";
-  const permissions = await Permission.findOne({ role: adminRole }).populate(
-    "pagePermissions.page"
-  );
+  let formattedPermissions = [];
 
-  // Format permissions to match frontend expectations
-  const formattedPermissions =
-    permissions && permissions.pagePermissions
-      ? permissions.pagePermissions.map((pp) => ({
+  // If root admin, grant all permissions
+  if (admin.isRootAdmin) {
+    // Import Page model to get all pages
+    const Page = (await import("../models/pageModel.js")).default;
+    const allPages = await Page.find({});
+
+    // Grant full access to all pages for root admin
+    formattedPermissions = allPages.map((page) => ({
+      page: page,
+      actions: ["create", "read", "update", "delete", "export"],
+    }));
+  } else {
+    // For non-root admins, get permissions from Permission model
+    const permissions = await Permission.findOne({ role: adminRole }).populate(
+      "pagePermissions.page"
+    );
+
+    // Format permissions to match frontend expectations
+    formattedPermissions =
+      permissions && permissions.pagePermissions
+        ? permissions.pagePermissions.map((pp) => ({
           page: pp.page,
           actions: pp.actions || [],
         }))
-      : [];
+        : [];
+  }
 
   return res.json({
     success: true,
@@ -530,18 +546,34 @@ const createAdmin = asyncHandler(async (req, res) => {
 const getAdminInfo = asyncHandler(async (req, res) => {
   // Get permissions for the admin's actual role
   const adminRole = req.user.role || "admin";
-  const permissions = await Permission.findOne({ role: adminRole }).populate(
-    "pagePermissions.page"
-  );
+  let formattedPermissions = [];
 
-  // Format permissions to match frontend expectations
-  const formattedPermissions =
-    permissions && permissions.pagePermissions
-      ? permissions.pagePermissions.map((pp) => ({
+  // If root admin, grant all permissions
+  if (req.user.isRootAdmin) {
+    // Import Page model to get all pages
+    const Page = (await import("../models/pageModel.js")).default;
+    const allPages = await Page.find({});
+
+    // Grant full access to all pages for root admin
+    formattedPermissions = allPages.map((page) => ({
+      page: page,
+      actions: ["create", "read", "update", "delete", "export"],
+    }));
+  } else {
+    // For non-root admins, get permissions from Permission model
+    const permissions = await Permission.findOne({ role: adminRole }).populate(
+      "pagePermissions.page"
+    );
+
+    // Format permissions to match frontend expectations
+    formattedPermissions =
+      permissions && permissions.pagePermissions
+        ? permissions.pagePermissions.map((pp) => ({
           page: pp.page,
           actions: pp.actions || [],
         }))
-      : [];
+        : [];
+  }
 
   return res.json({
     success: true,
