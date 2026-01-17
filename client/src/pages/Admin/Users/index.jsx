@@ -623,7 +623,7 @@ const AdminUserPages = () => {
                         ?.actions.includes('update') &&
                         ele.status === 'PENDING' && (
                           <button
-                            onClick={() => onApprove(row._id)}
+                            onClick={() => handleApprove(ele._id)}
                             className="font-medium text-gray-500 hover:text-green-600 transition-colors"
                             title={t('adminUsers.actions.approve')}
                           >
