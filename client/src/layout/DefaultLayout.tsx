@@ -23,21 +23,15 @@ const DefaultLayout: React.FC<{ children: ReactNode }> = ({ children }) => {
   if (userInfo) {
     try {
       const { permissions } = userInfo;
-      console.log('🔍 DEBUG - UserInfo:', userInfo);
-      console.log('🔍 DEBUG - Permissions:', permissions);
-      console.log('🔍 DEBUG - Role:', userInfo.role);
-      console.log('🔍 DEBUG - AdminRoutes:', AdminRoutes);
 
       if (userInfo.role !== 'user') {
         routes = AdminRoutes.filter((route) => {
           let currentRoute = `${route.link}`;
           let page = permissions?.find((ele) => ele.page?.path === currentRoute);
-          console.log(`🔍 DEBUG - Route: ${currentRoute}, Page found:`, page);
           if (page && page.actions.includes('read')) {
             return route;
           }
         });
-        console.log('🔍 DEBUG - Filtered routes:', routes);
       } else {
         routes =
           userInfo.isOld
