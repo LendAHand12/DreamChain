@@ -92,36 +92,34 @@ const Profile = () => {
         setErrPhone(true);
       } else {
         setErrPhone(false);
-        const callbackUrl = `${
-          import.meta.env.VITE_URL
-        }/user/update-info?walletAddress=${walletAddress}&phone=${phoneNumber}&email=${email}`;
-        window.location.href = `${
-          import.meta.env.VITE_FACETEC_URL
-        }/verify.html?callback=${encodeURIComponent(
-          callbackUrl,
-        )}&user_id=${id}`;
+        const callbackUrl = `${import.meta.env.VITE_URL
+          }/user/update-info?walletAddress=${walletAddress}&phone=${phoneNumber}&email=${email}`;
+        window.location.href = `${import.meta.env.VITE_FACETEC_URL
+          }/verify.html?callback=${encodeURIComponent(
+            callbackUrl,
+          )}&user_id=${id}`;
       }
     },
     [phoneNumber],
   );
 
-  // const claimHewe = async () => {
-  //   setLoadingClaimHewe(true);
-  //   await KYC.claim({ coin: 'hewe' })
-  //     .then((response) => {
-  //       if (response.data.url) {
-  //         window.location.href = response.data.url;
-  //       }
-  //     })
-  //     .catch((error) => {
-  //       let message =
-  //         error.response && error.response.data.error
-  //           ? error.response.data.error
-  //           : error.message;
-  //       toast.error(t(message));
-  //       setLoadingClaimHewe(false);
-  //     });
-  // };
+  const claimHewe = async () => {
+    setLoadingClaimHewe(true);
+    await KYC.claim({ coin: 'hewe' })
+      .then((response) => {
+        if (response.data.url) {
+          window.location.href = response.data.url;
+        }
+      })
+      .catch((error) => {
+        let message =
+          error.response && error.response.data.error
+            ? error.response.data.error
+            : error.message;
+        toast.error(t(message));
+        setLoadingClaimHewe(false);
+      });
+  };
 
   const claimUsdt = async (amount) => {
     setLoadingClaimUsdt(true);
@@ -141,23 +139,23 @@ const Profile = () => {
       });
   };
 
-  const claimHewe = async () => {
-    setLoadingClaimHewe(true);
-    await Claim.hewe()
-      .then((response) => {
-        toast.success(t(response.data.message));
-        setLoadingClaimHewe(false);
-        setRefresh(!refresh);
-      })
-      .catch((error) => {
-        let message =
-          error.response && error.response.data.error
-            ? error.response.data.error
-            : error.message;
-        toast.error(t(message));
-        setLoadingClaimHewe(false);
-      });
-  };
+  // const claimHewe = async () => {
+  //   setLoadingClaimHewe(true);
+  //   await Claim.hewe()
+  //     .then((response) => {
+  //       toast.success(t(response.data.message));
+  //       setLoadingClaimHewe(false);
+  //       setRefresh(!refresh);
+  //     })
+  //     .catch((error) => {
+  //       let message =
+  //         error.response && error.response.data.error
+  //           ? error.response.data.error
+  //           : error.message;
+  //       toast.error(t(message));
+  //       setLoadingClaimHewe(false);
+  //     });
+  // };
 
   // const claimUsdt = async () => {
   //   setLoadingClaimUsdt(true);
@@ -447,15 +445,14 @@ const Profile = () => {
                 tier > 1
                   ? 0
                   : totalHewe > 0
-                  ? totalHewe - claimedHewe - availableHewe
-                  : availableHewe
+                    ? totalHewe - claimedHewe - availableHewe
+                    : availableHewe
               }
             />
           </div>
           <button
-            className={`w-full border border-black rounded-2xl px-12 py-2 flex justify-center hover:bg-black hover:text-white ${
-              availableHewe === 0 ? 'opacity-30' : ''
-            }`}
+            className={`w-full border border-black rounded-2xl px-12 py-2 flex justify-center hover:bg-black hover:text-white ${availableHewe === 0 ? 'opacity-30' : ''
+              }`}
             disabled={availableHewe === 0}
             onClick={claimHewe}
           >
@@ -481,11 +478,10 @@ const Profile = () => {
             />
           </div>
           <button
-            className={`w-full border border-black rounded-2xl px-12 py-2 flex justify-center hover:bg-black hover:text-white ${
-              availableUsdt === 0 || status !== 'APPROVED' || facetecTid === ''
+            className={`w-full border border-black rounded-2xl px-12 py-2 flex justify-center hover:bg-black hover:text-white ${availableUsdt === 0 || status !== 'APPROVED' || facetecTid === ''
                 ? 'opacity-30'
                 : ''
-            }`}
+              }`}
             disabled={
               availableUsdt === 0 || status !== 'APPROVED' || facetecTid === ''
             }
@@ -500,19 +496,18 @@ const Profile = () => {
               <div className="flex justify-between items-center py-2 px-4">
                 <p>Status</p>
                 <div
-                  className={`p-2 text-sm ${
-                    status === 'UNVERIFY'
+                  className={`p-2 text-sm ${status === 'UNVERIFY'
                       ? 'bg-red-600'
                       : status === 'PENDING'
-                      ? 'bg-yellow-600'
-                      : status === 'APPROVED'
-                      ? 'bg-green-600'
-                      : status === 'REJECTED'
-                      ? 'bg-red-600'
-                      : status === 'LOCKED'
-                      ? 'bg-red-600'
-                      : ''
-                  } text-white rounded-[50px]`}
+                        ? 'bg-yellow-600'
+                        : status === 'APPROVED'
+                          ? 'bg-green-600'
+                          : status === 'REJECTED'
+                            ? 'bg-red-600'
+                            : status === 'LOCKED'
+                              ? 'bg-red-600'
+                              : ''
+                    } text-white rounded-[50px]`}
                 >
                   {status}
                 </div>
@@ -577,17 +572,16 @@ const Profile = () => {
                         <div className="py-2">
                           <div className="text-base w-full">
                             <span
-                              className={`${
-                                ele.isRed
+                              className={`${ele.isRed
                                   ? 'bg-[#b91c1c]'
                                   : ele.isBlue
-                                  ? 'bg-[#0000ff]'
-                                  : ele.isYellow
-                                  ? 'bg-[#F4B400]'
-                                  : ele.isPink
-                                  ? 'bg-[#e600769c]'
-                                  : 'bg-[#16a34a]'
-                              } py-1 px-2 rounded text-white text-sm min-w-fit`}
+                                    ? 'bg-[#0000ff]'
+                                    : ele.isYellow
+                                      ? 'bg-[#F4B400]'
+                                      : ele.isPink
+                                        ? 'bg-[#e600769c]'
+                                        : 'bg-[#16a34a]'
+                                } py-1 px-2 rounded text-white text-sm min-w-fit`}
                             >
                               {ele.userId}
                             </span>

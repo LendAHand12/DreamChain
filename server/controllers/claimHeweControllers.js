@@ -63,7 +63,6 @@ const claimHewe = asyncHandler(async (req, res) => {
 const claimUsdt = asyncHandler(async (req, res) => {
   const { token, amount } = req.body;
   const decode = decodeCallbackToken(token);
-  console.log({ decode });
 
   if (!decode) {
     throw new Error("Internal Error");

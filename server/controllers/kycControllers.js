@@ -25,7 +25,12 @@ const claimKYC = expressAsyncHandler(async (req, res) => {
   const { user } = req;
 
   const token = createCallbackToken(user._id);
-  const callbackUrl = `${process.env.FRONTEND_BASE_URL}/user/claim?coin=${coin}&token=${token}&amount=${amount}`;
+  let callbackUrl = `${process.env.FRONTEND_BASE_URL}/user/claim?coin=${coin}&token=${token}`;
+
+  // Only add amount to callbackUrl if it exists
+  if (amount) {
+    callbackUrl += `&amount=${amount}`;
+  }
 
   const redirectToKYC = `${process.env.KYC_URL}/verify.html?callback=${encodeURIComponent(
     callbackUrl
