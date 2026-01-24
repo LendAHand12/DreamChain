@@ -416,7 +416,7 @@ const AdminWithdrawPages = () => {
                     <div className="flex gap-6">
                       {userInfo?.permissions
                         .find((p) => p.page.path === '/admin/approve-payment')
-                        ?.actions.includes('approve') &&
+                        ?.actions.includes('update') &&
                         ele.status === 'PENDING' && (
                           <button
                             onClick={() => handleApprove(ele)}
