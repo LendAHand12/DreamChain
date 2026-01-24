@@ -415,7 +415,7 @@ const AdminWithdrawPages = () => {
                   <td className="px-6 py-4">
                     <div className="flex gap-6">
                       {userInfo?.permissions
-                        .find((p) => p.page.pageName === 'admin-withdraw')
+                        .find((p) => p.page.path === '/admin/approve-payment')
                         ?.actions.includes('approve') &&
                         ele.status === 'PENDING' && (
                           <button
@@ -446,8 +446,8 @@ const AdminWithdrawPages = () => {
                           </button>
                         )}
                       {userInfo?.permissions
-                        .find((p) => p.page.pageName === 'admin-withdraw')
-                        ?.actions.includes('approve') &&
+                        .find((p) => p.page.path === "/admin/approve-payment")
+                        ?.actions.includes('update') &&
                         ele.status === 'PENDING' && (
                           <button
                             onClick={() => handleCancel(ele)}
