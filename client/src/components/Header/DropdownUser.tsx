@@ -22,7 +22,7 @@ const DropdownUser = () => {
     <ClickOutside onClick={() => setDropdownOpen(false)} className="relative">
       <button
         onClick={() => setDropdownOpen(!dropdownOpen)}
-        className="z-9 block p-1.5 shadow-sm rounded-full bg-white hover:bg-gray-100 transition-colors lg:flex lg:items-center lg:gap-2 lg:pr-4 lg:rounded-3xl lg:border lg:border-gray-300 lg:shadow-md"
+        className="z-9 block p-1.5 shadow-sm rounded-full bg-white hover:bg-gray-100 transition-colors flex lg:items-center lg:gap-2 lg:pr-4 lg:rounded-3xl lg:border lg:border-gray-300 lg:shadow-md"
         aria-label="User menu"
       >
         <span className="relative block h-5.5 w-5.5 cursor-pointer lg:flex lg:items-center lg:justify-center">
@@ -40,7 +40,7 @@ const DropdownUser = () => {
             ></path>
           </svg>
         </span>
-        <span className="hidden lg:inline text-sm font-medium text-gray-700">
+        <span className="text-sm font-medium text-gray-700 truncate w-[100px] lg:w-min ">
           {userInfo
             ? userInfo.role === 'admin'
               ? userInfo.email
