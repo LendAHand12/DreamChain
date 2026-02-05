@@ -272,6 +272,14 @@ const userSchema = mongoose.Schema(
     dieTime: {
       type: Date,
     },
+    otp: {
+      type: String,
+      default: "",
+    },
+    otpExpiry: {
+      type: Date,
+      default: null,
+    },
   },
   {
     timestamps: true,

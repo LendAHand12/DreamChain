@@ -33,7 +33,7 @@
   "contact": "Contact",
   "validUrl": "Valid path",
   "duplicateInfo": "There is a duplicate information. Please check again",
-  "registerSuccessful": "Please confirm your email by opening it and clicking on 'Activate Now.'",
+  "registerSuccessful": "Registration successful! Please check your email for the OTP code to verify your account.",
   "userAlreadyConfirmed": "User is confirmed",
   "Recovery mail sent.Please check your mail": "Recovery mail sent. Please check your mail",
   "Login information is incorrect": "Login information is incorrect",

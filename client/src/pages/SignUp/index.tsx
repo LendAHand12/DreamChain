@@ -17,6 +17,7 @@ import SignInLayout from '../../layout/SignInLayout';
 const SignUpPage = () => {
   const { t } = useTranslation();
   const location = useLocation();
+  const navigate = useNavigate();
   const parsed = queryString.parse(location.search);
   let { ref, receiveId } = parsed;
   if (!receiveId) {
@@ -61,8 +62,12 @@ const SignUpPage = () => {
       })
         .then((response) => {
           setLoading(false);
+          const registeredUserId = response.data.userId;
           toast.success(t(response.data.message));
-          setShowSuccess(true);
+          // Navigate to OTP verification page
+          setTimeout(() => {
+            navigate(`/verify-otp?userId=${registeredUserId}`);
+          }, 1000);
         })
         .catch((error) => {
           let message =
@@ -73,7 +78,7 @@ const SignUpPage = () => {
           setLoading(false);
         });
     },
-    [phone],
+    [phone, navigate, t],
   );
 
   useEffect(() => {

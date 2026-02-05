@@ -4,14 +4,11 @@ import generateToken from "../utils/generateToken.js";
 
 dotenv.config();
 
-const sendMail = async (id, email, option) => {
+const sendMail = async (id, email, option, otp = null) => {
   const frontendURL = process.env.FRONTEND_BASE_URL;
 
   // send email for the email verification option
   if (option === "email verification") {
-    // create a new JWT to verify user via email
-    const emailToken = generateToken(id, "email");
-    const url = `${frontendURL}/confirm?token=${emailToken}`;
 
     // set the correct mail option
     const mailOptions = {
@@ -31,10 +28,15 @@ const sendMail = async (id, email, option) => {
             <br><br>
             •	Your DreamChain account is pending activation.
             <br>
-            •	To activate your account, please click the link below:
-            Activation Link: <a href="${url}">[Activate now]</a>
+            •	To activate your account, please use the following OTP code:
+            <br><br>
+            <div style="text-align: center; font-size: 32px; font-weight: bold; letter-spacing: 5px; color: #D99300; padding: 20px; background-color: #f5f5f5; border-radius: 8px; margin: 20px 0;">
+              ${otp}
+            </div>
             <br>
-            •	After successfully activating your account, you are now able log in to your account on the website <a href="https://dreamchain.live">https://dreamchain.live</a> to start your journey.
+            •	This OTP code is valid for 10 minutes only.
+            <br>
+            •	After successfully verifying your OTP, you will be able to log in to your account on the website <a href="https://dreamchain.live">https://dreamchain.live</a> to start your journey.
             <br><br>
             <b>Withdraw Assets</b> 
             <br><br>

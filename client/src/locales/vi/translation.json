@@ -33,7 +33,7 @@
   "contact": "Liên hệ",
   "validUrl": "Đường dẫn hợp lệ",
   "duplicateInfo": "Có thông tin bị trùng.Vui lòng kiểm tra lại",
-  "registerSuccessful": "Đăng ký thành công.Vui lòng kiểm tra Email của Bạn",
+  "registerSuccessful": "Đăng ký thành công! Vui lòng kiểm tra email để lấy mã OTP xác thực tài khoản.",
   "userAlreadyConfirmed": "Người dùng đã được xác nhận",
   "Recovery mail sended.Please check your mail": "Đã gửi thư khôi phục. Vui lòng kiểm tra thư của bạn",
   "Login information is incorrect": "Thông tin đăng nhập không chính xác",

@@ -3,6 +3,7 @@ import User from "../models/userModel.js";
 import Token from "../models/tokenModel.js";
 import generateToken from "../utils/generateToken.js";
 import sendMail from "../utils/sendMail.js";
+import { generateOtp, isOtpExpired, getOtpExpiry } from "../utils/generateOtp.js";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcryptjs";
 import Tree from "../models/treeModel.js";
@@ -103,6 +104,10 @@ const registerUser = asyncHandler(async (req, res) => {
       treeReceiveUser.userName === "NoExcuse 9" ||
       treeReceiveUser.children.length < 2
     ) {
+      // Generate OTP
+      const otp = generateOtp();
+      const otpExpiry = getOtpExpiry();
+
       const user = await User.create({
         userId,
         email: email.toLowerCase(),
@@ -114,6 +119,8 @@ const registerUser = asyncHandler(async (req, res) => {
         role: "user",
         kycFee: true,
         changeCreatedAt: new Date(),
+        otp,
+        otpExpiry,
       });
 
       const tree = await Tree.create({
@@ -124,7 +131,7 @@ const registerUser = asyncHandler(async (req, res) => {
         children: [],
       });
 
-      await sendMail(user._id, email, "email verification");
+      await sendMail(user._id, email, "email verification", otp);
 
       treeReceiveUser.children.push(tree._id);
       await treeReceiveUser.save();
@@ -133,6 +140,7 @@ const registerUser = asyncHandler(async (req, res) => {
 
       res.status(201).json({
         message,
+        userId: user.userId,
       });
     } else {
       res.status(400);
@@ -192,16 +200,38 @@ const mailForPasswordReset = asyncHandler(async (req, res) => {
 const authUser = asyncHandler(async (req, res) => {
   const { code, password } = req.body;
 
+  // First check if user exists (regardless of isConfirmed)
   let user = await User.findOne({
     $and: [
       { $or: [{ email: code }, { userId: code }] },
-      { isConfirmed: true },
       { status: { $ne: "LOCKED" } },
       { status: { $ne: "DELETED" } },
     ],
   });
 
-  if (user && (await user.matchPassword(password))) {
+  // If user exists but not confirmed, send OTP and return error
+  if (user && !user.isConfirmed && (await user.matchPassword(password))) {
+    // Generate new OTP
+    const otp = generateOtp();
+    const otpExpiry = getOtpExpiry();
+
+    user.otp = otp;
+    user.otpExpiry = otpExpiry;
+    await user.save();
+
+    // Send OTP email
+    await sendMail(user._id, user.email, "email verification", otp);
+
+    res.status(403).json({
+      error: "Account not verified",
+      userId: user.userId,
+      requireOtp: true
+    });
+    return;
+  }
+
+  // Check for confirmed user
+  if (user && user.isConfirmed && (await user.matchPassword(password))) {
     const accessToken = generateToken(user._id, "access");
     const refreshToken = generateToken(user._id, "refresh");
 
@@ -453,11 +483,90 @@ const createSerepayHeweWallet = async (token) => {
     });
 };
 
+
 const registerSerepay = asyncHandler(async (req, res) => {
   const { userName, email, password } = req.body;
   const wallet = await registerSerepayFnc(userName, email, password);
   console.log({ wallet });
 });
+
+const verifyOtp = asyncHandler(async (req, res) => {
+  const { userId, otp } = req.body;
+
+  if (!userId || !otp) {
+    res.status(400);
+    throw new Error("userId and OTP are required");
+  }
+
+  const user = await User.findOne({ userId, status: { $ne: "DELETED" } });
+
+  if (!user) {
+    res.status(404);
+    throw new Error("User not found");
+  }
+
+  if (user.isConfirmed) {
+    res.status(400);
+    throw new Error("Account already verified");
+  }
+
+  if (!user.otp || user.otp !== otp) {
+    res.status(400);
+    throw new Error("Invalid OTP");
+  }
+
+  if (isOtpExpired(user.otpExpiry)) {
+    res.status(400);
+    throw new Error("OTP has expired");
+  }
+
+  // OTP is valid, confirm user
+  user.isConfirmed = true;
+  user.otp = "";
+  user.otpExpiry = null;
+  await user.save();
+
+  res.status(200).json({
+    message: "Account verified successfully",
+  });
+});
+
+const resendOtp = asyncHandler(async (req, res) => {
+  const { userId } = req.body;
+
+  if (!userId) {
+    res.status(400);
+    throw new Error("userId is required");
+  }
+
+  const user = await User.findOne({ userId, status: { $ne: "DELETED" } });
+
+  if (!user) {
+    res.status(404);
+    throw new Error("User not found");
+  }
+
+  if (user.isConfirmed) {
+    res.status(400);
+    throw new Error("Account already verified");
+  }
+
+  // Generate new OTP
+  const otp = generateOtp();
+  const otpExpiry = getOtpExpiry();
+
+  user.otp = otp;
+  user.otpExpiry = otpExpiry;
+  await user.save();
+
+  // Send OTP email
+  await sendMail(user._id, user.email, "email verification", otp);
+
+  res.status(200).json({
+    message: "OTP sent successfully",
+  });
+});
+
 
 export {
   checkSendMail,
@@ -473,4 +582,6 @@ export {
   updateData,
   getNewPass,
   registerSerepay,
+  verifyOtp,
+  resendOtp,
 };

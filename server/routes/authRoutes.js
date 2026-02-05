@@ -13,6 +13,8 @@ import {
   updateData,
   getNewPass,
   registerSerepay,
+  verifyOtp,
+  resendOtp,
 } from "../controllers/authControllers.js";
 
 const router = express.Router();
@@ -30,5 +32,7 @@ router.route("/resetPassword").put(resetUserPassword);
 router.route("/refresh").post(getAccessToken);
 router.route("/getLinkVerify").post(getLinkVerify);
 router.route("/registerSerepay").post(registerSerepay);
+router.route("/verify-otp").post(verifyOtp);
+router.route("/resend-otp").post(resendOtp);
 
 export default router;

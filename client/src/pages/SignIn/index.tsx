@@ -35,7 +35,23 @@ const SignInPage: React.FC = () => {
           error.response && error.response.data.error
             ? error.response.data.error
             : error.message;
-        toast.error(t(message));
+
+        // Check if account is not verified
+        if (error.response && error.response.data.requireOtp) {
+          const userId = error.response.data.userId;
+          toast.info(t('Please verify your account with the OTP sent to your email'));
+          setTimeout(() => {
+            navigate(`/verify-otp?userId=${userId}`, {
+              state: {
+                fromLogin: true,
+                code: data.code,
+                password: data.password
+              }
+            });
+          }, 1500);
+        } else {
+          toast.error(t(message));
+        }
         setLoading(false);
       });
   };

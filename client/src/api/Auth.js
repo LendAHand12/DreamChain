@@ -9,6 +9,8 @@ import {
   URL_API_AUTH_RESET_PASSWORD,
   URL_API_AUTH_REFRESH,
   URL_API_AUTH_GET_VERIFY,
+  URL_API_AUTH_VERIFY_OTP,
+  URL_API_AUTH_RESEND_OTP,
 } from "./URL";
 
 const Auth = {
@@ -38,6 +40,12 @@ const Auth = {
   },
   getLinkVerify: (body) => {
     return API.post(URL_API_AUTH_GET_VERIFY, body);
+  },
+  verifyOtp: (body) => {
+    return API.post(URL_API_AUTH_VERIFY_OTP, body);
+  },
+  resendOtp: (body) => {
+    return API.post(URL_API_AUTH_RESEND_OTP, body);
   },
 };
 

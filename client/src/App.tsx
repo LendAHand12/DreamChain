@@ -77,6 +77,8 @@ import UsersTier2 from './pages/User/UsersTier2';
 import MoveSystem from './pages/Admin/MoveSystem';
 import MoveSystemList from './pages/Admin/MoveSystemList';
 import AdminWalletConnectHistoryPages from './pages/Admin/WalletConnectHistory';
+import VerifyOtpPage from './pages/VerifyOtp';
+
 
 function App() {
   const { pathname } = useLocation();
@@ -183,6 +185,7 @@ function App() {
         <Route path="/signin" element={<SignInPage />} />
         <Route path="/admin/login" element={<AdminSignInPage />} />
         <Route path="/signup" element={<SignUpPage />} />
+        <Route path="/verify-otp" element={<VerifyOtpPage />} />
         <Route path="/confirm" element={<ConfirmPage />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="/reset-password" element={<ResetPassword />} />
