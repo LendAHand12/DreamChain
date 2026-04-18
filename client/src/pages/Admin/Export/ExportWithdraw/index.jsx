@@ -80,6 +80,7 @@ const ExportWithdrawPage = () => {
           [t('user')]: null,
           [t('email')]: null,
           [t('amount')]: null,
+          [t('coin')]: null,
           [t('status')]: null,
           [t('hash')]: null,
         });

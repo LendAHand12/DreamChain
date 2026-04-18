@@ -60,6 +60,51 @@ const claimHewe = asyncHandler(async (req, res) => {
   }
 });
 
+const withdrawHeweManual = asyncHandler(async (req, res) => {
+  const { user } = req;
+
+  // Dùng findOneAndUpdate để set isClaiming = true
+  const lockedUser = await User.findOneAndUpdate(
+    { _id: user._id, isClaiming: false },
+    { $set: { isClaiming: true } },
+    { new: true }
+  );
+
+  if (!lockedUser) {
+    return res.status(400).json({
+      error: "Your HEWE withdraw is already being processed. Please wait!",
+    });
+  }
+
+  try {
+    if (lockedUser.availableHewe > 0) {
+      // Tạo yêu cầu withdraw chờ admin xử lý
+      await Withdraw.create({
+        userId: lockedUser.id,
+        amount: lockedUser.availableHewe,
+        coin: "HEWE",
+        status: "PENDING",
+      });
+
+      lockedUser.availableHewe = 0;
+      await lockedUser.save();
+
+      res.status(200).json({
+        message: "HEWE withdrawal request has been sent to Admin. Please wait!",
+      });
+    } else {
+      throw new Error("Insufficient balance in account");
+    }
+  } catch (err) {
+    res.status(400).json({
+      error: err.message || "Internal error",
+    });
+  } finally {
+    // Reset lại trạng thái để lần sau vẫn thao tác được
+    await User.findByIdAndUpdate(lockedUser._id, { isClaiming: false });
+  }
+});
+
 const claimUsdt = asyncHandler(async (req, res) => {
   const { token, amount } = req.body;
   const decode = decodeCallbackToken(token);
@@ -340,6 +385,7 @@ const resetProcessing = asyncHandler(async (req, res) => {
 
 export {
   claimHewe,
+  withdrawHeweManual,
   claimUsdt,
   getAllClaims,
   getAllClaimsForExport,

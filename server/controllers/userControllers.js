@@ -161,12 +161,11 @@ const getUserById = asyncHandler(async (req, res) => {
     const withdraws = await Withdraw.find({
       userId: user._id,
     });
-    const totalWithdraws = withdraws.reduce(
-      (sum, withdraw) => sum + withdraw.amount,
-      0
-    );
+    const totalWithdraws = withdraws
+      .filter((ele) => (ele.coin || "USDT") === "USDT")
+      .reduce((sum, withdraw) => sum + withdraw.amount, 0);
     const withdrawPending = withdraws
-      .filter((ele) => ele.status === "PENDING")
+      .filter((ele) => ele.status === "PENDING" && (ele.coin || "USDT") === "USDT")
       .reduce((sum, withdraw) => sum + withdraw.amount, 0);
 
     const listTransHold = await Transaction.find({
@@ -325,12 +324,11 @@ const getUserInfo = asyncHandler(async (req, res) => {
     const withdraws = await Withdraw.find({
       userId: user._id,
     });
-    const totalWithdraws = withdraws.reduce(
-      (sum, withdraw) => sum + withdraw.amount,
-      0
-    );
+    const totalWithdraws = withdraws
+      .filter((ele) => (ele.coin || "USDT") === "USDT")
+      .reduce((sum, withdraw) => sum + withdraw.amount, 0);
     const withdrawPending = withdraws
-      .filter((ele) => ele.status === "PENDING")
+      .filter((ele) => ele.status === "PENDING" && (ele.coin || "USDT") === "USDT")
       .reduce((sum, withdraw) => sum + withdraw.amount, 0);
 
     let refUser;
@@ -540,12 +538,11 @@ const updateUser = asyncHandler(async (req, res) => {
       const withdraws = await Withdraw.find({
         userId: user._id,
       });
-      const totalWithdraws = withdraws.reduce(
-        (sum, withdraw) => sum + withdraw.amount,
-        0
-      );
+      const totalWithdraws = withdraws
+        .filter((ele) => (ele.coin || "USDT") === "USDT")
+        .reduce((sum, withdraw) => sum + withdraw.amount, 0);
       const withdrawPending = withdraws
-        .filter((ele) => ele.status === "PENDING")
+        .filter((ele) => ele.status === "PENDING" && (ele.coin || "USDT") === "USDT")
         .reduce((sum, withdraw) => sum + withdraw.amount, 0);
 
       const listTransHold = await Transaction.find({

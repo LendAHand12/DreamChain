@@ -248,7 +248,14 @@ const AdminWithdrawPages = () => {
                 />
               </svg>
               <p className="mb-4 text-gray-500 ">
-                Are you sure you want to {currentRequestStatus} this request?
+                Are you sure you want to {currentRequestStatus}{' '}
+                <b>
+                  {currentApproveRequest?.amount || currentCancelRequest?.amount}{' '}
+                  {currentApproveRequest?.coin ||
+                    currentCancelRequest?.coin ||
+                    'USDT'}
+                </b>{' '}
+                for {currentApproveRequest?.userInfo?.userId || currentCancelRequest?.userInfo?.userId}?
               </p>
               <div className="flex justify-center items-center space-x-4">
                 <button
@@ -260,7 +267,9 @@ const AdminWithdrawPages = () => {
                 <button
                   onClick={
                     currentRequestStatus === 'approve'
-                      ? paymentMetamask
+                      ? currentApproveRequest?.coin === 'HEWE'
+                        ? () => donePayment('')
+                        : paymentMetamask
                       : cancelWithdraw
                   }
                   className="flex items-center py-2 px-3 text-sm font-medium text-center text-white bg-red-600 rounded-lg hover:bg-red-700 focus:ring-4 focus:outline-none focus:ring-red-300 dark:bg-red-500 dark:hover:bg-red-600 dark:focus:ring-red-900"
@@ -361,6 +370,9 @@ const AdminWithdrawPages = () => {
                 Amount
               </th>
               <th scope="col" className="px-6 py-3">
+                Coin
+              </th>
+              <th scope="col" className="px-6 py-3">
                 {t('time')}
               </th>
               <th scope="col" className="px-6 py-3">
@@ -396,8 +408,9 @@ const AdminWithdrawPages = () => {
                     {shortenWalletAddress(ele.userInfo.walletAddress, 12)}
                   </td>
                   <td className="px-6 py-4">
-                    <b>{ele.amount}</b> USDT
+                    <b>{ele.amount}</b>
                   </td>
+                  <td className="px-6 py-4">{ele.coin || 'USDT'}</td>
                   <td className="px-6 py-4">
                     {new Date(ele.createdAt).toLocaleString('vi')}
                   </td>
@@ -415,7 +428,7 @@ const AdminWithdrawPages = () => {
                   <td className="px-6 py-4">
                     <div className="flex gap-6">
                       {userInfo?.permissions
-                        .find((p) => p.page.path === '/admin/approve-payment')
+                        .find((p) => p.page.path === '/admin/withdraw')
                         ?.actions.includes('update') &&
                         ele.status === 'PENDING' && (
                           <button

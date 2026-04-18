@@ -3,6 +3,7 @@ import Withdraw from "../models/withdrawModel.js";
 import User from "../models/userModel.js";
 import { removeAccents } from "../utils/methods.js";
 import mongoose from "mongoose";
+import sendHewe from "../services/sendHewe.js";
 
 const getAllWithdraws = asyncHandler(async (req, res) => {
   let { pageNumber, status, keyword } = req.query;
@@ -53,6 +54,7 @@ const getAllWithdraws = asyncHandler(async (req, res) => {
         status: 1,
         amount: 1,
         hash: 1,
+        coin: 1,
         createdAt: 1,
         userInfo: {
           _id: 1,
@@ -115,6 +117,7 @@ const getAllWithdrawsForExport = asyncHandler(async (req, res) => {
       user: withdraw.userInfo?.userId,
       email: withdraw.userInfo?.email,
       amount: withdraw.amount,
+      coin: withdraw.coin || "USDT",
       status: withdraw.status,
       hash: withdraw.hash,
       createdAt: withdraw.createdAt,
@@ -131,13 +134,27 @@ const updateWithdraw = asyncHandler(async (req, res) => {
   try {
     const withdraw = await Withdraw.findById(id);
     const user = await User.findById(withdraw.userId);
-    console.log({ user });
     if (status === "APPROVED") {
-      withdraw.hash = hash;
-      user.claimedUsdt = user.claimedUsdt + user.availableUsdt;
+      if (withdraw.coin === "HEWE") {
+        // Gửi HEWE tự động
+        const receipt = await sendHewe({
+          amount: withdraw.amount,
+          receiverAddress: user.walletAddress,
+        });
+        withdraw.hash = receipt.hash;
+        user.claimedHewe = user.claimedHewe + withdraw.amount;
+      } else {
+        // Đối với USDT, hash được truyền từ frontend (sau khi thanh toán qua MetaMask)
+        withdraw.hash = hash;
+        user.claimedUsdt = user.claimedUsdt + withdraw.amount;
+      }
     }
     if (status === "CANCEL") {
-      user.availableUsdt = user.availableUsdt + withdraw.amount;
+      if (withdraw.coin === "HEWE") {
+        user.availableHewe = user.availableHewe + withdraw.amount;
+      } else {
+        user.availableUsdt = user.availableUsdt + withdraw.amount;
+      }
     }
     withdraw.status = status;
     await user.save();
@@ -170,6 +187,7 @@ const getWithdrawsOfUser = asyncHandler(async (req, res) => {
         status: 1,
         amount: 1,
         hash: 1,
+        coin: 1,
         createdAt: 1,
         userInfo: {
           _id: 1,

@@ -2,6 +2,7 @@ import Transaction from "./models/transactionModel.js";
 import Tree from "./models/treeModel.js";
 import User from "./models/userModel.js";
 import Claim from "./models/claimModel.js";
+import Withdraw from "./models/withdrawModel.js";
 import { getParentWithCountPay } from "./utils/getParentWithCountPay.js";
 import {
   findNextUser,
@@ -339,7 +340,7 @@ export const recheckHewe = async () => {
 };
 
 export const getTotalHeweClaimed = async (userId) => {
-  const result = await Claim.aggregate([
+  const claimTotal = await Claim.aggregate([
     {
       $match: {
         userId: new mongoose.Types.ObjectId(userId),
@@ -354,7 +355,26 @@ export const getTotalHeweClaimed = async (userId) => {
     },
   ]);
 
-  return result.length > 0 ? result[0].totalAmount : 0;
+  const withdrawTotal = await Withdraw.aggregate([
+    {
+      $match: {
+        userId: new mongoose.Types.ObjectId(userId),
+        coin: "HEWE",
+        status: "APPROVED",
+      },
+    },
+    {
+      $group: {
+        _id: null,
+        totalAmount: { $sum: "$amount" },
+      },
+    },
+  ]);
+
+  const totalClaim = claimTotal.length > 0 ? claimTotal[0].totalAmount : 0;
+  const totalWithdraw = withdrawTotal.length > 0 ? withdrawTotal[0].totalAmount : 0;
+
+  return totalClaim + totalWithdraw;
 };
 
 export const getDaysSinceCreated = (user) => {

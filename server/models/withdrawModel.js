@@ -14,6 +14,11 @@ const withdrawSchema = mongoose.Schema(
     hash: {
       type: String,
     },
+    coin: {
+      type: String,
+      enum: ["USDT", "HEWE"],
+      default: "USDT",
+    },
     status: {
       type: String,
       required: true,

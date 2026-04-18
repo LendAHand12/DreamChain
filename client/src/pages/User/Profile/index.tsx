@@ -104,21 +104,47 @@ const Profile = () => {
   );
 
   const claimHewe = async () => {
-    setLoadingClaimHewe(true);
-    await KYC.claim({ coin: 'hewe' })
-      .then((response) => {
-        if (response.data.url) {
-          window.location.href = response.data.url;
-        }
-      })
-      .catch((error) => {
-        let message =
-          error.response && error.response.data.error
-            ? error.response.data.error
-            : error.message;
-        toast.error(t(message));
-        setLoadingClaimHewe(false);
-      });
+    if (facetecTid === '') {
+      if (
+        window.confirm(
+          t(
+            'You have not registered Face ID. Your withdrawal request will be sent to Admin for manual approval. Do you want to continue?',
+          ),
+        )
+      ) {
+        setLoadingClaimHewe(true);
+        await Claim.heweManual()
+          .then((response) => {
+            toast.success(t(response.data.message));
+            setLoadingClaimHewe(false);
+            setRefresh(!refresh);
+          })
+          .catch((error) => {
+            let message =
+              error.response && error.response.data.error
+                ? error.response.data.error
+                : error.message;
+            toast.error(t(message));
+            setLoadingClaimHewe(false);
+          });
+      }
+    } else {
+      setLoadingClaimHewe(true);
+      await KYC.claim({ coin: 'hewe' })
+        .then((response) => {
+          if (response.data.url) {
+            window.location.href = response.data.url;
+          }
+        })
+        .catch((error) => {
+          let message =
+            error.response && error.response.data.error
+              ? error.response.data.error
+              : error.message;
+          toast.error(t(message));
+          setLoadingClaimHewe(false);
+        });
+    }
   };
 
   const claimUsdt = async (amount) => {

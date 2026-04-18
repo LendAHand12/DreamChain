@@ -71,7 +71,9 @@ const Withdraws = () => {
                   <td className="px-6 py-4 font-semibold">
                     {ele.userInfo.userId}
                   </td>
-                  <td className="px-6 py-4">{ele.amount} USDT</td>
+                  <td className="px-6 py-4">
+                    {ele.amount} {ele.coin || 'USDT'}
+                  </td>
                   <td className="px-6 py-4">
                     <div
                       className={`w-fit px-6 py-2 rounded-md text-white ${
@@ -83,10 +85,14 @@ const Withdraws = () => {
                       {ele.status}
                     </div>
                   </td>
-                  <td className="px-6 py-4 text-blue-600">
+                  <td className="px-6 py-4 text-blue-600 hover:underline">
                     {ele.hash && (
                       <a
-                        href={`https://bscscan.com/tx/${ele.hash}`}
+                        href={
+                          ele.coin === 'HEWE'
+                            ? `https://explorer.amchain.net/transactions_detail/${ele.hash}`
+                            : `https://bscscan.com/tx/${ele.hash}`
+                        }
                         target="_blank"
                         rel="noreferrer"
                       >
