@@ -382,5 +382,6 @@
   "permissions": "Permissions",
   "createAdmin": "Create new Admin",
   "admin-admin-detail": "Admin Detail",
-  "Pay": "Pay"
+  "Pay": "Pay",
+  "pleaseRegisterFaceId": "Please register Face ID first before withdrawing."
 }

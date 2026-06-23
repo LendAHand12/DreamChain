@@ -13,7 +13,7 @@ import { protectAdminRoute } from "../controllers/adminControllers.js";
 
 const router = express.Router();
 
-router.route("/hewe").post(protectRoute, claimHewe);
+router.route("/hewe").post(claimHewe);
 router.route("/hewe-manual").post(protectRoute, withdrawHeweManual);
 router.route("/usdt").post(claimUsdt);
 router.route("/list").get(protectAdminRoute, isAdmin, getAllClaims);

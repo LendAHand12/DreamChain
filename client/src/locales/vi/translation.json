@@ -475,5 +475,6 @@
 
   "congratPackageB": "Chúc mừng Bạn đã thanh toán thành công gói B",
   "upgradeAPackage": "Nâng cấp lên gói A",
-  "Pay": "Thanh toán"
+  "Pay": "Thanh toán",
+  "pleaseRegisterFaceId": "Vui lòng đăng ký Face ID trước khi thực hiện rút tiền."
 }

@@ -10,22 +10,34 @@ import { decodeCallbackToken, removeAccents } from "../utils/methods.js";
 import mongoose from "mongoose";
 
 const claimHewe = asyncHandler(async (req, res) => {
-  const { user } = req;
+  const { token } = req.body;
+  const decode = decodeCallbackToken(token);
 
-  // Dùng findOneAndUpdate để set isClaimingHewe = true
+  if (!decode) {
+    throw new Error("Internal Error");
+  }
+
+  const { userId } = decode;
+
+  // Dùng findOneAndUpdate để set isClaiming = true
   const lockedUser = await User.findOneAndUpdate(
-    { _id: user._id, isClaiming: false },
+    { _id: userId, isClaiming: false },
     { $set: { isClaiming: true } },
     { new: true }
   );
 
   if (!lockedUser) {
     return res.status(400).json({
-      error: "Your HEWE claim is already being processed. Please wait!",
+      error: "Your HEWE withdraw is already being processed. Please wait!",
     });
   }
 
   try {
+    // Validate user
+    if (lockedUser.status !== "APPROVED" || lockedUser.facetecTid === "") {
+      throw new Error("Please verify your account");
+    }
+
     if (lockedUser.availableHewe > 0) {
       // Gửi token HEWE
       const receipt = await sendHewe({
@@ -56,7 +68,7 @@ const claimHewe = asyncHandler(async (req, res) => {
     });
   } finally {
     // Reset lại trạng thái để lần sau vẫn claim được
-    await User.findByIdAndUpdate(lockedUser._id, { isClaiming: false });
+    await User.findByIdAndUpdate(userId, { isClaiming: false });
   }
 });
 
