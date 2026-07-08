@@ -448,9 +448,7 @@ const Profile = () => {
               value={
                 tier > 1
                   ? 0
-                  : totalHewe > 0
-                    ? totalHewe - claimedHewe - availableHewe
-                    : availableHewe
+                  : totalHewe
               }
             />
           </div>

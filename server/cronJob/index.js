@@ -180,28 +180,33 @@ export const distributionHewe = asyncHandler(async () => {
   for (let u of listUser) {
     try {
       if (u.currentLayer[0] >= 4 && u.totalHewe > 0) {
-        u.availableHewe = u.availableHewe + u.totalHewe;
+        const amountToPay = u.totalHewe;
+        u.availableHewe = u.availableHewe + amountToPay;
         u.totalHewe = 0;
         const newIncome = new Income({
           userId: u._id,
-          amount: u.totalHewe,
+          amount: amountToPay,
           coin: "HEWE",
           from: "Daily HEWE all",
           type: "",
         });
 
         await newIncome.save();
-      } else if (u.totalHewe > u.claimedHewe) {
-        u.availableHewe = u.availableHewe + u.hewePerDay;
-        const newIncome = new Income({
-          userId: u._id,
-          amount: u.hewePerDay,
-          coin: "HEWE",
-          from: "Daily HEWE",
-          type: "",
-        });
+      } else if (u.totalHewe > 0) {
+        const amountToDistribute = Math.min(u.hewePerDay, u.totalHewe);
+        if (amountToDistribute > 0) {
+          u.availableHewe = u.availableHewe + amountToDistribute;
+          u.totalHewe = u.totalHewe - amountToDistribute;
+          const newIncome = new Income({
+            userId: u._id,
+            amount: amountToDistribute,
+            coin: "HEWE",
+            from: "Daily HEWE",
+            type: "",
+          });
 
-        await newIncome.save();
+          await newIncome.save();
+        }
       }
       await u.save();
     } catch (error) {

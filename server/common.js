@@ -3,6 +3,7 @@ import Tree from "./models/treeModel.js";
 import User from "./models/userModel.js";
 import Claim from "./models/claimModel.js";
 import Withdraw from "./models/withdrawModel.js";
+import Config from "./models/configModel.js";
 import { getParentWithCountPay } from "./utils/getParentWithCountPay.js";
 import {
   findNextUser,
@@ -312,14 +313,10 @@ export const recheckHewe = async () => {
 
   for (let user of listUser) {
     const { totalHewe, hewePerDay } = user;
-    const totalClaimedHewe = await getTotalHeweClaimed(user._id);
-    if (totalClaimedHewe > totalHewe) {
-      console.log({ userName: user.userId, totalClaimedHewe, totalHewe });
-    } else {
-      const heweConlai = totalHewe - totalClaimedHewe;
-      const diffDay = await getDaysSinceCreated(user);
-      const ngaylayheweconlai = 540 - diffDay;
-      const newHewePerDate = Math.floor(heweConlai / ngaylayheweconlai);
+    const diffDay = await getDaysSinceCreated(user);
+    const ngaylayheweconlai = 540 - diffDay;
+    if (ngaylayheweconlai > 0) {
+      const newHewePerDate = Math.floor(totalHewe / ngaylayheweconlai);
       if (user.userId === "THANH6688") {
         console.log({
           userName: user.userId,
@@ -327,8 +324,7 @@ export const recheckHewe = async () => {
           newHewePerDate,
           hewePerDay,
           totalHewe,
-          totalClaimedHewe,
-          heweConlai,
+          ngaylayheweconlai,
         });
       }
       user.hewePerDay = newHewePerDate;
@@ -412,3 +408,101 @@ export const fixParentChildLinks = async () => {
   console.log(`✅ Đã đồng bộ xong ${fixedCount} parentId bị sai.`);
   return fixedCount;
 };
+
+export const fixOverpaidHewe = async () => {
+  const migrationConfig = await Config.findOne({ label: "MIGRATED_HEWE_DEC_2026" });
+  if (migrationConfig && migrationConfig.value === true) {
+    console.log("[fixOverpaidHewe] Migration has already been run. Skipping.");
+    return;
+  }
+
+  const listUser = await User.find({
+    isAdmin: false,
+    status: { $ne: "DELETED" },
+    totalHewe: { $gt: 0 },
+  });
+
+  console.log(`[fixOverpaidHewe] Found ${listUser.length} users to review.`);
+
+  let fixCount = 0;
+  for (let u of listUser) {
+    const originalTotalHewe = u.totalHewe;
+    const C = u.claimedHewe || 0;
+    const A = u.availableHewe || 0;
+    const P = C + A;
+
+    if (P > originalTotalHewe) {
+      if (C > originalTotalHewe) {
+        u.availableHewe = 0;
+        u.totalHewe = 0;
+      } else {
+        u.availableHewe = originalTotalHewe - C;
+        u.totalHewe = 0;
+      }
+      fixCount++;
+      console.log(`[fixOverpaidHewe] Fixed overpaid user ${u.userId}: originalTotalHewe=${originalTotalHewe}, claimedHewe=${C}, oldAvailableHewe=${A}, newAvailableHewe=${u.availableHewe}, newTotalHewe=0`);
+    } else {
+      u.totalHewe = originalTotalHewe - C - A;
+      console.log(`[fixOverpaidHewe] Adjusted normal user ${u.userId}: originalTotalHewe=${originalTotalHewe}, claimedHewe=${C}, availableHewe=${A}, newRemainingTotalHewe=${u.totalHewe}`);
+    }
+    await u.save();
+  }
+
+  // Save migration status to config
+  if (migrationConfig) {
+    migrationConfig.value = true;
+    await migrationConfig.save();
+  } else {
+    await Config.create({
+      label: "MIGRATED_HEWE_DEC_2026",
+      value: true,
+      type: "boolean"
+    });
+  }
+
+  console.log(`[fixOverpaidHewe] Done. Fixed/Adjusted ${fixCount} overpaid users out of ${listUser.length} total users.`);
+};
+
+export const lockUsersWithoutKYC = async () => {
+  const migrationConfig = await Config.findOne({ label: "MIGRATED_LOCK_NO_KYC_DEC_2026" });
+  if (migrationConfig && migrationConfig.value === true) {
+    console.log("[lockUsersWithoutKYC] Migration has already been run. Skipping.");
+    return;
+  }
+
+  const listUser = await User.find({
+    isAdmin: false,
+    status: { $nin: ["DELETED", "LOCKED"] },
+    $or: [
+      { facetecTid: "" },
+      { facetecTid: null },
+      { facetecTid: { $exists: false } }
+    ]
+  });
+
+  console.log(`[lockUsersWithoutKYC] Found ${listUser.length} active users without KYC to lock.`);
+
+  let lockCount = 0;
+  for (let u of listUser) {
+    u.status = "LOCKED";
+    u.lockedTime = new Date();
+    await u.save();
+    lockCount++;
+    console.log(`[lockUsersWithoutKYC] Locked user ${u.userId} because facetecTid is empty.`);
+  }
+
+  // Save migration status to config
+  if (migrationConfig) {
+    migrationConfig.value = true;
+    await migrationConfig.save();
+  } else {
+    await Config.create({
+      label: "MIGRATED_LOCK_NO_KYC_DEC_2026",
+      value: true,
+      type: "boolean"
+    });
+  }
+
+  console.log(`[lockUsersWithoutKYC] Done. Locked ${lockCount} users.`);
+};
+
