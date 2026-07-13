@@ -9,12 +9,14 @@ import PhoneInput from 'react-phone-number-input';
 
 import Loading from '@/components/Loading';
 import Auth from '@/api/Auth';
+import notiImg from '@/images/noti.jpg';
 
 import 'react-phone-number-input/style.css';
 import './index.css';
 import SignInLayout from '../../layout/SignInLayout';
 
 const SignUpPage = () => {
+  const SHOW_MAINTENANCE_IMAGE = true; // Đặt thành false để khôi phục lại form đăng ký trong tương lai
   const { t } = useTranslation();
   const location = useLocation();
   const navigate = useNavigate();
@@ -82,6 +84,10 @@ const SignUpPage = () => {
   );
 
   useEffect(() => {
+    if (SHOW_MAINTENANCE_IMAGE) {
+      setCheckingRefUrl(false);
+      return;
+    }
     (async () => {
       await Auth.checkLinkRef({ ref, receiveId })
         .then(() => setCheckingRefUrl(false))
@@ -94,6 +100,15 @@ const SignUpPage = () => {
         });
     })();
   }, [ref, receiveId]);
+
+  if (SHOW_MAINTENANCE_IMAGE) {
+    return (
+      <div
+        className="w-screen h-screen bg-contain bg-center bg-no-repeat"
+        style={{ backgroundImage: `url(${notiImg})` }}
+      />
+    );
+  }
 
   return (
     <>
