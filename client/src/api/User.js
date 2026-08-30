@@ -1,5 +1,5 @@
 import API from './API';
-import { URL_API_USER, URL_API_DREAMPOOL, URL_API_WITHDRAW } from './URL';
+import { URL_API_USER, URL_API_DREAMPOOL, URL_API_WITHDRAW, URL_API_TICKET } from './URL';
 
 const User = {
   update: (userId, body) => {
@@ -119,6 +119,22 @@ const User = {
   },
   withdraws: () => {
     return API.get(`${URL_API_WITHDRAW}/user`);
+  },
+  createTicket: (formData) => {
+    return API.post(`${URL_API_TICKET}`, formData, {
+      customContentType: 'multipart/form-data',
+    });
+  },
+  getMyTickets: (pageNumber) => {
+    return API.get(`${URL_API_TICKET}/user?pageNumber=${pageNumber}`);
+  },
+  getMyTicketById: (id) => {
+    return API.get(`${URL_API_TICKET}/user/${id}`);
+  },
+  replyTicketByUser: (id, formData) => {
+    return API.post(`${URL_API_TICKET}/user/${id}/reply`, formData, {
+      customContentType: 'multipart/form-data',
+    });
   },
 };
 

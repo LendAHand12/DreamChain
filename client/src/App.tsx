@@ -78,6 +78,10 @@ import MoveSystem from './pages/Admin/MoveSystem';
 import MoveSystemList from './pages/Admin/MoveSystemList';
 import AdminWalletConnectHistoryPages from './pages/Admin/WalletConnectHistory';
 import VerifyOtpPage from './pages/VerifyOtp';
+import AdminTicketsPage from './pages/Admin/Tickets';
+import AdminTicketDetail from './pages/Admin/Tickets/Detail';
+import TicketsPage from './pages/User/Tickets';
+import TicketDetailPage from './pages/User/Tickets/Detail';
 
 
 function App() {
@@ -640,6 +644,32 @@ function App() {
               }
             />
           )}
+        {userInfo?.permissions
+          ?.find((p) => p.page.path === '/admin/tickets')
+          ?.actions.includes('read') && (
+            <Route
+              path="/admin/tickets"
+              element={
+                <>
+                  <PageTitle title="Tickets | DreamChain" />
+                  <AdminTicketsPage />
+                </>
+              }
+            />
+          )}
+        {userInfo?.permissions
+          ?.find((p) => p.page.path === '/admin/tickets/:id')
+          ?.actions.includes('read') && (
+            <Route
+              path="/admin/tickets/:id"
+              element={
+                <>
+                  <PageTitle title="Ticket Detail | DreamChain" />
+                  <AdminTicketDetail />
+                </>
+              }
+            />
+          )}
       </Route>
       <Route element={<PrivateRoute />}>
         <Route
@@ -731,6 +761,24 @@ function App() {
                 <>
                   <PageTitle title="Withdraws | DreamChain" />
                   <WithdrawsPage />
+                </>
+              }
+            />
+            <Route
+              path="/user/tickets"
+              element={
+                <>
+                  <PageTitle title="Tickets | DreamChain" />
+                  <TicketsPage />
+                </>
+              }
+            />
+            <Route
+              path="/user/tickets/:id"
+              element={
+                <>
+                  <PageTitle title="Ticket Detail | DreamChain" />
+                  <TicketDetailPage />
                 </>
               }
             />

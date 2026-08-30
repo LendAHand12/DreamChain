@@ -1,5 +1,5 @@
 import API from './API';
-import { URL_API_USER, URL_API_WITHDRAW, URL_API_ADMIN } from './URL';
+import { URL_API_USER, URL_API_WITHDRAW, URL_API_ADMIN, URL_API_TICKET } from './URL';
 
 const Admin = {
   // Admin authentication
@@ -71,6 +71,22 @@ const Admin = {
     if (transferContent) body.transferContent = transferContent;
     if (cancelReason) body.cancelReason = cancelReason;
     return API.put(`${URL_API_WITHDRAW}/${id}`, body);
+  },
+  getAllTickets: ({ status, pageNumber, keyword }) => {
+    return API.get(
+      `${URL_API_TICKET}/?pageNumber=${pageNumber}&status=${status}&keyword=${keyword}`,
+    );
+  },
+  getTicketById: (id) => {
+    return API.get(`${URL_API_TICKET}/${id}`);
+  },
+  replyTicketByAdmin: (id, formData) => {
+    return API.post(`${URL_API_TICKET}/${id}/reply`, formData, {
+      customContentType: 'multipart/form-data',
+    });
+  },
+  closeTicket: (id) => {
+    return API.put(`${URL_API_TICKET}/${id}/close`);
   },
 };
 
