@@ -9,7 +9,15 @@ import { sendTelegramMessage } from "../utils/sendTelegram.js";
 import { decodeCallbackToken, removeAccents } from "../utils/methods.js";
 import mongoose from "mongoose";
 
+// User-side withdraw/claim actions disabled by request (claimHewe, withdrawHeweManual,
+// claimUsdt). Each now just returns a 403 "disabled" response; original logic kept
+// commented below for easy re-enable. Admin-side read/list/export/reset endpoints below
+// are untouched.
 const claimHewe = asyncHandler(async (req, res) => {
+  res.status(403).json({ error: "Withdraw is currently disabled" });
+  return;
+
+  /* ===== Original claimHewe logic (disabled) =====
   const { token } = req.body;
   const decode = decodeCallbackToken(token);
 
@@ -70,9 +78,14 @@ const claimHewe = asyncHandler(async (req, res) => {
     // Reset lại trạng thái để lần sau vẫn claim được
     await User.findByIdAndUpdate(userId, { isClaiming: false });
   }
+  ===== End original claimHewe logic ===== */
 });
 
 const withdrawHeweManual = asyncHandler(async (req, res) => {
+  res.status(403).json({ error: "Withdraw is currently disabled" });
+  return;
+
+  /* ===== Original withdrawHeweManual logic (disabled) =====
   const { user } = req;
 
   // Dùng findOneAndUpdate để set isClaiming = true
@@ -115,9 +128,14 @@ const withdrawHeweManual = asyncHandler(async (req, res) => {
     // Reset lại trạng thái để lần sau vẫn thao tác được
     await User.findByIdAndUpdate(lockedUser._id, { isClaiming: false });
   }
+  ===== End original withdrawHeweManual logic ===== */
 });
 
 const claimUsdt = asyncHandler(async (req, res) => {
+  res.status(403).json({ error: "Withdraw is currently disabled" });
+  return;
+
+  /* ===== Original claimUsdt logic (disabled) =====
   const { token, amount } = req.body;
   const decode = decodeCallbackToken(token);
 
@@ -198,6 +216,7 @@ const claimUsdt = asyncHandler(async (req, res) => {
     // Reset trạng thái sau khi xử lý xong (dù success hay error)
     await User.findByIdAndUpdate(userId, { isClaiming: false });
   }
+  ===== End original claimUsdt logic ===== */
 });
 
 const getAllClaims = asyncHandler(async (req, res) => {
