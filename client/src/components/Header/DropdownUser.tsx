@@ -15,7 +15,8 @@ const DropdownUser = () => {
   const handleLogout = () => {
     disconnect();
     dispatch(LOGOUT());
-    navigate('/signin');
+    // User login page is disabled, so only admins land on a login screen after logout.
+    navigate(userInfo?.role !== 'user' ? '/admin/login' : '/');
   };
 
   return (

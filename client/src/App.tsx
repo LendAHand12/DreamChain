@@ -16,7 +16,8 @@ import Mechanism from './pages/Mechanism';
 import PolicyPage from './pages/Policy';
 import ContactPage from './pages/Contact';
 import { PrivateRoute, PublicRoute } from './helpers/router';
-import SignInPage from './pages/SignIn';
+// User login disabled by request — page kept for easy re-enable, route hidden below.
+// import SignInPage from './pages/SignIn';
 import AdminSignInPage from './pages/Admin/Login';
 import Profile from './pages/User/Profile';
 import DashboardPage from './pages/Admin/Dashboard';
@@ -186,7 +187,7 @@ function App() {
             </>
           }
         />
-        <Route path="/signin" element={<SignInPage />} />
+        {/* <Route path="/signin" element={<SignInPage />} /> */}
         <Route path="/admin/login" element={<AdminSignInPage />} />
         <Route path="/signup" element={<SignUpPage />} />
         <Route path="/verify-otp" element={<VerifyOtpPage />} />

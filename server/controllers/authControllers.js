@@ -197,7 +197,14 @@ const mailForPasswordReset = asyncHandler(async (req, res) => {
   }
 });
 
+// User login has been disabled by request. Admin login is separate and unaffected
+// (see adminControllers.js / adminLogin). To re-enable, uncomment the block below
+// and remove the early "disabled" response.
 const authUser = asyncHandler(async (req, res) => {
+  res.status(403).json({ error: "User login is currently disabled" });
+  return;
+
+  /* ===== Original user login logic (disabled) =====
   const { code, password } = req.body;
 
   // First check if user exists (regardless of isConfirmed)
@@ -324,6 +331,7 @@ const authUser = asyncHandler(async (req, res) => {
   } else {
     res.status(400).json({ error: "Login information is incorrect" });
   }
+  ===== End original user login logic ===== */
 });
 
 const resetUserPassword = asyncHandler(async (req, res) => {

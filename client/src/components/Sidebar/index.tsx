@@ -324,7 +324,8 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen, routes }: SidebarProps) => {
                 }}
               </SidebarLinkGroup> */}
               {/* <!-- Menu Item Forms --> */}
-              {!userInfo && (
+              {/* User login disabled by request — mobile "Sign in" entry hidden. */}
+              {/* {!userInfo && (
                 <li className="w-full lg:hidden py-3 px-6 lg:pr-16">
                   <Link
                     to="/signin"
@@ -333,7 +334,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen, routes }: SidebarProps) => {
                     Sign in
                   </Link>
                 </li>
-              )}
+              )} */}
             </ul>
           </div>
         </nav>

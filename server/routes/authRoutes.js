@@ -24,6 +24,9 @@ router.route("/checkSendMail").post(checkSendMail);
 router.route("/updateData").get(updateData);
 router.route("/getNewPass").get(getNewPass);
 router.route("/register").post(registerUser);
+// User login disabled by request — admin login is unaffected (see adminRoutes.js).
+// authUser now just returns a 403 "disabled" response; uncomment the next line
+// together with the original logic in authControllers.js to re-enable.
 router.route("/login").post(authUser);
 router.route("/confirm/:token").get(confirmUser);
 router.route("/confirm").post(mailForEmailVerification);
